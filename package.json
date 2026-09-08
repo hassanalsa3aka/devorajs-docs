@@ -12,9 +12,7 @@
     "apps/*"
   ],
   "dependencies": {
-    "@devorajs/core": "^0.1.0"
-  },
-  "devDependencies": {
+    "@devorajs/core": "^0.1.0",
     "@devorajs/cli": "^0.1.0"
   },
   "engines": {
