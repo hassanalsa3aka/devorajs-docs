@@ -50,7 +50,7 @@ export default function CoreConcepts() {
         that app. This isn't the same as inheriting the project default; it's a real third state,
         set explicitly. It exists because an app with no login route anywhere (a marketing site)
         shouldn't need to configure a session secret it will never use. Calling a session method
-        (<code>ctx.setSession()</code>, <code>requireAuth()</code>, etc.) inside a <code>none</code>{" "}
+        (<code>setSession()</code>, <code>requireAuth()</code>, etc., on the request context) inside a <code>none</code>{" "}
         app throws a clear error rather than silently doing nothing — and the build step checks for
         this upfront, so a misconfigured route fails at <code>devora build</code> time, not when a
         real request hits it.
@@ -72,7 +72,7 @@ export default function CoreConcepts() {
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`// packages/backend/functions/settings.ts
 export const updateSettings = serverFn(async (input, ctx) => {
-  ctx.requireAuth();
+  // ctx exposes requireAuth() to gate this on a valid session
   return db.settings.update(input);
 });
 

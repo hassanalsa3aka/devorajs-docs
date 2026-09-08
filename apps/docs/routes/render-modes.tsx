@@ -76,7 +76,7 @@ export default function AboutPage() {
 // and the main @devorajs/core entry pulls in server-only code (node:crypto,
 // node:fs) that can't bundle for a browser target.
 
-export const renderMode = "csr";
+export const renderMode = ${'"'}csr${'"'};
 
 export default function CsrDemo() {
   return <p>Mounted client-side at: {new Date().toISOString()}</p>;
@@ -105,6 +105,14 @@ export default function IsrPage({ data }) {
 }`}
         </pre>
       </div>
+      <p>
+        Ongoing revalidation is fully reliable under a long-lived Node process (self-hosted or
+        Docker). On a serverless platform (Vercel/Netlify), a function's filesystem isn't
+        guaranteed to persist or be shared across invocations, so the initial build's static
+        content still serves correctly but ongoing regeneration there is comparatively less
+        battle-tested — worth confirming for your own workload if you lean heavily on <code>isr</code>{" "}
+        in a serverless deployment.
+      </p>
 
       <h2>streaming — deferred to v2</h2>
       <p>
