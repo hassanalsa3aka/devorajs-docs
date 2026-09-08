@@ -1,0 +1,23 @@
+{
+  "name": "devorajs-docs",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "devora dev",
+    "build": "devora build",
+    "start": "devora start"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "dependencies": {
+    "@devorajs/core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@devorajs/cli": "^0.1.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

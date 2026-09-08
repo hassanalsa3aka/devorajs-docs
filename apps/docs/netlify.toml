@@ -1,0 +1,9 @@
+[build]
+  command = "cd ../.. && node packages/cli/dist/index.js build --app=docs --adapter=netlify"
+  publish = "dist/client"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/ssr"
+  status = 200
