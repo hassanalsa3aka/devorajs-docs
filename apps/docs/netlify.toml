@@ -1,5 +1,5 @@
 [build]
-  command = "cd ../.. && node packages/cli/dist/index.js build --app=docs --adapter=netlify"
+  command = "npx devora build --app=docs --adapter=netlify"
   publish = "dist/client"
   functions = "netlify/functions"
 
