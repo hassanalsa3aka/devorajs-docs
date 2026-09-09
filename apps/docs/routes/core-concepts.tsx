@@ -99,9 +99,15 @@ import { updateSettings } from "@devorajs/backend/settings";
         — there's no special meaning attached to a filename beyond where it sits in the tree.
       </p>
       <p>
-        Currently, routing supports static segments only — a dynamic segment like{" "}
-        <code>routes/users/[id].tsx</code> isn't matched yet. Plan route structures around that
-        until it lands.
+        A dynamic segment — <code>routes/users/[id].tsx</code> matches <code>/users/123</code>,
+        with the value available as <code>ctx.params.id</code> in <code>loader</code>/
+        <code>action</code> — is supported for <code>ssr</code> and <code>csr</code> routes. A
+        static route at the same depth always wins over a dynamic one (
+        <code>routes/users/new.tsx</code> beats <code>routes/users/[id].tsx</code> for{" "}
+        <code>/users/new</code>). <code>ssg</code>/<code>isr</code> don't support dynamic routes
+        yet — there's no API yet for a route to declare which concrete values to pre-render, so
+        the build fails with a clear error rather than mis-building; use <code>ssr</code>/
+        <code>csr</code> for a dynamic route instead.
       </p>
     </PageShell>
   );
