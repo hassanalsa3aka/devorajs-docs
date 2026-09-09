@@ -3,6 +3,14 @@
   publish = "dist/client"
   functions = "netlify/functions"
 
+# Real bug, confirmed via an actual authenticated deploy in devora.js's own
+# repo: without this, the function runs with no crash but returns "Not
+# found" for every route, since Netlify's own function packager can't
+# trace routes/ or dist/server/ (read at runtime via fs.readdirSync/
+# dynamic import(), not a static import it can follow).
+[functions.ssr]
+  included_files = ["netlify/functions/ssr/routes/**", "netlify/functions/ssr/dist/**"]
+
 [[redirects]]
   from = "/*"
   to = "/.netlify/functions/ssr"
