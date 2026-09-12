@@ -8,7 +8,7 @@
   *A lightweight, Vite-based, security-first web framework with native multi-app support.*
 
   <p>
-    <a href="https://github.com/hassanalsa3aka/devorajs-docs/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License" /></a>
     <img src="https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg?style=flat-square" alt="Node >= 20" />
     <img src="https://img.shields.io/badge/vite-powered-646CFF.svg?style=flat-square&logo=vite&logoColor=white" alt="Vite Powered" />
     <img src="https://img.shields.io/badge/security-first-purple.svg?style=flat-square" alt="Security First" />
@@ -110,7 +110,7 @@ Start the local development server with Hot Module Replacement (HMR):
 npm run dev
 ```
 
-The documentation app will be available at `http://localhost:3000` (or the port specified by the Devora CLI).
+The documentation app will be available at `http://localhost:5173` (or the port specified by the Devora CLI).
 
 ### Building for Production
 
