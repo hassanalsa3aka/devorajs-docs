@@ -463,6 +463,10 @@ export default function Home() {
           Render modes
           <span>ssr/ssg/csr/isr</span>
         </a>
+        <a className="home-next-link" href="/backend">
+          Backend (v2)
+          <span>Modules, API routes, middleware</span>
+        </a>
         <a className="home-next-link" href="/cli-reference">
           CLI reference
           <span>Every command</span>

@@ -104,10 +104,14 @@ import { updateSettings } from "@devorajs/backend/settings";
         <code>action</code> — is supported for <code>ssr</code> and <code>csr</code> routes. A
         static route at the same depth always wins over a dynamic one (
         <code>routes/users/new.tsx</code> beats <code>routes/users/[id].tsx</code> for{" "}
-        <code>/users/new</code>). <code>ssg</code>/<code>isr</code> don't support dynamic routes
-        yet — there's no API yet for a route to declare which concrete values to pre-render, so
-        the build fails with a clear error rather than mis-building; use <code>ssr</code>/
-        <code>csr</code> for a dynamic route instead.
+        <code>/users/new</code>). <code>ssr</code>/<code>csr</code> support dynamic routes with no
+        extra work — a live request already carries its own params.
+      </p>
+      <p>
+        <code>ssg</code>/<code>isr</code> on a dynamic route need a <code>getStaticParams()</code>{" "}
+        export (v2, not yet in the published <code>^0.1.0</code> package) telling the build step
+        which concrete values to pre-render — one static file per entry returned. See{" "}
+        <a href="/backend">Backend (v2)</a> for the full shape.
       </p>
     </PageShell>
   );
