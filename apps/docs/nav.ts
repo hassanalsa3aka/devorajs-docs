@@ -8,6 +8,7 @@ export const DOCS_NAV: NavLink[] = [
   { label: "Core concepts", href: "/core-concepts" },
   { label: "Render modes", href: "/render-modes" },
   { label: "Backend (v2)", href: "/backend" },
+  { label: "Repo-splitting (v2)", href: "/repo-splitting" },
   { label: "CLI reference", href: "/cli-reference" },
   { label: "Deployment", href: "/deployment" },
   { label: "Security", href: "/security" },

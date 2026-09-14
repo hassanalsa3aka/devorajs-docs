@@ -461,11 +461,15 @@ export default function Home() {
         </a>
         <a className="home-next-link" href="/render-modes">
           Render modes
-          <span>ssr/ssg/csr/isr</span>
+          <span>ssr/ssg/csr/isr/streaming</span>
         </a>
         <a className="home-next-link" href="/backend">
           Backend (v2)
           <span>Modules, API routes, middleware</span>
+        </a>
+        <a className="home-next-link" href="/repo-splitting">
+          Repo-splitting (v2)
+          <span>Split an app into its own repo</span>
         </a>
         <a className="home-next-link" href="/cli-reference">
           CLI reference

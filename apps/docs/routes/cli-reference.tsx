@@ -6,7 +6,8 @@ export const renderMode = "ssg";
 export function meta() {
   return {
     title: "CLI reference",
-    description: "Every devora CLI command — dev, build, start, deploy, new, add, remove, list, generate:proxy.",
+    description:
+      "Every devora CLI command — dev, build, start, deploy, new, add, remove, list, split, sync, status, generate:proxy.",
   };
 }
 
@@ -84,6 +85,33 @@ export default function CliReference() {
         Lists every app currently registered in <code>devora.config.ts</code> — name, directory,
         domain, and effective auth mode. Useful for checking a project's shape without opening the
         config file.
+      </p>
+
+      <h2><code>devora split &lt;app-name|backend&gt;</code> <span style={{ opacity: 0.6 }}>(v2)</span></h2>
+      <p>
+        <strong>Not yet in the published <code>^0.1.0</code> package</strong> — see{" "}
+        <a href="/repo-splitting">Repo-splitting (v2)</a> for the full explanation. Converts{" "}
+        <code>apps/&lt;name&gt;</code> (or the literal <code>backend</code>, for{" "}
+        <code>packages/backend</code>) into a real git submodule pointing at{" "}
+        <code>--repo &lt;url&gt;</code> — an empty remote you create yourself first. Prompts for
+        confirmation before doing anything (skip with <code>--yes</code> for scripted use).
+      </p>
+
+      <h2><code>devora sync [names...]</code> <span style={{ opacity: 0.6 }}>(v2)</span></h2>
+      <p>
+        <strong>Not yet in the published <code>^0.1.0</code> package.</strong> Pulls or pushes a
+        split-off app/backend against its own remote — exactly one of <code>--from-main</code>{" "}
+        (merge the remote's latest into your local checkout) or <code>--to-main</code> (push local
+        commits made inside that checkout) is required. Name one or more targets, or pass{" "}
+        <code>--all</code> for every split-off piece. Shows the real commits it's about to
+        pull/push and asks for confirmation first (<code>--yes</code> skips it).
+      </p>
+
+      <h2><code>devora status</code> <span style={{ opacity: 0.6 }}>(v2)</span></h2>
+      <p>
+        <strong>Not yet in the published <code>^0.1.0</code> package.</strong> One view across
+        every split-off app/backend: up to date, local commits not pushed, remote commits not
+        pulled, or diverged.
       </p>
 
       <h2><code>devora generate:proxy</code></h2>

@@ -6,7 +6,7 @@ export const renderMode = "ssg";
 export function meta() {
   return {
     title: "Render modes",
-    description: "ssr, ssg, csr, and isr explained with code examples — streaming is deferred to v2.",
+    description: "ssr, ssg, csr, isr, and streaming, explained with code examples.",
   };
 }
 
@@ -114,13 +114,43 @@ export default function IsrPage({ data }) {
         in a serverless deployment.
       </p>
 
-      <h2>streaming — deferred to v2</h2>
+      <h2>streaming — chunked SSR (v2)</h2>
       <p>
-        A <code>streaming</code> mode (chunked SSR that doesn't block on slow data) is part of the
-        design but not implemented in v1 — routes that declare it don't currently render. It's
-        deferred rather than dropped: the island hydration mechanism v1 does ship assumes a
-        synchronous render pass, which is incompatible with React's streaming APIs, and needs a
-        Suspense-boundary-based rewrite first.
+        <strong>Not yet in the published <code>^0.1.0</code> package</strong> — see{" "}
+        <a href="/backend">Backend (v2)</a> for the rest of that release. The page shell sends
+        immediately; an island's real content patches in once its import resolves, instead of the
+        whole response waiting on it. Needed a real, separate rendering strategy under the hood —
+        the two-pass model every other render mode uses (render once, collect any unresolved
+        islands, re-render) doesn't apply to a response that's already streaming to the browser;
+        <code>{" "}renderMode: "streaming"</code> uses React's own Suspense contract instead, so{" "}
+        <code>renderToPipeableStream</code> can send a real fallback immediately and swap in the
+        real content later, natively.
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`export const renderMode = "streaming";
+
+export async function loader() {
+  return { renderedAt: new Date().toISOString() };
+}
+
+export default function StreamingPage({ data }) {
+  return (
+    <>
+      <p>Rendered at: {data.renderedAt}</p>
+      <Island component={SlowWidget} props={{}} />
+    </>
+  );
+}`}
+        </pre>
+      </div>
+      <p>
+        Nothing changes about how <code>&lt;Island&gt;</code> is used — the same component works
+        under <code>ssr</code> or <code>streaming</code> with no code changes; which strategy it
+        uses is decided by which render mode is actively rendering it. GET-only, on purpose: an{" "}
+        <code>action</code> needs to decide "redirect or re-render" before any HTML is sent, which
+        conflicts with a response that's already streaming — the same restriction <code>ssg</code>/
+        <code>isr</code> already have, for an unrelated reason.
       </p>
 
       <h2>Islands and client-only components</h2>
