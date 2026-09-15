@@ -91,6 +91,22 @@ export const handler = apiRoute((req, ctx) => {
         against a provider-issued secret instead — bring your own, same boundary as DB/auth.
         Security headers (CSP/HSTS/X-Frame-Options) apply to API routes too, by default.
       </p>
+      <p>
+        <strong>Method allowlist</strong>: export an optional <code>methods</code> array alongside{" "}
+        <code>handler</code> to have unlisted HTTP methods rejected with a real{" "}
+        <code>405</code>, before the handler runs at all — closes a real footgun where a single{" "}
+        <code>if (req.method === "POST") &#123; ... &#125; else &#123; ... &#125;</code> handler
+        quietly let a{" "}
+        <code>PUT</code>/<code>PATCH</code>/<code>DELETE</code> fall into the branch written for{" "}
+        <code>GET</code>. Fully opt-in — a route with no <code>methods</code> field behaves exactly
+        as before.
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`export const methods = ["GET", "POST"];
+export const handler = apiRoute((req, ctx) => { ... });`}
+        </pre>
+      </div>
 
       <h2>Middleware</h2>
       <p>

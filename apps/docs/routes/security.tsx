@@ -77,6 +77,53 @@ export default function Security() {
         requires any session-related variable at all.
       </p>
 
+      <h2>Hardening pass (v2)</h2>
+      <p>
+        <strong>Not yet in the published <code>^0.1.0</code> package</strong> — see{" "}
+        <a href="/backend">Backend (v2)</a> for the rest of that release. Once v2's surface
+        (backend modules, API routes, middleware, repo-splitting, streaming) stabilized, it went
+        through a real internal audit — every finding below was independently reproduced (a real
+        forged cookie, a real crafted <code>.gitmodules</code> path, a real oversized request body)
+        before being fixed, not assumed from a description. Not a substitute for the formal
+        third-party audit still planned once the package is published — but real, verified
+        hardening in its own right:
+      </p>
+      <ul>
+        <li>
+          <strong>Cross-app session isolation is now cryptographically real, not just
+          cookie-name-based.</strong> Before this, an <code>"isolated"</code> app that happened to
+          share its session secret with the project's shared app (a supported, documented
+          configuration) produced signatures indistinguishable from the shared app's own cookie —
+          a valid session from one app could be replayed verbatim against the other. The cookie
+          name is now bound into the signed input itself, so isolation holds even when two apps'
+          secrets collide.
+        </li>
+        <li>
+          <strong>Request bodies are capped</strong> (10MB default) across every API route and form
+          action, dev and production — previously unbounded, letting a single request force
+          unbounded memory buffering.
+        </li>
+        <li>
+          <strong>Streaming connections time out</strong> (30s default) rather than holding a
+          connection open indefinitely if a Suspense boundary never resolves — previously
+          unbounded on self-hosted/Docker deployments.
+        </li>
+        <li>
+          <strong>Path traversal closed in two places</strong>: the repo-splitting CLI (
+          <code>devora split</code>/<code>sync</code>/<code>status</code>) now refuses to run git
+          commands or delete a directory outside the project root, even from a crafted{" "}
+          <code>.gitmodules</code> entry or <code>devora.config.ts</code> path; the ISR disk cache
+          now refuses to write or delete outside its own static output directory, even from a
+          tainted <code>getStaticParams()</code> value.
+        </li>
+        <li>
+          <strong><code>devora start</code></strong> (the self-hosted production entrypoint) now
+          sets <code>NODE_ENV=production</code> itself, matching <code>devora build</code>/
+          <code>deploy</code> — previously relying on the invoking shell to have set it, silently
+          falling back to an insecure default session secret otherwise.
+        </li>
+      </ul>
+
       <h2>What's bring-your-own, and why</h2>
       <p>
         Devora.js deliberately does not ship an ORM, an auth/identity provider, or file storage in
@@ -86,8 +133,9 @@ export default function Security() {
         This is deliberate scope control: the framework's job is to make the plumbing (signed
         cookies, CSRF, security headers) secure and boring by default, not to compete with
         dedicated auth or database tooling that already does that job well. The same reasoning
-        applies to a formal third-party security audit — not done yet, planned once the API surface
-        stabilizes, since auditing a moving target wastes the audit.
+        applies to a formal third-party security audit — not done yet, planned once the package is
+        published and the API surface has real external users, since auditing a moving target
+        wastes the audit.
       </p>
     </PageShell>
   );
