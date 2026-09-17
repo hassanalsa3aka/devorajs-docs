@@ -111,7 +111,22 @@ export function SiteFooter() {
           font-size: 1rem;
         }
         #search-overlay-pf .pagefind-ui__search-clear {
-          border: 1px solid var(--devora-border);
+          top: 0.6rem;
+          right: 0.6rem;
+          height: 2rem;
+          padding: 0 0.75rem;
+          font-size: 0.8rem;
+          font-weight: 600;
+          color: var(--devora-fg-muted);
+          background: transparent;
+          border: 1px solid transparent;
+          border-radius: 999px;
+          transition: color 0.15s, background-color 0.15s, border-color 0.15s;
+        }
+        #search-overlay-pf .pagefind-ui__search-clear:hover {
+          color: var(--devora-fg);
+          background: var(--devora-bg);
+          border-color: var(--devora-border);
         }
         #search-overlay-pf .pagefind-ui__result { border-bottom: 1px solid var(--devora-border); }
         #search-overlay-pf .pagefind-ui__result-title a { color: var(--devora-fg); }
