@@ -26,6 +26,18 @@ fi
 # real build. See its .gitignore entry: this directory is generated, not
 # source. Then copied into dist/client for this build's actual output,
 # since Pagefind ran after Vite's own publicDir copy already happened.
+#
+# Self-heals if the binary is missing: confirmed on a real Vercel deploy
+# that its cached-build install step can restore node_modules without this
+# binary even though it's a normal devDependency (devora itself, a
+# `dependencies` entry, was present and ran fine). `npx --yes pagefind`
+# alone does NOT help here — confirmed directly: npx refuses to fetch a
+# package that's already declared in package.json, so it just fails the
+# same way if the local install is missing. Installing it explicitly first
+# (only when actually missing) is what actually fixes it.
+if [ ! -x ./node_modules/.bin/pagefind ]; then
+  npm install --no-save pagefind
+fi
 ./node_modules/.bin/pagefind --site apps/docs/dist/static --root-selector ".devora-page" --output-path assets/pagefind
 rm -rf apps/docs/dist/client/pagefind
 cp -r assets/pagefind apps/docs/dist/client/pagefind
