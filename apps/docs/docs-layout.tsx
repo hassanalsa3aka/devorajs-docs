@@ -5,6 +5,7 @@ const DOCS_GROUPS = [
     items: [
       { id: "getting-started", label: "Getting started", href: "/getting-started" },
       { id: "core-concepts", label: "Core concepts", href: "/core-concepts" },
+      { id: "first-feature", label: "Build your first feature", href: "/first-feature" },
     ],
   },
   {
@@ -20,6 +21,7 @@ const DOCS_GROUPS = [
     label: "Reference",
     color: "#10b981",
     items: [
+      { id: "api-reference", label: "API reference", href: "/api-reference" },
       { id: "cli-reference", label: "CLI reference", href: "/cli-reference" },
       { id: "deployment", label: "Deployment", href: "/deployment" },
       { id: "security", label: "Security", href: "/security" },

@@ -86,13 +86,13 @@ export const handler = apiRoute((req, ctx) => {
       </Callout>
       <Callout kind="danger" title="Security, worth getting right">
         <p>
-          <code>ctx</code><code>.requireAuth()</code>/<code>ctx.session</code> carry over cleanly
-          from page routes. <code>ctx</code><code>.verifyCsrf()</code> does <em>not</em> — its
+          <code>ctx{"."}requireAuth()</code>/<code>ctx.session</code> carry over cleanly
+          from page routes. <code>ctx{"."}verifyCsrf()</code> does <em>not</em> — its
           token is embedded server-side into a rendered <code>&lt;form&gt;</code>, and a
           third-party webhook was never handed one. It now also accepts a plain string (not just{" "}
           <code>FormData</code>) for a same-origin JSON call — read the token your own page already
           received as a <code>csrfToken</code> prop, send it back on a header, verify with{" "}
-          <code>ctx</code><code>.verifyCsrf(headerValue)</code>. A webhook needs its own
+          <code>ctx{"."}verifyCsrf(headerValue)</code>. A webhook needs its own
           signature/HMAC check against a provider-issued secret instead — bring your own, same
           boundary as DB/auth. Security headers (CSP/HSTS/X-Frame-Options) apply to API routes too,
           by default.

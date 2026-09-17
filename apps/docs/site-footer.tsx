@@ -23,7 +23,7 @@ export function SiteFooter() {
         .site-footer-links a:hover {
           text-decoration: underline;
         }
-        .devora-nav a:last-child {
+        .devora-nav a:nth-last-child(2) {
           display: inline-flex;
           align-items: center;
           gap: 0.45rem;
@@ -31,8 +31,8 @@ export function SiteFooter() {
           border-radius: 8px;
           padding: 0.3rem 0.6rem;
         }
-        .devora-nav a:last-child:hover { border-color: var(--devora-accent-from); }
-        .devora-nav a:last-child::before {
+        .devora-nav a:nth-last-child(2):hover { border-color: var(--devora-accent-from); }
+        .devora-nav a:nth-last-child(2)::before {
           content: var(--pseudo-content);
           display: inline-block;
           width: 14px;
@@ -48,8 +48,72 @@ export function SiteFooter() {
           -webkit-mask-position: center;
           mask-position: center;
         }
+        .devora-nav a:last-child {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 2rem;
+          height: 2rem;
+          flex-shrink: 0;
+          border: 1px solid var(--devora-border);
+          border-radius: 50%;
+          font-size: 0;
+          line-height: 0;
+          transition: border-color 0.15s, transform 0.2s;
+        }
+        .devora-nav a:last-child:hover { border-color: var(--devora-accent-from); }
+        .devora-nav a:last-child:active { transform: scale(0.92); }
+        .devora-nav a:last-child::before {
+          content: var(--pseudo-content);
+          display: inline-block;
+          width: 15px;
+          height: 15px;
+          flex-shrink: 0;
+          background-color: var(--devora-fg-muted);
+          -webkit-mask-image: var(--theme-icon);
+          mask-image: var(--theme-icon);
+          -webkit-mask-size: contain;
+          mask-size: contain;
+          -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+          -webkit-mask-position: center;
+          mask-position: center;
+          transition: background-color 0.15s;
+        }
+        .devora-nav a:last-child:hover::before { background-color: var(--devora-fg); }
         .devora-header-left { width: 100%; }
         .devora-nav { margin-left: auto; }
+
+        /* Explicit light/dark override — wins over the framework's own
+           prefers-color-scheme default regardless of OS setting, driven by
+           theme-toggle.js setting data-theme on <html> and persisting the
+           choice to localStorage. Values mirror THEME_CSS's own media-query
+           block exactly, so a page looks identical whether it got there via
+           OS preference or this manual switch. */
+        :root[data-theme=light] {
+          --devora-bg: #fafafc;
+          --devora-bg-elevated: #ffffff;
+          --devora-card: #ffffff;
+          --devora-fg: #16161f;
+          --devora-fg-muted: #5c5c6b;
+          --devora-border: #e6e6ee;
+          --devora-accent-from: #2563eb;
+          --devora-accent-to: #9333ea;
+          --devora-link: #2563eb;
+          --devora-shadow: 0 1px 2px rgba(20, 20, 40, 0.04), 0 8px 24px rgba(20, 20, 40, 0.06);
+        }
+        :root[data-theme=dark] {
+          --devora-bg: #0a0a12;
+          --devora-bg-elevated: #13131f;
+          --devora-card: #15151f;
+          --devora-fg: #f5f5f7;
+          --devora-fg-muted: #9d9db0;
+          --devora-border: #26262f;
+          --devora-accent-from: #3b82f6;
+          --devora-accent-to: #a855f7;
+          --devora-link: #93c5fd;
+          --devora-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.25);
+        }
 
         .search-overlay {
           display: none;
@@ -167,6 +231,7 @@ export function SiteFooter() {
         </div>
       </div>
       <script src="/js/search-overlay.js" />
+      <script src="/js/theme-toggle.js" />
     </>
   );
 }

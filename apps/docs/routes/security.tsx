@@ -95,6 +95,33 @@ export default function Security() {
         requires any session-related variable at all.
       </p>
 
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>Environment variables</h3>
+      <table>
+        <thead><tr><th>Variable</th><th>Required when</th><th>Set to</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>DEVORA_SESSION_SECRET</code></td>
+            <td>A <code>shared</code>-auth app, in production</td>
+            <td>A random value — <code>openssl rand -base64 32</code> works well</td>
+          </tr>
+          <tr>
+            <td><code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code></td>
+            <td>An <code>isolated</code>-auth app, in production (uppercase app name)</td>
+            <td>Same — a distinct value per isolated app is recommended but not load-bearing for isolation, since the cookie name is bound into the signature too</td>
+          </tr>
+          <tr>
+            <td><code>NODE_ENV</code></td>
+            <td>Always, in production</td>
+            <td><code>production</code> — <code>devora build</code>/<code>start</code>/<code>deploy</code> set this themselves; only matters if you invoke the built output another way</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        None of these apply to an app with <code>auth: "none"</code> — it never reads a
+        session-related variable at all. See <a href="/deployment">Deployment</a> for where to set
+        these on Vercel/Netlify/Docker.
+      </p>
+
       <h2>Hardening pass (v2)</h2>
       <p>
         Available now in <code>@devorajs/core@^0.2.2</code>. See{" "}

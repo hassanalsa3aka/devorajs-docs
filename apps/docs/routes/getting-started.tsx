@@ -102,7 +102,8 @@ export default function GettingStarted() {
         After scaffolding (or after the installer's own dependency install finishes), run{" "}
         <code>cd my-devora-app && devora dev</code> to start every app in dev mode, or{" "}
         <code>devora dev --app=dashboard</code> to run just one. See the{" "}
-        <a href="/cli-reference">CLI reference</a> for every command.
+        <a href="/cli-reference">CLI reference</a> for every command, or go straight to{" "}
+        <a href="/first-feature">Build your first feature</a> for a complete worked example.
       </p>
       </DocsLayout>
     </PageShell>
