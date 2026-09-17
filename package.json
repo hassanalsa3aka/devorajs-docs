@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "devora dev",
     "build": "devora build",
-    "postbuild": "pagefind --site apps/docs/dist/static --root-selector \".devora-page\" --output-path assets/pagefind && rm -rf apps/docs/dist/client/pagefind && cp -r assets/pagefind apps/docs/dist/client/pagefind",
+    "postbuild": "bash scripts/build-docs.sh",
     "start": "devora start"
   },
   "workspaces": [

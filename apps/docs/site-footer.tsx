@@ -61,6 +61,7 @@ export function SiteFooter() {
           padding: 8vh 1.5rem 1.5rem;
           background: rgba(5, 5, 10, 0.75);
           backdrop-filter: blur(4px);
+          overflow-y: auto;
         }
         .search-overlay:target { display: flex; }
         .search-overlay-box {
@@ -96,14 +97,25 @@ export function SiteFooter() {
           color: var(--devora-fg-muted);
           text-align: center;
         }
+        #search-overlay-pf {
+          --pagefind-ui-primary: var(--devora-accent-from);
+          --pagefind-ui-text: var(--devora-fg);
+          --pagefind-ui-background: var(--devora-bg-elevated);
+          --pagefind-ui-border: var(--devora-border);
+          --pagefind-ui-tag: var(--devora-bg);
+        }
         #search-overlay-pf .pagefind-ui__search-input {
           background: var(--devora-bg);
           border: 1px solid var(--devora-border);
           color: var(--devora-fg);
           font-size: 1rem;
         }
+        #search-overlay-pf .pagefind-ui__search-clear {
+          border: 1px solid var(--devora-border);
+        }
         #search-overlay-pf .pagefind-ui__result { border-bottom: 1px solid var(--devora-border); }
         #search-overlay-pf .pagefind-ui__result-title a { color: var(--devora-fg); }
+        #search-overlay-pf .pagefind-ui__result-excerpt { color: var(--devora-fg-muted); }
         #search-overlay-pf .pagefind-ui__result-excerpt mark {
           background: transparent;
           color: var(--devora-link);
