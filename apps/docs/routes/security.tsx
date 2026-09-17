@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Tag } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -29,22 +29,37 @@ export default function Security() {
 
       <h2>CSP, HSTS, and frame options</h2>
       <p>Every response carries these headers by default:</p>
-      <ul>
-        <li>
+      <div className="devora-card" style={{ borderTopColor: "#3b82f6" }}>
+        <p style={{ marginTop: 0 }}>
+          <Tag color="blue">CSP</Tag>
+        </p>
+        <p>
           <code>Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; base-uri 'self'</code>{" "}
           — locks scripts, connections, and images to same-origin, blocking injected, inline, or
           eval'd script execution. <code>style-src</code> additionally allows{" "}
           <code>'unsafe-inline'</code> as a deliberate, documented tradeoff: React's{" "}
           <code>style={"{{...}}"}</code> prop compiles to an inline <code>style</code> attribute,
           which a strict default would otherwise silently break for every app.
-        </li>
-        <li><code>X-Frame-Options: DENY</code> — blocks the app from being framed by another site.</li>
-        <li>
+        </p>
+      </div>
+      <div className="devora-card" style={{ borderTopColor: "#a855f7", marginTop: "0.85rem" }}>
+        <p style={{ marginTop: 0 }}>
+          <Tag color="purple">X-Frame-Options</Tag>
+        </p>
+        <p style={{ marginBottom: 0 }}>
+          <code>X-Frame-Options: DENY</code> — blocks the app from being framed by another site.
+        </p>
+      </div>
+      <div className="devora-card" style={{ borderTopColor: "#10b981", marginTop: "0.85rem" }}>
+        <p style={{ marginTop: 0 }}>
+          <Tag color="emerald">HSTS</Tag>
+        </p>
+        <p style={{ marginBottom: 0 }}>
           <code>Strict-Transport-Security: max-age=63072000; includeSubDomains</code> — a two-year
           HSTS policy. This header is a no-op over plain HTTP (browsers only honor it on responses
           received over HTTPS), so it's safe to always send, including in dev.
-        </li>
-      </ul>
+        </p>
+      </div>
       <p>
         Each of these is overridable per app (<code>security.csp</code>, <code>security.frameOptions</code>,{" "}
         <code>security.hsts</code> in <code>app.config.ts</code>) — the point is that you have to
@@ -82,16 +97,15 @@ export default function Security() {
 
       <h2>Hardening pass (v2)</h2>
       <p>
-        <strong>Not yet in the published <code>^0.1.0</code> package</strong> — see{" "}
+        Available now in <code>@devorajs/core@^0.2.2</code>. See{" "}
         <a href="/backend">Backend (v2)</a> for the rest of that release. Once v2's surface
         (backend modules, API routes, middleware, repo-splitting, streaming) stabilized, it went
         through a real internal audit — every finding below was independently reproduced (a real
-        forged cookie, a real crafted <code>.gitmodules</code> path, a real oversized request body)
-        before being fixed, not assumed from a description. Not a substitute for the formal
-        third-party audit still planned once the package is published — but real, verified
-        hardening in its own right:
+        forged cookie, a real crafted <code>.gitmodules</code> path, a real oversized request
+        body) before being fixed, not assumed from a description. Not a substitute for a formal
+        third-party audit — but real, verified hardening in its own right:
       </p>
-      <ul>
+      <ul className="check-list" style={{ "--check-content": "'✓'" }}>
         <li>
           <strong>Cross-app session isolation is now cryptographically real, not just
           cookie-name-based.</strong> Before this, an <code>"isolated"</code> app that happened to

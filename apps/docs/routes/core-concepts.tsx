@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Tag } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -37,27 +37,33 @@ export default function CoreConcepts() {
 
       <h2>Auth: shared, isolated, or none</h2>
       <p>Auth is a per-app setting, not a single project-wide switch. Three modes:</p>
-      <p>
-        <strong><code>shared</code></strong> — the default. All apps set to <code>shared</code>{" "}
-        use one project-wide session cookie, so a user logs in once and that session is valid
-        across marketing, dashboard, and admin alike.
-      </p>
-      <p>
-        <strong><code>isolated</code></strong> — this app gets its own session cookie name and can
-        be given its own secret (<code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code>). Useful when
-        one app genuinely needs a separate identity provider or session boundary — an admin panel
-        is the typical case.
-      </p>
-      <p>
-        <strong><code>none</code></strong> — disables the session/cookie/CSRF carrier entirely for
-        that app. This isn't the same as inheriting the project default; it's a real third state,
-        set explicitly. It exists because an app with no login route anywhere (a marketing site)
-        shouldn't need to configure a session secret it will never use. Calling a session method
-        (<code>setSession()</code>, <code>requireAuth()</code>, etc., on the request context) inside a <code>none</code>{" "}
-        app throws a clear error rather than silently doing nothing — and the build step checks for
-        this upfront, so a misconfigured route fails at <code>devora build</code> time, not when a
-        real request hits it.
-      </p>
+      <div className="devora-card" style={{ borderTopColor: "#3b82f6" }}>
+        <p style={{ marginTop: 0 }}>
+          <Tag color="blue">shared</Tag> <strong>the default.</strong> All apps set to{" "}
+          <code>shared</code> use one project-wide session cookie, so a user logs in once and that
+          session is valid across marketing, dashboard, and admin alike.
+        </p>
+      </div>
+      <div className="devora-card" style={{ borderTopColor: "#a855f7", marginTop: "0.85rem" }}>
+        <p style={{ marginTop: 0 }}>
+          <Tag color="purple">isolated</Tag> this app gets its own session cookie name and can be
+          given its own secret (<code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code>). Useful when
+          one app genuinely needs a separate identity provider or session boundary — an admin panel
+          is the typical case.
+        </p>
+      </div>
+      <div className="devora-card" style={{ borderTopColor: "var(--devora-fg-muted)", marginTop: "0.85rem" }}>
+        <p style={{ marginTop: 0, marginBottom: 0 }}>
+          <Tag color="gray">none</Tag> disables the session/cookie/CSRF carrier entirely for that
+          app. This isn't the same as inheriting the project default; it's a real third state, set
+          explicitly. It exists because an app with no login route anywhere (a marketing site)
+          shouldn't need to configure a session secret it will never use. Calling a session method
+          (<code>setSession()</code>, <code>requireAuth()</code>, etc., on the request context)
+          inside a <code>none</code> app throws a clear error rather than silently doing nothing —
+          and the build step checks for this upfront, so a misconfigured route fails at{" "}
+          <code>devora build</code> time, not when a real request hits it.
+        </p>
+      </div>
       <p>
         Leaving <code>auth</code> unset on an app means "inherit the project's <code>shared.auth</code>{" "}
         default" — set it to <code>"none"</code> explicitly if that's genuinely what you want, so
@@ -112,9 +118,8 @@ import { updateSettings } from "@devorajs/backend/settings";
       </p>
       <p>
         <code>ssg</code>/<code>isr</code> on a dynamic route need a <code>getStaticParams()</code>{" "}
-        export (v2, not yet in the published <code>^0.1.0</code> package) telling the build step
-        which concrete values to pre-render — one static file per entry returned. See{" "}
-        <a href="/backend">Backend (v2)</a> for the full shape.
+        export telling the build step which concrete values to pre-render — one static file per
+        entry returned. See <a href="/backend">Backend (v2)</a> for the full shape.
       </p>
       </DocsLayout>
     </PageShell>

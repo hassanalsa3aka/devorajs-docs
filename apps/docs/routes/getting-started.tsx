@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Tag } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -49,12 +49,13 @@ export default function GettingStarted() {
       <p>
         <strong>3. Auth mode, once per app.</strong> For each app name, it asks: "Does &lt;app&gt;
         need auth/sessions? [shared/isolated/none] (default: shared)". This is the per-app choice
-        described in <a href="/core-concepts">Core concepts</a> — <code>shared</code> puts the app
-        on the project's common login/session, <code>isolated</code> gives it its own session
-        cookie and secret (e.g. an admin panel with a different identity provider), and{" "}
-        <code>none</code> disables the session/cookie/CSRF carrier for that app entirely (e.g. a
-        marketing site with no login anywhere). A marketing-style app should answer{" "}
-        <code>none</code> — it never generates a login route or expects a session secret.
+        described in <a href="/core-concepts">Core concepts</a> — <Tag color="blue">shared</Tag>{" "}
+        puts the app on the project's common login/session, <Tag color="purple">isolated</Tag>{" "}
+        gives it its own session cookie and secret (e.g. an admin panel with a different identity
+        provider), and <Tag color="gray">none</Tag> disables the session/cookie/CSRF carrier for
+        that app entirely (e.g. a marketing site with no login anywhere). A marketing-style app
+        should answer <code>none</code> — it never generates a login route or expects a session
+        secret.
       </p>
       <p>
         Every prompt has a non-interactive fallback: running in a script or CI (no real TTY) skips

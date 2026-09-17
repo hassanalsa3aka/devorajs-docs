@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Tag } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -28,7 +28,7 @@ export default function RenderModes() {
         for you based on file location or data-fetching patterns.
       </p>
 
-      <h2>ssr — server-rendered per request</h2>
+      <h2><Tag color="blue">ssr</Tag> Server-rendered per request</h2>
       <p>The default. The route's <code>loader</code> runs on every request, and the page is rendered fresh each time.</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
@@ -44,7 +44,7 @@ export default function Page({ data }) {
         </pre>
       </div>
 
-      <h2>ssg — pre-rendered at build time</h2>
+      <h2><Tag color="purple">ssg</Tag> Pre-rendered at build time</h2>
       <p>
         The route is rendered once during <code>devora build</code> and served as static HTML from
         then on. Good for content that doesn't change per request — this docs site itself uses{" "}
@@ -66,7 +66,7 @@ export default function AboutPage() {
       </div>
       <p>In dev, <code>ssg</code> (and <code>isr</code>) routes still render live per request, for a faster edit loop — the build-time pre-render only applies to <code>devora build</code> output.</p>
 
-      <h2>csr — client-only</h2>
+      <h2><Tag color="emerald">csr</Tag> Client-only</h2>
       <p>
         The server sends a minimal shell with no content; the route's actual component only mounts
         once a small client bootstrap script imports and renders it in the browser. No{" "}
@@ -87,7 +87,7 @@ export default function CsrDemo() {
         </pre>
       </div>
 
-      <h2>isr — static with scheduled revalidation</h2>
+      <h2><Tag color="amber">isr</Tag> Static with scheduled revalidation</h2>
       <p>
         Like <code>ssg</code>, but the pre-rendered page is regenerated once a{" "}
         <code>revalidate</code> window passes (or on a manual <code>revalidatePath()</code> call).
@@ -117,10 +117,9 @@ export default function IsrPage({ data }) {
         in a serverless deployment.
       </p>
 
-      <h2>streaming — chunked SSR (v2)</h2>
+      <h2><Tag color="rose">streaming</Tag> Chunked SSR (v2)</h2>
       <p>
-        <strong>Not yet in the published <code>^0.1.0</code> package</strong> — see{" "}
-        <a href="/backend">Backend (v2)</a> for the rest of that release. The page shell sends
+        See <a href="/backend">Backend (v2)</a> for the rest of that release. The page shell sends
         immediately; an island's real content patches in once its import resolves, instead of the
         whole response waiting on it. Needed a real, separate rendering strategy under the hood —
         the two-pass model every other render mode uses (render once, collect any unresolved

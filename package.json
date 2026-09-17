@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "@devorajs/core": "^0.2.2",
-    "@devorajs/cli": "^0.1.0"
+    "@devorajs/cli": "^0.2.0"
   },
   "devDependencies": {
     "pagefind": "^1.5.2"

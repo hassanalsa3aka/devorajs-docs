@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Callout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -23,10 +23,9 @@ export default function Backend() {
       <DocsLayout active="backend">
       <h1>Backend (v2)</h1>
       <p>
-        <strong>Not yet in the published <code>^0.1.0</code> package.</strong> This page documents
-        v2's real backend expansion ahead of release — the same way this site already documented{" "}
-        <code>streaming</code> as "deferred to v2" before it existed. Built, tested, and verified in
-        the framework repo; not installable from npm yet.
+        v2's real backend expansion — domain modules, API routes, middleware, dynamic-route static
+        params, and a dev reload-safety hook. Available now in{" "}
+        <code>@devorajs/core@^0.2.2</code> and <code>@devorajs/cli@^0.2.0</code>.
       </p>
 
       <h2>Explicit domain modules</h2>
@@ -78,32 +77,38 @@ export const handler = apiRoute((req, ctx) => {
 });`}
         </pre>
       </div>
-      <p>
-        <strong>Ownership rule</strong>: shared backend logic goes in <code>packages/backend</code>,
-        exactly like <code>serverFn</code> already works — an app-local <code>api/</code> file is
-        the exception, for something genuinely app-specific (a webhook only that app receives).
-      </p>
-      <p>
-        <strong>Security, worth getting right</strong>: <code>ctx</code><code>.requireAuth()</code>/
-        <code>ctx.session</code> carry over cleanly from page routes. <code>ctx</code><code>.verifyCsrf()</code>{" "}
-        does <em>not</em> — its token is embedded server-side into a rendered <code>&lt;form&gt;</code>
-        , and a third-party webhook was never handed one. It now also accepts a plain string (not
-        just <code>FormData</code>) for a same-origin JSON call — read the token your own page
-        already received as a <code>csrfToken</code> prop, send it back on a header, verify with{" "}
-        <code>ctx</code><code>.verifyCsrf(headerValue)</code>. A webhook needs its own signature/HMAC check
-        against a provider-issued secret instead — bring your own, same boundary as DB/auth.
-        Security headers (CSP/HSTS/X-Frame-Options) apply to API routes too, by default.
-      </p>
-      <p>
-        <strong>Method allowlist</strong>: export an optional <code>methods</code> array alongside{" "}
-        <code>handler</code> to have unlisted HTTP methods rejected with a real{" "}
-        <code>405</code>, before the handler runs at all — closes a real footgun where a single{" "}
-        <code>if (req.method === "POST") &#123; ... &#125; else &#123; ... &#125;</code> handler
-        quietly let a{" "}
-        <code>PUT</code>/<code>PATCH</code>/<code>DELETE</code> fall into the branch written for{" "}
-        <code>GET</code>. Fully opt-in — a route with no <code>methods</code> field behaves exactly
-        as before.
-      </p>
+      <Callout kind="tip" title="Ownership rule">
+        <p>
+          Shared backend logic goes in <code>packages/backend</code>, exactly like{" "}
+          <code>serverFn</code> already works — an app-local <code>api/</code> file is the
+          exception, for something genuinely app-specific (a webhook only that app receives).
+        </p>
+      </Callout>
+      <Callout kind="danger" title="Security, worth getting right">
+        <p>
+          <code>ctx</code><code>.requireAuth()</code>/<code>ctx.session</code> carry over cleanly
+          from page routes. <code>ctx</code><code>.verifyCsrf()</code> does <em>not</em> — its
+          token is embedded server-side into a rendered <code>&lt;form&gt;</code>, and a
+          third-party webhook was never handed one. It now also accepts a plain string (not just{" "}
+          <code>FormData</code>) for a same-origin JSON call — read the token your own page already
+          received as a <code>csrfToken</code> prop, send it back on a header, verify with{" "}
+          <code>ctx</code><code>.verifyCsrf(headerValue)</code>. A webhook needs its own
+          signature/HMAC check against a provider-issued secret instead — bring your own, same
+          boundary as DB/auth. Security headers (CSP/HSTS/X-Frame-Options) apply to API routes too,
+          by default.
+        </p>
+      </Callout>
+      <Callout kind="tip" title="Method allowlist">
+        <p>
+          Export an optional <code>methods</code> array alongside <code>handler</code> to have
+          unlisted HTTP methods rejected with a real <code>405</code>, before the handler runs at
+          all — closes a real footgun where a single{" "}
+          <code>if (req.method === "POST") &#123; ... &#125; else &#123; ... &#125;</code> handler
+          quietly let a <code>PUT</code>/<code>PATCH</code>/<code>DELETE</code> fall into the
+          branch written for <code>GET</code>. Fully opt-in — a route with no <code>methods</code>{" "}
+          field behaves exactly as before.
+        </p>
+      </Callout>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`export const methods = ["GET", "POST"];
@@ -135,12 +140,14 @@ export const handler = withMiddleware(rawHandler, logging, requireAuthMw);`}
         rather than silently ignoring it, if a plugin calls an unsupported method like{" "}
         <code>addHook</code> or <code>decorate</code>.
       </p>
-      <p>
-        <strong>Governance rule:</strong> every use of either adapter — any point a third-party npm
-        package starts running inside the request pipeline — is registered in one place,{" "}
-        <code>packages/backend/middleware.ts</code>. A route opts in explicitly by importing from
-        there; nothing runs implicitly for every route.
-      </p>
+      <Callout kind="tip" title="Governance rule">
+        <p>
+          Every use of either adapter — any point a third-party npm package starts running inside
+          the request pipeline — is registered in one place,{" "}
+          <code>packages/backend/middleware.ts</code>. A route opts in explicitly by importing from
+          there; nothing runs implicitly for every route.
+        </p>
+      </Callout>
 
       <h2>Backend-only apps</h2>
       <p>

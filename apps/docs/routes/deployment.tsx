@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout } from "../docs-layout.js";
+import { DocsLayout, Callout, Tag } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -92,7 +92,7 @@ git push -u origin main`}
         or Netlify.
       </p>
 
-      <h2>2. Deploying to Vercel</h2>
+      <h2>2. Deploying to Vercel <Tag color="gray">Vercel</Tag></h2>
       <ol className="deploy-steps">
         <li className="deploy-step">
           In the Vercel dashboard: <strong>Add New… → Project</strong>, import the repo you just
@@ -123,7 +123,7 @@ git push -u origin main`}
         <li className="deploy-step">Repeat as a separate Vercel project, once per app.</li>
       </ol>
 
-      <h2>3. Deploying to Netlify</h2>
+      <h2>3. Deploying to Netlify <Tag color="emerald">Netlify</Tag></h2>
       <p>Same shape as Vercel, with a few platform-specific gotchas worth knowing up front:</p>
       <ol className="deploy-steps">
         <li className="deploy-step">
@@ -136,25 +136,29 @@ git push -u origin main`}
         <li className="deploy-step">
           Each app ships a committed <code>netlify.toml</code> with the real build command,
           publish directory, and an SSR redirect already set — in principle nothing else needs
-          configuring. In practice, <strong>Netlify's own dashboard Build settings take
-          precedence over <code>netlify.toml</code> when both are set</strong>. If the site was
-          ever auto-detected before <code>netlify.toml</code> existed (or a "Package directory"
-          got set at any point), that stored setting silently overrides the committed file on
-          every future build — confirmed directly: a site with a stray{" "}
-          <code>Package directory</code> value produced a build log reading{" "}
-          <code>No config file was defined: using default values</code> instead of{" "}
-          <code>Config file: .../netlify.toml</code>, and the deployed function 404'd on every
-          route as a result. Fix once, per site: <strong>Project configuration → Build &amp;
-          deploy → Build settings → Configure</strong>, and clear <strong>Package
-          directory</strong> entirely (leave it blank) — also clear Build command/Publish
-          directory, or set them to match <code>netlify.toml</code> exactly, if either was set:
-          <div className="devora-card" style={{ marginTop: "0.6rem" }}>
-            <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+          configuring.
+          <Callout kind="danger" title="Dashboard settings silently override netlify.toml">
+            <p>
+              Netlify's own dashboard Build settings take precedence over <code>netlify.toml</code>{" "}
+              when both are set. If the site was ever auto-detected before{" "}
+              <code>netlify.toml</code> existed (or a "Package directory" got set at any point),
+              that stored setting silently overrides the committed file on every future build —
+              confirmed directly: a site with a stray <code>Package directory</code> value produced
+              a build log reading{" "}
+              <code>No config file was defined: using default values</code> instead of{" "}
+              <code>Config file: .../netlify.toml</code>, and the deployed function 404'd on every
+              route as a result. Fix once, per site: <strong>Project configuration → Build &amp;
+              deploy → Build settings → Configure</strong>, and clear{" "}
+              <strong>Package directory</strong> entirely (leave it blank) — also clear Build
+              command/Publish directory, or set them to match <code>netlify.toml</code> exactly, if
+              either was set:
+            </p>
+            <pre style={{ margin: "0.6rem 0 0", whiteSpace: "pre-wrap" }}>
 {`Build command:      cd ../.. && node packages/cli/dist/index.js build --app=<name> --adapter=netlify
 Publish directory:   dist/client
 Package directory:   (leave blank)`}
             </pre>
-          </div>
+          </Callout>
         </li>
         <li className="deploy-step">
           Environment variables — same shared/isolated/none rule as Vercel above, under{" "}
@@ -203,7 +207,7 @@ Package directory:   (leave blank)`}
         push through the dashboard integration described above.
       </p>
 
-      <h2>4. Docker</h2>
+      <h2>4. Docker <Tag color="blue">Docker</Tag></h2>
       <p>Each app builds and runs as its own container image, one app per image via a build arg:</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
@@ -223,7 +227,7 @@ docker compose up --build`}
         a separate deployment target with its own adapter, just a way to package and run it.
       </p>
 
-      <h2>5. Self-hosted VPS</h2>
+      <h2>5. Self-hosted VPS <Tag color="purple">VPS</Tag></h2>
       <p>
         For a bare server, build each app you want to run, start them, then generate a reverse
         proxy config from the domains already declared in <code>devora.config.ts</code> — no

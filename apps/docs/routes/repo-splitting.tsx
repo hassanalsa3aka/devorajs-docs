@@ -22,9 +22,8 @@ export default function RepoSplitting() {
       <DocsLayout active="repo-splitting">
       <h1>Repo-splitting (v2)</h1>
       <p>
-        <strong>Not yet in the published <code>^0.1.0</code> package.</strong> This page documents
-        v2's repo-splitting tools ahead of release, the same way this site documents the rest of
-        v2 (see <a href="/backend">Backend (v2)</a>).
+        v2's repo-splitting tools — see <a href="/backend">Backend (v2)</a> for the rest of that
+        release. Available now in <code>@devorajs/cli@^0.2.0</code>.
       </p>
       <p>
         <code>devora split</code>/<code>sync</code>/<code>status</code> let you pull an app or{" "}
