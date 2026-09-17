@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -16,7 +18,8 @@ export async function loader() {
 
 export default function Security() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="security">
       <h1>Security model</h1>
       <p>
         Devora.js treats security as a default, not an opt-in plugin — every app gets a set of
@@ -137,6 +140,7 @@ export default function Security() {
         published and the API surface has real external users, since auditing a moving target
         wastes the audit.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

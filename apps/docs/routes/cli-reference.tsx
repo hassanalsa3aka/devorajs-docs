@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -17,7 +19,8 @@ export async function loader() {
 
 export default function CliReference() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="cli-reference">
       <h1>CLI reference</h1>
       <p>
         Every command below runs as <code>devora &lt;command&gt;</code> — via <code>pnpm exec</code>,{" "}
@@ -121,6 +124,7 @@ export default function CliReference() {
         <code>nginx</code> or <code>caddy</code>; <code>--out &lt;path&gt;</code> sets where the
         file is written instead of the default location.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

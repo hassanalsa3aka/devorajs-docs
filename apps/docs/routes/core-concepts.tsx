@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -16,7 +18,8 @@ export async function loader() {
 
 export default function CoreConcepts() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="core-concepts">
       <h1>Core concepts</h1>
 
       <h2>Multi-app architecture</h2>
@@ -113,6 +116,7 @@ import { updateSettings } from "@devorajs/backend/settings";
         which concrete values to pre-render — one static file per entry returned. See{" "}
         <a href="/backend">Backend (v2)</a> for the full shape.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

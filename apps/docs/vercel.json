@@ -1,5 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && ./node_modules/.bin/devora build --app=docs --adapter=vercel",
+  "buildCommand": "cd ../.. && ./node_modules/.bin/devora build --app=docs --adapter=vercel && ./node_modules/.bin/pagefind --site apps/docs/dist/static --root-selector \".devora-page\" --output-path assets/pagefind && rm -rf apps/docs/dist/client/pagefind && cp -r assets/pagefind apps/docs/dist/client/pagefind",
   "framework": null
 }

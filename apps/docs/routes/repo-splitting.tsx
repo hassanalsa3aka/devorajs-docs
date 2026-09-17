@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -16,7 +18,8 @@ export async function loader() {
 
 export default function RepoSplitting() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="repo-splitting">
       <h1>Repo-splitting (v2)</h1>
       <p>
         <strong>Not yet in the published <code>^0.1.0</code> package.</strong> This page documents
@@ -104,6 +107,7 @@ export default function RepoSplitting() {
         now that repo's own owner's file to review, regardless of which app's contributor wanted
         to use it.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

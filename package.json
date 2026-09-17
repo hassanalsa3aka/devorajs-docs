@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "devora dev",
     "build": "devora build",
+    "postbuild": "pagefind --site apps/docs/dist/static --root-selector \".devora-page\" --output-path assets/pagefind && rm -rf apps/docs/dist/client/pagefind && cp -r assets/pagefind apps/docs/dist/client/pagefind",
     "start": "devora start"
   },
   "workspaces": [
@@ -12,8 +13,11 @@
     "apps/*"
   ],
   "dependencies": {
-    "@devorajs/core": "^0.1.0",
+    "@devorajs/core": "^0.2.2",
     "@devorajs/cli": "^0.1.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
   },
   "engines": {
     "node": ">=20"

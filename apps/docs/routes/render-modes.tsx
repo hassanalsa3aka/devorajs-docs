@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -16,7 +18,8 @@ export async function loader() {
 
 export default function RenderModes() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="render-modes">
       <h1>Render modes</h1>
       <p>
         Every route declares how it renders, explicitly, with a <code>renderMode</code> export. A
@@ -162,6 +165,7 @@ export default function StreamingPage({ data }) {
         <code>clientOnly(() =&gt; import("./Widget"))</code> instead, which renders nothing
         server-side and only resolves in a real browser.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

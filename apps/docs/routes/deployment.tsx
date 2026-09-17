@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -17,7 +19,48 @@ export async function loader() {
 
 export default function Deployment() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="deployment">
+      <style>{`
+        .deploy-steps {
+          list-style: none;
+          counter-reset: deploy-step;
+          margin: 1.1rem 0;
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+        }
+        .deploy-step {
+          counter-increment: deploy-step;
+          position: relative;
+          margin: 0;
+          padding: 1rem 1.15rem 1rem 3rem;
+          background: var(--devora-card);
+          border: 1px solid var(--devora-border);
+          border-radius: var(--devora-radius);
+          line-height: 1.65;
+          color: var(--devora-fg-muted);
+        }
+        .deploy-step::before {
+          content: counter(deploy-step);
+          position: absolute;
+          left: 0.95rem;
+          top: 1rem;
+          width: 1.5rem;
+          height: 1.5rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: white;
+          background: linear-gradient(135deg, var(--devora-accent-from), var(--devora-accent-to));
+        }
+        .deploy-step strong { color: var(--devora-fg); }
+        .deploy-step .devora-card { margin-top: 0.75rem; margin-bottom: 0; }
+      `}</style>
       <h1>Deployment</h1>
       <p>
         A multi-app project doesn't deploy as one unit — each app in{" "}
@@ -50,16 +93,16 @@ git push -u origin main`}
       </p>
 
       <h2>2. Deploying to Vercel</h2>
-      <ol>
-        <li>
+      <ol className="deploy-steps">
+        <li className="deploy-step">
           In the Vercel dashboard: <strong>Add New… → Project</strong>, import the repo you just
           pushed.
         </li>
-        <li>
+        <li className="deploy-step">
           Set <strong>Root Directory</strong> to <code>apps/&lt;name&gt;</code> for the app you're
           deploying.
         </li>
-        <li>
+        <li className="deploy-step">
           Leave <strong>Build and Output Settings</strong> alone — each app already ships a
           committed <code>vercel.json</code> with <code>"framework": null</code> (disables
           Vercel's zero-config Vite detection, which would otherwise run a plain{" "}
@@ -67,7 +110,7 @@ git push -u origin main`}
           <code>devora build --adapter=vercel</code> for that app. Nothing in the dashboard needs
           changing.
         </li>
-        <li>
+        <li className="deploy-step">
           If the app's <code>auth</code> mode (<code>devora.config.ts</code>) is{" "}
           <code>"shared"</code> or <code>"isolated"</code>: under{" "}
           <strong>Settings → Environment Variables</strong>, add{" "}
@@ -76,21 +119,21 @@ git push -u origin main`}
           random value (<code>openssl rand -base64 32</code> works well). An app with{" "}
           <code>auth: "none"</code> needs none of this.
         </li>
-        <li>Deploy. Changing an env var afterward needs a redeploy to take effect.</li>
-        <li>Repeat as a separate Vercel project, once per app.</li>
+        <li className="deploy-step">Deploy. Changing an env var afterward needs a redeploy to take effect.</li>
+        <li className="deploy-step">Repeat as a separate Vercel project, once per app.</li>
       </ol>
 
       <h2>3. Deploying to Netlify</h2>
       <p>Same shape as Vercel, with a few platform-specific gotchas worth knowing up front:</p>
-      <ol>
-        <li>
+      <ol className="deploy-steps">
+        <li className="deploy-step">
           In the Netlify dashboard: <strong>Add new project → Import an existing project</strong>,
           pick the repo.
         </li>
-        <li>
+        <li className="deploy-step">
           Set <strong>Base directory</strong> to <code>apps/&lt;name&gt;</code>.
         </li>
-        <li>
+        <li className="deploy-step">
           Each app ships a committed <code>netlify.toml</code> with the real build command,
           publish directory, and an SSR redirect already set — in principle nothing else needs
           configuring. In practice, <strong>Netlify's own dashboard Build settings take
@@ -113,17 +156,17 @@ Package directory:   (leave blank)`}
             </pre>
           </div>
         </li>
-        <li>
+        <li className="deploy-step">
           Environment variables — same shared/isolated/none rule as Vercel above, under{" "}
           <strong>Environment variables</strong> in this site's own settings.
         </li>
-        <li>
+        <li className="deploy-step">
           Deploy, then check the build log. It should read{" "}
           <code>build.command from netlify.toml</code>, not{" "}
           <code>Build command from Netlify app</code> — the latter means the dashboard override
           from step 3 is still active.
         </li>
-        <li>
+        <li className="deploy-step">
           If the site builds and deploys but the live URL returns a runtime error rather than your
           page, check <strong>Cloud compute → Functions → ssr</strong> for the actual error (the
           browser only ever shows a generic 500). Netlify's function packager only bundles what it
@@ -150,7 +193,7 @@ Package directory:   (leave blank)`}
           anything the function reads from disk at runtime, rather than statically imports, has to
           be named in that list explicitly, or it silently never reaches the deployed function.
         </li>
-        <li>Repeat as a separate Netlify site, once per app.</li>
+        <li className="deploy-step">Repeat as a separate Netlify site, once per app.</li>
       </ol>
       <p>
         For both platforms, <code>devora deploy --adapter=vercel|netlify</code> (see the{" "}
@@ -202,6 +245,7 @@ devora generate:proxy --target=nginx  # or --target=caddy
         <code>devora start</code> running across reboots/crashes, a systemd unit template is
         available as a starting point to adapt to your own host, rather than a drop-in guarantee.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

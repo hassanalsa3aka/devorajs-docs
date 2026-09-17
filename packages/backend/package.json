@@ -7,6 +7,6 @@
     "./db": "./db/index.ts"
   },
   "dependencies": {
-    "@devorajs/core": "^0.1.0"
+    "@devorajs/core": "^0.2.2"
   }
 }

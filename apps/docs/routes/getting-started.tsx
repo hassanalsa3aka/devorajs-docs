@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -16,7 +18,8 @@ export async function loader() {
 
 export default function GettingStarted() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="getting-started">
       <h1>Getting started</h1>
       <p>
         The fastest way to a working project is the <code>create-devora</code> installer. It works
@@ -100,6 +103,7 @@ export default function GettingStarted() {
         <code>devora dev --app=dashboard</code> to run just one. See the{" "}
         <a href="/cli-reference">CLI reference</a> for every command.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

@@ -1,5 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
+import { SiteFooter } from "../site-footer.js";
+import { DocsLayout } from "../docs-layout.js";
 
 export const renderMode = "ssg";
 
@@ -17,7 +19,8 @@ export async function loader() {
 
 export default function Backend() {
   return (
-    <PageShell nav={DOCS_NAV}>
+    <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
+      <DocsLayout active="backend">
       <h1>Backend (v2)</h1>
       <p>
         <strong>Not yet in the published <code>^0.1.0</code> package.</strong> This page documents
@@ -183,6 +186,7 @@ export async function getStaticParams() {
         meantime. Dev-only by construction — nothing to dispose in a production process that never
         reloads modules.
       </p>
+      </DocsLayout>
     </PageShell>
   );
 }

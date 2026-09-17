@@ -1,5 +1,5 @@
 [build]
-  command = "cd ../.. && ./node_modules/.bin/devora build --app=docs --adapter=netlify"
+  command = "cd ../.. && ./node_modules/.bin/devora build --app=docs --adapter=netlify && ./node_modules/.bin/pagefind --site apps/docs/dist/static --root-selector \".devora-page\" --output-path assets/pagefind && rm -rf apps/docs/dist/client/pagefind && cp -r assets/pagefind apps/docs/dist/client/pagefind"
   publish = "dist/client"
   functions = "netlify/functions"
 
