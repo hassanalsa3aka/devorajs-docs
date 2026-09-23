@@ -14,6 +14,7 @@ const DOCS_GROUPS = [
     items: [
       { id: "render-modes", label: "Render modes", href: "/render-modes" },
       { id: "backend", label: "Backend (v2)", href: "/backend" },
+      { id: "backend-capabilities", label: "Backend capabilities", href: "/backend-capabilities" },
       { id: "repo-splitting", label: "Repo-splitting (v2)", href: "/repo-splitting" },
     ],
   },

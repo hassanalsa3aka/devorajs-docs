@@ -149,6 +149,12 @@ export const handler = withMiddleware(rawHandler, logging, requireAuthMw);`}
         </p>
       </Callout>
 
+      <p>
+        For worked examples of the middleware people reach for first — validation, logging, CORS,
+        rate limiting, and file uploads — see{" "}
+        <a href="/backend-capabilities">Adding common backend capabilities</a>.
+      </p>
+
       <h2>Backend-only apps</h2>
       <p>
         An app that's pure API needs no pages, no client build, no <code>PageShell</code>/theme
