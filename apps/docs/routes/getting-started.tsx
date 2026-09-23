@@ -33,21 +33,31 @@ export default function GettingStarted() {
       <p>Yarn and pnpm both work the same way: <code>yarn create devora</code> or <code>pnpm create devora</code>.</p>
 
       <h2>What it asks</h2>
-      <p>Run with no flags in a real terminal, it prompts for three things in order:</p>
+      <p>Run with no flags in a real terminal, it prompts for four things in order:</p>
       <p>
         <strong>1. Project name.</strong> Defaults to <code>my-devora-app</code>. This becomes the
         directory the CLI creates — it refuses to run if that directory already exists.
       </p>
       <p>
-        <strong>2. App names (comma-separated).</strong> Defaults to{" "}
-        <code>marketing,dashboard,admin</code>. Each name becomes one app under{" "}
+        <strong>2. What do you need?</strong> <Tag color="blue">full-stack</Tag> (the default)
+        generates page apps plus one shared backend, <code>packages/backend</code>.{" "}
+        <Tag color="purple">frontend</Tag> generates page apps only, with no{" "}
+        <code>packages/backend</code> at all. <Tag color="emerald">backend</Tag> generates API-only
+        apps — an <code>api/</code> folder of routes, no pages and no React — plus the shared
+        backend. Either way a project gets at most one shared backend; logic only one app needs can
+        live inside that app instead (see{" "}
+        <a href="/core-concepts#shared-backend">The shared backend pattern</a>).
+      </p>
+      <p>
+        <strong>3. App names (comma-separated).</strong> Defaults to{" "}
+        <code>marketing,dashboard,admin</code> (<code>api</code> for a backend-only project). Each name becomes one app under{" "}
         <code>apps/</code> — this is where multi-app is decided. A single-app project just answers
         with one name; a project with a public site, a logged-in product, and an internal panel
         answers with three. You can add or remove apps later with <code>devora add</code>/
         <code>devora remove</code>, so this choice isn't permanent.
       </p>
       <p>
-        <strong>3. Auth mode, once per app.</strong> For each app name, it asks: "Does &lt;app&gt;
+        <strong>4. Auth mode, once per app.</strong> For each app name, it asks: "Does &lt;app&gt;
         need auth/sessions? [shared/isolated/none] (default: shared)". This is the per-app choice
         described in <a href="/core-concepts">Core concepts</a> — <Tag color="blue">shared</Tag>{" "}
         puts the app on the project's common login/session, <Tag color="purple">isolated</Tag>{" "}
@@ -60,12 +70,14 @@ export default function GettingStarted() {
       </p>
       <p>
         Every prompt has a non-interactive fallback: running in a script or CI (no real TTY) skips
-        straight to the defaults above, and <code>--apps=</code>/<code>--auth=name:mode,...</code>{" "}
-        flags let you skip the prompts entirely while scripting a scaffold.
+        straight to the defaults above, and{" "}
+        <code>--scope=fullstack|frontend|backend</code>, <code>--apps=</code> and{" "}
+        <code>--auth=name:mode,...</code> flags let you skip the prompts entirely while scripting a
+        scaffold.
       </p>
 
       <h2>Resulting project structure</h2>
-      <p>For the default answers (project name, three apps, all shared auth), you get:</p>
+      <p>For the default answers (full-stack, three apps, all shared auth), you get:</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`my-devora-app/
@@ -96,6 +108,27 @@ export default function GettingStarted() {
         <code>tsconfig.base.json</code>, <code>pnpm-workspace.yaml</code>,{" "}
         <code>.gitignore</code>, <code>.npmrc</code>) sit at the project root too.
       </p>
+      <p>
+        A <strong>frontend</strong> project is the same minus <code>packages/backend</code>. A{" "}
+        <strong>backend</strong> project has <code>packages/backend</code> and API-only apps
+        instead:
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`my-devora-app/
+├── devora.config.ts
+├── package.json
+├── packages/
+│   └── backend/
+│       └── db/index.ts
+└── apps/
+    └── api/
+        ├── api/            # health.ts, plus session.ts (token login/logout) and me.ts for an app with auth
+        ├── app.config.ts   # backendOnly: true
+        ├── vite.config.ts
+        └── vercel.json, netlify.toml`}
+        </pre>
+      </div>
 
       <h2>Next steps: start the dev server</h2>
       <p>

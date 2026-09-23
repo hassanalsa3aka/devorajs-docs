@@ -13,8 +13,8 @@
     "apps/*"
   ],
   "dependencies": {
-    "@devorajs/core": "^0.3.0",
-    "@devorajs/cli": "^0.2.0"
+    "@devorajs/core": "^0.3.1",
+    "@devorajs/cli": "^0.3.1"
   },
   "devDependencies": {
     "pagefind": "^1.5.2"
