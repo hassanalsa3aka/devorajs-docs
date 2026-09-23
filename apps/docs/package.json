@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@devorajs/core": "^0.2.2",
+    "@devorajs/core": "^0.3.0",
     "@devorajs/backend": "*",
     "react": "^18.3.0",
     "react-dom": "^18.3.0",

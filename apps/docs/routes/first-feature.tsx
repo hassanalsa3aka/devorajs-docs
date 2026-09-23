@@ -149,7 +149,7 @@ export async function action(formData, ctx) {
         From here: swap the array for a real DB client, move validation into{" "}
         <code>addMessage</code> itself, or expose the same data over{" "}
         <code>apiRoute()</code> for a mobile client — see{" "}
-        <a href="/backend">Backend (v2)</a> and the <a href="/api-reference">API reference</a>.
+        <a href="/backend">Backend</a> and the <a href="/api-reference">API reference</a>.
       </p>
       </DocsLayout>
     </PageShell>

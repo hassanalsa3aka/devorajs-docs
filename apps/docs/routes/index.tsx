@@ -63,7 +63,7 @@ const FEATURES = [
   },
   {
     title: "Security by default",
-    body: "CSP, HSTS, and signed sessions are on for every app out of the box — you opt out, not in.",
+    body: "CSP and HSTS headers, CSRF checks, and revocable server-side sessions (opaque IDs, never your data in a cookie) are on for every app out of the box — you opt out, not in.",
     icon: <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />,
   },
   {
@@ -78,8 +78,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "Four render modes",
-    body: "ssr, ssg, csr, and isr, chosen per route — this page itself is ssg, pre-rendered once at build time.",
+    title: "Five render modes",
+    body: "ssr, ssg, csr, isr, and streaming, chosen per route — this page itself is ssg, pre-rendered once at build time.",
     icon: (
       <>
         <rect x="3.5" y="4" width="17" height="16" rx="2" />
@@ -739,7 +739,7 @@ export default function Home({ data }) {
           <ul>
             <li>
               <code>renderMode</code> declared per route: <code>ssr</code>/<code>ssg</code>/
-              <code>csr</code>/<code>isr</code>
+              <code>csr</code>/<code>isr</code>/<code>streaming</code>
             </li>
             <li>
               <code>loader</code>/<code>action</code> exported explicitly for data and mutations
@@ -883,11 +883,11 @@ export default function Home({ data }) {
           <span>ssr/ssg/csr/isr/streaming</span>
         </a>
         <a className="home-next-link reveal" href="/backend">
-          Backend (v2)
+          Backend
           <span>Modules, API routes, middleware</span>
         </a>
         <a className="home-next-link reveal" href="/repo-splitting">
-          Repo-splitting (v2)
+          Repo-splitting
           <span>Split an app into its own repo</span>
         </a>
         <a className="home-next-link reveal" href="/cli-reference">

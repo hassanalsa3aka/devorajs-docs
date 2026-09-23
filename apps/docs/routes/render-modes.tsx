@@ -117,9 +117,9 @@ export default function IsrPage({ data }) {
         in a serverless deployment.
       </p>
 
-      <h2><Tag color="rose">streaming</Tag> Chunked SSR (v2)</h2>
+      <h2><Tag color="rose">streaming</Tag> Chunked SSR</h2>
       <p>
-        See <a href="/backend">Backend (v2)</a> for the rest of that release. The page shell sends
+        Available since <code>@devorajs/core@0.2.2</code>. The page shell sends
         immediately; an island's real content patches in once its import resolves, instead of the
         whole response waiting on it. Needed a real, separate rendering strategy under the hood —
         the two-pass model every other render mode uses (render once, collect any unresolved

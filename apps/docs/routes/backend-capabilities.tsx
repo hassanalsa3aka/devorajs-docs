@@ -32,7 +32,7 @@ export default function BackendCapabilities() {
         providers. Every real project reaches for these early, though, so this page gives one
         recommended, working pattern for each. None of it is framework code: it's ordinary
         middleware and helpers you own, built on the primitives in{" "}
-        <a href="/backend">Backend (v2)</a> — <code>apiRoute()</code>,{" "}
+        <a href="/backend">Backend</a> — <code>apiRoute()</code>,{" "}
         <code>withMiddleware()</code>, and <code>defineMiddleware()</code>.
       </p>
 
@@ -274,7 +274,7 @@ export const cors = defineMiddleware((next) => async (req, ctx) => {
       <p>
         Prefer the <code>cors</code> npm package? It works through{" "}
         <code>fromExpressMiddleware(cors({"{"} origin: [...] {"}"}))</code> — see{" "}
-        <a href="/backend">Backend (v2)</a>, including its preflight support.
+        <a href="/backend">Backend</a>, including its preflight support.
       </p>
 
       <h2 id="rate-limiting">Rate limiting</h2>

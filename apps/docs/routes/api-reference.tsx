@@ -25,7 +25,7 @@ export default function ApiReference() {
       <p>
         Every public export from <code>@devorajs/core</code>, grouped by what it's for. This is
         the code-level companion to <a href="/core-concepts">Core concepts</a> and{" "}
-        <a href="/backend">Backend (v2)</a> — those pages explain the ideas, this page is what to
+        <a href="/backend">Backend</a> — those pages explain the ideas, this page is what to
         actually import.
       </p>
 
@@ -101,7 +101,7 @@ export default function ApiReference() {
           <tr><td><code>security.hsts</code></td><td><code>boolean</code></td><td>Toggles the HSTS header</td></tr>
           <tr><td><code>security.frameOptions</code></td><td><code>"DENY" | "SAMEORIGIN"</code></td><td>Overrides <code>X-Frame-Options</code></td></tr>
           <tr><td><code>sitemap</code></td><td><code>boolean</code></td><td>Serves <code>/sitemap.xml</code> for this app. Opt-in, default <code>false</code></td></tr>
-          <tr><td><code>backendOnly</code></td><td><code>boolean</code></td><td>Pure-API app — skips the client build and SSR entry entirely. See <a href="/backend">Backend (v2)</a></td></tr>
+          <tr><td><code>backendOnly</code></td><td><code>boolean</code></td><td>Pure-API app — skips the client build and SSR entry entirely. See <a href="/backend">Backend</a></td></tr>
         </tbody>
       </table>
       <p>
@@ -188,7 +188,7 @@ export async function action(formData, ctx) {
 
       <h2>Backend — serverFn, modules &amp; API routes</h2>
       <p>
-        <code>serverFn(fn)</code> — the v1 backend primitive: a plain function reference a route
+        <code>serverFn(fn)</code> — the original backend primitive: a plain function reference a route
         imports and calls directly, never dispatched dynamically by name. <code>clientOnly(loader)</code>{" "}
         guarantees a component never runs server-side (touches <code>window</code> at module
         scope, say).
@@ -205,7 +205,7 @@ export const updateSettings = serverFn(async (input, ctx) => {
       </div>
       <p>
         <code>defineModule(def, setup?)</code> — organizes backend logic into scoped units, see{" "}
-        <a href="/backend">Backend (v2)</a>. A <code>DevoraModule</code> exposes{" "}
+        <a href="/backend">Backend</a>. A <code>DevoraModule</code> exposes{" "}
         <code>.register(child)</code> (mounts a child's routes, namespaced under its name) and{" "}
         <code>.getRoutes()</code> (the flattened table an app's dispatcher reads).
       </p>
@@ -336,7 +336,7 @@ export default function Page() {
         before Vite's dev server reloads the file at <code>fileUrlOrPath</code> (pass{" "}
         <code>import.meta.url</code>). Use it to close a stale native-addon DB connection cleanly
         instead of leaving it to a finalizer. Dev-only — nothing to dispose in a production
-        process that never reloads modules. See <a href="/backend">Backend (v2)</a>.
+        process that never reloads modules. See <a href="/backend">Backend</a>.
       </p>
 
       <h2>ISR revalidation</h2>

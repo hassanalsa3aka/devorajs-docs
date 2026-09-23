@@ -7,7 +7,7 @@ export const renderMode = "ssg";
 
 export function meta() {
   return {
-    title: "Repo-splitting (v2)",
+    title: "Repo-splitting",
     description: "Splitting an app or the shared backend into its own git repo — devora split/sync/status.",
   };
 }
@@ -20,10 +20,10 @@ export default function RepoSplitting() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="repo-splitting">
-      <h1>Repo-splitting (v2)</h1>
+      <h1>Repo-splitting</h1>
       <p>
-        v2's repo-splitting tools — see <a href="/backend">Backend (v2)</a> for the rest of that
-        release. Available now in <code>@devorajs/cli@^0.2.0</code>.
+        Tools for splitting an app (or the shared backend) out into its own repository. Available
+        since <code>@devorajs/cli@0.2.0</code>.
       </p>
       <p>
         <code>devora split</code>/<code>sync</code>/<code>status</code> let you pull an app or{" "}
@@ -97,7 +97,7 @@ export default function RepoSplitting() {
 
       <h2>Ownership rules that matter more once repos are split</h2>
       <p>
-        Two conventions from <a href="/backend">Backend (v2)</a> matter most exactly when
+        Two conventions from <a href="/backend">Backend</a> matter most exactly when
         different people own different split-off pieces: shared backend logic still goes in{" "}
         <code>packages/backend</code> (an app's <code>api/</code> file just imports from{" "}
         <code>@devorajs/backend</code> normally — splitting only changes how that package's source

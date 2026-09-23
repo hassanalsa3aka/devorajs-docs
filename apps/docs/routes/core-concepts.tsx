@@ -70,7 +70,7 @@ export default function CoreConcepts() {
         it's unambiguous from the config file alone which apps have sessions enabled at all.
       </p>
 
-      <h2>The shared backend pattern</h2>
+      <h2 id="shared-backend">The shared backend pattern</h2>
       <p>
         By default, every app calls into one shared backend (<code>packages/backend</code>) for
         server functions and the DB layer — a single source of truth for business logic, callable
@@ -134,7 +134,7 @@ import { updateSettings } from "@devorajs/backend/settings";
       <p>
         <code>ssg</code>/<code>isr</code> on a dynamic route need a <code>getStaticParams()</code>{" "}
         export telling the build step which concrete values to pre-render — one static file per
-        entry returned. See <a href="/backend">Backend (v2)</a> for the full shape.
+        entry returned. See <a href="/backend">Backend</a> for the full shape.
       </p>
       </DocsLayout>
     </PageShell>

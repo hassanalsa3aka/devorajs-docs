@@ -315,11 +315,11 @@ export const handler = apiRoute((req, ctx) => {
         Vercel/Netlify/Docker.
       </p>
 
-      <h2>Hardening pass (v2)</h2>
+      <h2>Security hardening pass</h2>
       <p>
-        Available now in <code>@devorajs/core@^0.2.2</code>. See{" "}
-        <a href="/backend">Backend (v2)</a> for the rest of that release. Once v2's surface
-        (backend modules, API routes, middleware, repo-splitting, streaming) stabilized, it went
+        Available since <code>@devorajs/core@0.2.2</code>. Once the backend surface (backend
+        modules, API routes, middleware, repo-splitting, streaming — see{" "}
+        <a href="/backend">Backend</a>) stabilized, it went
         through a real internal audit — every finding below was independently reproduced (a real
         forged cookie, a real crafted <code>.gitmodules</code> path, a real oversized request
         body) before being fixed, not assumed from a description. Not a substitute for a formal
@@ -365,8 +365,8 @@ export const handler = apiRoute((req, ctx) => {
 
       <h2>What's bring-your-own, and why</h2>
       <p>
-        Devora.js deliberately does not ship an ORM, an auth/identity provider, or file storage in
-        v1. Checking <em>who</em> a request actually comes from — verifying a password, validating
+        Devora.js deliberately does not ship an ORM, an auth/identity provider, or file storage.
+        Checking <em>who</em> a request actually comes from — verifying a password, validating
         a token against an identity provider like Clerk or Lucia — is left to you, plugged into the
         sessions described above via your own DB client (Prisma, Drizzle, or anything else) — and
         so is where session records are stored (the session store is three methods over your own

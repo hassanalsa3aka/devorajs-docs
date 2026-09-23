@@ -116,7 +116,7 @@ export default function CliReference() {
 
       <h2 id="split"><code>devora split &lt;app-name|backend&gt;</code> <Tag color="gray">since 0.2.0</Tag></h2>
       <p>
-        See <a href="/repo-splitting">Repo-splitting (v2)</a> for the full explanation. Converts{" "}
+        See <a href="/repo-splitting">Repo-splitting</a> for the full explanation. Converts{" "}
         <code>apps/&lt;name&gt;</code> (or the literal <code>backend</code>, for{" "}
         <code>packages/backend</code>) into a real git submodule pointing at{" "}
         <code>--repo &lt;url&gt;</code> — an empty remote you create yourself first. Prompts for

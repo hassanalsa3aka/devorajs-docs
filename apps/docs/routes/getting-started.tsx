@@ -51,9 +51,10 @@ export default function GettingStarted() {
         need auth/sessions? [shared/isolated/none] (default: shared)". This is the per-app choice
         described in <a href="/core-concepts">Core concepts</a> — <Tag color="blue">shared</Tag>{" "}
         puts the app on the project's common login/session, <Tag color="purple">isolated</Tag>{" "}
-        gives it its own session cookie and secret (e.g. an admin panel with a different identity
-        provider), and <Tag color="gray">none</Tag> disables the session/cookie/CSRF carrier for
-        that app entirely (e.g. a marketing site with no login anywhere). A marketing-style app
+        gives it its own separate sessions — its own cookie name and optionally its own secret, so
+        a login to one app is never valid in the other (e.g. an admin panel with a different
+        identity provider), and <Tag color="gray">none</Tag> disables sessions and CSRF for that
+        app entirely (e.g. a marketing site with no login anywhere). A marketing-style app
         should answer <code>none</code> — it never generates a login route or expects a session
         secret.
       </p>
@@ -68,41 +69,76 @@ export default function GettingStarted() {
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`my-devora-app/
-├── devora.config.ts       # declares all apps, project-level auth default
+├── devora.config.ts        # declares every app + the project-wide auth default
+├── package.json            # dev / dev:host / build / start scripts
+├── .env.example            # the session secrets production needs
 ├── packages/
-│   ├── core/               # shared logic: types, utils, data client
-│   └── backend/            # the shared backend — server functions + DB client
-│       ├── functions/
-│       └── db/
+│   └── backend/            # the shared backend — server functions + your DB client
+│       └── db/index.ts     # stub: plug your own database in here
 └── apps/
     ├── marketing/
-    │   ├── routes/
+    │   ├── routes/         # index.tsx, plus login/logout/account.tsx for an app with auth
     │   ├── app.config.ts
-    │   └── nav.ts
-    ├── dashboard/
-    │   ├── routes/
-    │   ├── app.config.ts
-    │   └── nav.ts
-    └── admin/
-        ├── routes/
-        ├── app.config.ts
-        └── nav.ts`}
+    │   ├── vite.config.ts
+    │   ├── entry-server.tsx, island-client.tsx, csr-client.tsx
+    │   └── vercel.json, netlify.toml
+    ├── dashboard/          # same layout
+    └── admin/              # same layout`}
         </pre>
       </div>
       <p>
-        Each app scaffolded with <code>shared</code> or <code>isolated</code> auth also gets a
-        <code> login.tsx</code>/<code>logout.tsx</code> route pair and a protected demo route,
-        wired up to the session carrier described in <a href="/security">Security model</a>. An
-        app scaffolded with <code>none</code> skips all of that — no login button, no session
-        dependency.
+        Each app scaffolded with <code>shared</code> or <code>isolated</code> auth also gets a{" "}
+        <code>login.tsx</code>/<code>logout.tsx</code> route pair and a protected demo route (
+        <code>account.tsx</code>), wired up to the sessions described in{" "}
+        <a href="/security#sessions">Security model</a>. An app scaffolded with <code>none</code>{" "}
+        gets only <code>index.tsx</code> — no login routes, no session dependency. The{" "}
+        <code>assets/</code> folder (logo, favicon) and a few config files (
+        <code>tsconfig.base.json</code>, <code>pnpm-workspace.yaml</code>,{" "}
+        <code>.gitignore</code>, <code>.npmrc</code>) sit at the project root too.
       </p>
 
-      <h2>Next steps</h2>
+      <h2>Next steps: start the dev server</h2>
       <p>
-        After scaffolding (or after the installer's own dependency install finishes), run{" "}
-        <code>cd my-devora-app && devora dev</code> to start every app in dev mode, or{" "}
-        <code>devora dev --app=dashboard</code> to run just one. See the{" "}
-        <a href="/cli-reference">CLI reference</a> for every command, or go straight to{" "}
+        From inside the project, after the installer's dependency install has finished (or after
+        you've run <code>npm install</code> yourself):
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`cd my-devora-app
+npm run dev`}
+        </pre>
+      </div>
+      <p>
+        That starts every app in dev mode and prints each one's URL and route table. Ports start
+        at <code>10000</code>, one per app in <code>devora.config.ts</code> order. To run a single
+        app, pass the flag through npm: <code>npm run dev -- --app=dashboard</code>.
+      </p>
+      <p>
+        <strong>Why not just <code>devora dev</code>?</strong> The CLI is installed into the
+        project (<code>node_modules</code>), not onto your system <code>PATH</code> — so a bare{" "}
+        <code>devora</code> command isn't found. That's normal: Next.js, Vite, and most framework
+        CLIs work exactly the same way. It also means every project runs the exact CLI version it
+        pins. Your options:
+      </p>
+      <table>
+        <thead><tr><th>Command</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>npm run dev</code></td>
+            <td><strong>Recommended.</strong> Runs the project's <code>dev</code> script, which calls its own pinned CLI. It's what the installer prints, and it can never pick up the wrong package. Other commands are scripts too: <code>npm run build</code>, <code>npm run start</code>, <code>npm run dev:host</code>.</td>
+          </tr>
+          <tr>
+            <td><code>npx devora dev</code></td>
+            <td>Also runs the project's own CLI, for any command without a script (e.g. <code>npx devora list</code>). <strong>Only inside the project, after <code>npm install</code></strong>: anywhere else, npx looks up the npm package literally named <code>devora</code>, which is an unrelated third-party tool — decline if npx offers to install it.</td>
+          </tr>
+          <tr>
+            <td><code>npm install -g @devorajs/cli</code></td>
+            <td>Makes a bare <code>devora</code> command available everywhere. A convenience tradeoff, not the recommended default: the global copy doesn't follow each project's pinned version, so it can drift out of sync with the CLI a given project was built and tested against.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        See the <a href="/cli-reference">CLI reference</a> for every command, or go straight to{" "}
         <a href="/first-feature">Build your first feature</a> for a complete worked example.
       </p>
       </DocsLayout>

@@ -7,7 +7,7 @@ export const renderMode = "ssg";
 
 export function meta() {
   return {
-    title: "Backend (v2)",
+    title: "Backend",
     description:
       "Explicit domain modules, generic API routes, native + Express/Fastify middleware, and backend-only apps.",
   };
@@ -21,11 +21,11 @@ export default function Backend() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="backend">
-      <h1>Backend (v2)</h1>
+      <h1>Backend</h1>
       <p>
-        v2's real backend expansion — domain modules, API routes, middleware, dynamic-route static
-        params, and a dev reload-safety hook. Available now in{" "}
-        <code>@devorajs/core@^0.2.2</code> and <code>@devorajs/cli@^0.2.0</code>.
+        Domain modules, API routes, middleware, dynamic-route static params, and a dev
+        reload-safety hook. Available since <code>@devorajs/core@0.2.2</code> and{" "}
+        <code>@devorajs/cli@0.2.0</code>.
       </p>
 
       <h2>Explicit domain modules</h2>
@@ -191,7 +191,7 @@ export async function getStaticParams() {
         The framework's own dev server can crash a native-addon DB driver (<code>better-sqlite3</code>
         , confirmed) if a stale connection is abandoned across a Vite SSR module reload — the fix is
         a <code>globalThis</code> singleton, documented in <code>packages/backend/DATABASE.md</code>.
-        v2 adds a real, generic complement: <code>registerDisposable(import.meta.url, dispose)</code>{" "}
+        Devora.js also provides a real, generic complement: <code>registerDisposable(import.meta.url, dispose)</code>{" "}
         runs <code>dispose</code> right before Vite reloads that file, via a real Vite plugin hook
         (<code>handleHotUpdate</code>) — confirmed against a real dev server, not assumed. Use it to
         close the old connection cleanly instead of leaving it to a native finalizer; the{" "}
