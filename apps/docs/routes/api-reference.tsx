@@ -107,9 +107,13 @@ export default function ApiReference() {
       <p>
         <code>defineProject(config)</code> — the project-root <code>devora.config.ts</code>'s
         default export: <code>{`{ apps: AppConfig[], shared: SharedConfig }`}</code>. Each{" "}
-        <code>AppConfig</code> is <code>{`{ name, dir, domain, auth? }`}</code>;{" "}
-        <code>SharedConfig</code> is <code>{`{ core, backend, auth }`}</code> (the project-wide
-        default <code>auth</code>, overridable per app). <code>AuthMode</code> is{" "}
+        <code>AppConfig</code> is <code>{`{ name, dir, domain, auth?, devPort? }`}</code>;{" "}
+        <code>SharedConfig</code> is <code>{`{ core, backend, auth, sessions? }`}</code> (the
+        project-wide default <code>auth</code>, overridable per app).{" "}
+        <code>sessions</code> is <code>{`{ store?, activeSeconds?, idleSeconds? }`}</code> — where
+        session records live (a module path or <code>"memory"</code>) and how long they last;
+        required in production for any app with login, see{" "}
+        <a href="/security#sessions">Security</a>. <code>AuthMode</code> is{" "}
         <Tag color="blue">shared</Tag> <Tag color="purple">isolated</Tag>{" "}
         <Tag color="gray">none</Tag> — see <a href="/core-concepts">Core concepts</a>.{" "}
         <code>RenderMode</code> is <code>"ssr" | "ssg" | "csr" | "isr" | "streaming"</code> — see{" "}
@@ -134,23 +138,29 @@ export default function ApiReference() {
       <h2>The request context (<code>ctx</code>)</h2>
       <p>
         Passed to every <code>loader</code>, <code>action</code>, <code>serverFn</code>, and API
-        route handler. The session system is a <em>carrier</em>, not an identity provider — see{" "}
-        <a href="/security">Security model</a> for what that means.
+        route handler. Sessions are opaque, server-side, and revocable, reached by an{" "}
+        <code>HttpOnly</code> cookie or an <code>Authorization: Bearer</code> header through one
+        lookup — see <a href="/security#sessions">Security model</a>. Checking <em>who</em>{" "}
+        someone is stays your code's job.
       </p>
       <table>
         <thead><tr><th>Member</th><th>Signature</th><th>Does</th></tr></thead>
         <tbody>
           <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route</td></tr>
-          <tr><td><code>session</code></td><td><code>unknown | undefined</code></td><td>The current session data, if any</td></tr>
-          <tr><td><code>requireAuth()</code></td><td><code>() =&gt; void</code></td><td>Throws if there's no valid session</td></tr>
-          <tr><td><code>setSession(data)</code></td><td><code>(data: unknown) =&gt; void</code></td><td>Signs and carries <code>data</code> in a cookie for this response</td></tr>
-          <tr><td><code>clearSession()</code></td><td><code>() =&gt; void</code></td><td>Logs out</td></tr>
-          <tr><td><code>verifyCsrf(submitted)</code></td><td><code>(FormData | string) =&gt; void</code></td><td>Throws if the token doesn't match this browser's cookie — form posts pass <code>FormData</code>, a same-origin API call passes the header value as a plain string</td></tr>
+          <tr><td><code>session</code></td><td><code>unknown | undefined</code></td><td>The current session's data, if any — from the cookie or a Bearer token alike</td></tr>
+          <tr><td><code>sessionTransport</code></td><td><code>"cookie" | "bearer" | undefined</code></td><td>Which transport authenticated this request</td></tr>
+          <tr><td><code>requireAuth()</code></td><td><code>() =&gt; void</code></td><td>Throws a <code>401</code> <code>HttpError</code> if there's no valid session on either transport</td></tr>
+          <tr><td><code>setSession(data, options?)</code></td><td><code>(data: unknown, {`{ transport?: "cookie" | "bearer" }`}?) =&gt; Promise&lt;string&gt;</code></td><td>Starts a new server-side session holding <code>data</code> and resolves to its ID. <code>"cookie"</code> (the default for a request that isn't already Bearer-authenticated) sets the session cookie; <code>"bearer"</code> sets none — return the ID to the client. Always issues a fresh ID, revoking any session the request already had</td></tr>
+          <tr><td><code>revokeSession(sessionId?)</code></td><td><code>(sessionId?: string) =&gt; Promise&lt;void&gt;</code></td><td>Deletes the current session server-side (and clears its cookie) — dead on both transports immediately. Pass another session's ID to revoke that one instead</td></tr>
+          <tr><td><code>clearSession()</code></td><td><code>() =&gt; Promise&lt;void&gt;</code></td><td>Alias for <code>revokeSession()</code> with no argument</td></tr>
+          <tr><td><code>verifyCsrf(submitted)</code></td><td><code>(FormData | string) =&gt; void</code></td><td>Throws a <code>403</code> <code>HttpError</code> if the token doesn't match this browser's CSRF cookie — form posts pass <code>FormData</code>, a same-origin API call passes the header value as a plain string. Passes without a token for a Bearer-authenticated request</td></tr>
         </tbody>
       </table>
       <p>
-        On an app with <code>auth: "none"</code>, all four session methods above throw a clear
-        error instead of silently no-opping if called — see{" "}
+        The framework waits for <code>setSession</code>/<code>revokeSession</code>'s store write
+        before sending the response even if you don't <code>await</code> it — but awaiting is
+        clearer, and required if you need the ID. On an app with <code>auth: "none"</code>, all
+        five session methods above throw a clear error instead of silently no-opping if called — see{" "}
         <a href="/core-concepts">Core concepts</a>.
       </p>
 
@@ -161,7 +171,9 @@ export default function ApiReference() {
 
 export async function action(formData, ctx) {
   ctx${""}.verifyCsrf(formData);
-  ctx${""}.setSession({ userId: "..." });
+  const username = String(formData.get("username") ?? "");
+  // Check the password against your own database here, before this line.
+  await ctx${""}.setSession({ username }); // sets the HttpOnly session cookie
   return redirect("/dashboard"); // sends a real redirect, not a 200 re-render
 }`}
         </pre>
@@ -203,6 +215,43 @@ export const updateSettings = serverFn(async (input, ctx) => {
         <code>methods</code> array alongside <code>handler</code> to reject unlisted HTTP methods
         with a real <code>405</code> before the handler runs.
       </p>
+      <p>
+        <strong>API routes always answer in JSON</strong> <Tag color="gray">since 0.3.0</Tag>.{" "}
+        <code>apiRoute()</code> wraps your handler (before 0.3.0 it returned it unchanged): an
+        uncaught error becomes a <code>{`{ "message": "..." }`}</code> JSON response instead of
+        the dev server's HTML error page. Throw <code>new HttpError(status, message)</code> for a
+        deliberate failure — its status and message are sent as-is. Any other error with a numeric{" "}
+        <code>status</code> (or <code>statusCode</code>) from 400–599 is treated the same way, so an
+        existing error class of your own keeps working. Anything else is a <code>500</code>; its
+        real message is shown in dev and replaced with <code>"Internal Server Error"</code> in
+        production (the error is logged server-side either way). The dispatcher applies the same
+        rule around every <code>api/**</code> request, so a handler exported without{" "}
+        <code>apiRoute()</code>, or middleware wrapped outside it, doesn't produce HTML either.
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`// apps/web/api/orders/[id].ts
+import { apiRoute, HttpError } from "@devorajs/core";
+
+const orders = new Map([
+  ["1", { id: "1", total: 42 }],
+  ["2", { id: "2", total: 5000 }],
+]);
+
+export const methods = ["GET"];
+export const handler = apiRoute((req) => {
+  const order = orders.get(req.params.id!);
+  if (!order) throw new HttpError(404, "Order not found"); // → 404 {"message":"Order not found"}
+  if (order.total > 1000) throw new Error("fraud check unavailable"); // → 500, message hidden in production
+  return { status: 200, headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) };
+});`}
+        </pre>
+      </div>
+      <p>
+        A request under <code>/api</code> that matches no route file — including bare{" "}
+        <code>/api</code> — gets a JSON <code>404</code>, <code>{`{ "message": "Not found" }`}</code>,
+        never an HTML page. Page routes are unaffected: their errors and 404s stay HTML.
+      </p>
       <table>
         <thead><tr><th>Type</th><th>Shape</th></tr></thead>
         <tbody>
@@ -210,6 +259,26 @@ export const updateSettings = serverFn(async (input, ctx) => {
           <tr><td><code>ApiResponse</code></td><td><code>{`{ status, headers?, body? }`}</code></td></tr>
         </tbody>
       </table>
+
+      <h2>Sessions — the store</h2>
+      <p>
+        <code>defineSessionStore(store)</code> — type helper for the default export of the module{" "}
+        <code>shared.sessions.store</code> points at. A <code>SessionStore</code> is{" "}
+        <code>{`{ get(key), set(key, record), delete(key) }`}</code> (each may be sync or return a
+        promise); a <code>SessionRecord</code> is{" "}
+        <code>{`{ data, activeExpiresAt, expiresAt }`}</code> (epoch milliseconds). The{" "}
+        <code>key</code> is an HMAC of the session ID, never the ID itself.{" "}
+        <code>createMemorySessionStore()</code> returns the in-process store <code>"memory"</code>{" "}
+        uses — handy in tests. <code>getSessionState(record)</code> returns{" "}
+        <code>"active" | "idle" | "dead"</code>. See <a href="/security#sessions">Security</a>{" "}
+        for a working SQLite-backed store.
+      </p>
+      <p>
+        <code>signSession</code>/<code>verifySession</code> are still exported but deprecated —
+        the framework no longer uses them, and a token signed with them can't be revoked. Replace a
+        hand-rolled Bearer scheme built on them with{" "}
+        <code>setSession(data, {`{ transport: "bearer" }`})</code>.
+      </p>
 
       <h2>Middleware</h2>
       <p>
