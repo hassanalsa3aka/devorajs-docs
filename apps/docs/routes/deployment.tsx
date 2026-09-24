@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout, Tag } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/deployment", {
     title: "Deployment",
     description:
-      "Step-by-step: pushing to GitHub, then deploying to Vercel, Netlify, or Docker.",
-  };
+      "Deploy a Devora.js project step by step: push to GitHub, configure the session store, then ship each app to Vercel, Netlify, Docker, or a VPS.",
+  });
 }
 
 export async function loader() {

@@ -1,0 +1,5 @@
+# Everything on the docs site is public and meant to be indexed.
+User-agent: *
+Allow: /
+
+Sitemap: https://devorajs-docs-docs.vercel.app/sitemap.xml

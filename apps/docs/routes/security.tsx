@@ -2,14 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag, Callout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/security", {
     title: "Security model",
-    description: "CSP/HSTS defaults, the session/CSRF system, and what's bring-your-own.",
-  };
+    description:
+      "The Devora.js security model: CSP and HSTS defaults, revocable server-side sessions, CSRF protection, and what stays bring-your-own.",
+  });
 }
 
 export async function loader() {

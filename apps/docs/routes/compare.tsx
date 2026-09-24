@@ -15,15 +15,17 @@ import {
   LOGO_SVELTE,
   LOGO_TURBOREPO,
 } from "../compare-table.js";
+import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/compare", {
     title: "Devora.js vs. other frameworks",
+    fullTitle: "Devora.js vs. Next.js, SvelteKit, Astro, NestJS & more",
     description:
       "An honest comparison with Next.js, React Router, SvelteKit, Astro, Turborepo/Nx, Express, Fastify, and NestJS — adoption numbers, focused feature tables, and where the others are ahead.",
-  };
+  });
 }
 
 export async function loader() {
@@ -645,6 +647,37 @@ export default function Compare() {
           handled natively instead of hand-rolled.
         </div>
       </div>
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Devora.js docs", item: `${SITE_URL}/` },
+              { "@type": "ListItem", position: 2, name: "Compare", item: `${SITE_URL}/compare` },
+            ],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            headline: "Devora.js vs. other frameworks",
+            url: `${SITE_URL}/compare`,
+            image: OG_IMAGE,
+            inLanguage: "en",
+            dateModified: "2026-09-24",
+            about: [
+              { "@type": "SoftwareSourceCode", name: "Devora.js" },
+              { "@type": "SoftwareSourceCode", name: "Next.js" },
+              { "@type": "SoftwareSourceCode", name: "React Router" },
+              { "@type": "SoftwareSourceCode", name: "SvelteKit" },
+              { "@type": "SoftwareSourceCode", name: "Astro" },
+              { "@type": "SoftwareSourceCode", name: "Express" },
+              { "@type": "SoftwareSourceCode", name: "Fastify" },
+              { "@type": "SoftwareSourceCode", name: "NestJS" },
+            ],
+          },
+        ]}
+      />
     </PageShell>
   );
 }

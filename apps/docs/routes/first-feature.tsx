@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/first-feature", {
     title: "Build your first feature",
     description:
       "A hands-on walkthrough: a guestbook route with a loader, a serverFn, a CSRF-protected form action, and requireAuth — the whole request lifecycle in one example.",
-  };
+  });
 }
 
 export async function loader() {

@@ -1,3 +1,5 @@
+import { JsonLd, docsPageJsonLd } from "./seo.js";
+
 const DOCS_GROUPS = [
   {
     label: "Getting started",
@@ -256,6 +258,7 @@ export function DocsLayout({ active, children }) {
           </div>
         ) : null}
         {children}
+        {activeItem ? <JsonLd data={docsPageJsonLd({ path: activeItem.href, label: activeItem.label })} /> : null}
       </div>
     </div>
   );

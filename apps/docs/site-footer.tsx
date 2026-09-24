@@ -3,6 +3,9 @@ const FOOTER_LINKS = [
   { label: "Docs home", href: "/" },
   { label: "GitHub — devora.js", href: "https://github.com/hassanalsa3aka/devora.js" },
   { label: "GitHub — docs", href: "https://github.com/hassanalsa3aka/devorajs-docs" },
+  { label: "Privacy", href: "/privacy" },
+  // Handled by assets/js/analytics.js — reopens the consent banner.
+  { label: "Cookie settings", href: "#cookie-settings" },
 ];
 
 export function SiteFooter() {
@@ -22,6 +25,56 @@ export function SiteFooter() {
         .site-footer-copy a:hover,
         .site-footer-links a:hover {
           text-decoration: underline;
+        }
+
+        /* Consent banner — created by assets/js/analytics.js, only when GA
+           is configured and the visitor hasn't chosen yet. */
+        .consent-banner {
+          position: fixed;
+          left: 1rem;
+          right: 1rem;
+          bottom: 1rem;
+          z-index: 50;
+          max-width: 40rem;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          gap: 1rem 1.25rem;
+          padding: 1rem 1.15rem;
+          background: var(--devora-bg-elevated);
+          border: 1px solid var(--devora-border);
+          border-radius: calc(var(--devora-radius) + 4px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+        }
+        .consent-banner-text {
+          margin: 0;
+          font-size: 0.85rem;
+          line-height: 1.55;
+          color: var(--devora-fg-muted);
+        }
+        .consent-banner-text a { color: var(--devora-link); }
+        .consent-banner-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+        .consent-btn {
+          font: inherit;
+          font-size: 0.85rem;
+          font-weight: 600;
+          padding: 0.5rem 1rem;
+          border-radius: 999px;
+          cursor: pointer;
+          border: 1px solid var(--devora-border);
+          background: transparent;
+          color: var(--devora-fg);
+        }
+        .consent-btn:hover { border-color: var(--devora-accent-from); }
+        .consent-btn-primary {
+          border-color: transparent;
+          color: white;
+          background: linear-gradient(90deg, var(--devora-accent-from), var(--devora-accent-to));
+        }
+        .consent-btn:focus-visible { outline: 2px solid var(--devora-accent-from); outline-offset: 2px; }
+        @media (max-width: 560px) {
+          .consent-banner { flex-direction: column; align-items: stretch; }
+          .consent-banner-actions .consent-btn { flex: 1; }
         }
         .devora-nav a:nth-last-child(2) {
           display: inline-flex;
@@ -232,6 +285,7 @@ export function SiteFooter() {
       </div>
       <script src="/js/search-overlay.js" />
       <script src="/js/theme-toggle.js" />
+      <script src="/js/analytics.js" />
     </>
   );
 }

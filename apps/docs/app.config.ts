@@ -19,6 +19,18 @@ export default defineApp({
     //   - img-src data:: Pagefind's default UI renders its search/clear
     //     icons as inline data: URI SVGs, which default-src's fallback
     //     otherwise blocks (cosmetic-only breakage, but real).
-    csp: "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'",
+    // Plus Google Analytics 4 (assets/js/analytics.js), using exactly the
+    // hosts Google's CSP guide lists for GA4: gtag.js from
+    // googletagmanager.com, measurement hits to google-analytics.com /
+    // analytics.google.com (fetch/sendBeacon → connect-src, pixel fallback
+    // → img-src). Vercel Web Analytics needs nothing extra: its script and
+    // endpoint are same-origin (/_vercel/insights/*), covered by 'self'.
+    csp:
+      "default-src 'self'; " +
+      "script-src 'self' 'wasm-unsafe-eval' https://*.googletagmanager.com; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; " +
+      "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; " +
+      "object-src 'none'; base-uri 'self'",
   },
 });

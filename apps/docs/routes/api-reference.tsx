@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag, Callout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/api-reference", {
     title: "API reference",
     description:
       "Every function, type, and component exported from @devorajs/core — PageShell, defineApp, ctx, serverFn, apiRoute, modules, middleware, and islands.",
-  };
+  });
 }
 
 export async function loader() {

@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/cli-reference", {
     title: "CLI reference",
     description:
-      "Every devora CLI command — dev, build, start, deploy, new, add, remove, list, split, sync, status, generate:proxy.",
-  };
+      "Every Devora.js CLI command — dev, build, start, deploy, new, add, remove, list, split, sync, status, and generate:proxy — and the flags each one takes.",
+  });
 }
 
 export async function loader() {

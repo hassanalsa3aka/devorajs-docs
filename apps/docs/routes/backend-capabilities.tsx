@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/backend-capabilities", {
     title: "Adding common backend capabilities",
     description:
       "Recommended patterns for validation, logging, CORS, rate limiting, and file uploads in a Devora.js project — built from plain middleware and libraries you choose.",
-  };
+  });
 }
 
 export async function loader() {

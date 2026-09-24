@@ -2,7 +2,7 @@ import { defineProject } from "@devorajs/core/config";
 
 export default defineProject({
   apps: [
-    { name: "docs", dir: "apps/docs", domain: "docs.example.com", auth: "none" },
+    { name: "docs", dir: "apps/docs", domain: "devorajs-docs-docs.vercel.app", auth: "none" },
   ],
   shared: {
     core: "packages/core",

@@ -13,15 +13,17 @@ import {
   LOGO_REACT,
   LOGO_TURBOREPO,
 } from "../compare-table.js";
+import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/", {
     title: "Devora.js — security-first, multi-app by default",
+    fullTitle: "Devora.js — security-first, multi-app web framework",
     description:
       "A lightweight, Vite-based web framework whose headline feature is native multi-app support — one project, multiple sites, sharing a core, deployable independently.",
-  };
+  });
 }
 
 function getCoreVersion() {
@@ -833,6 +835,31 @@ export default function Home({ data }) {
           <span>CSP, sessions, CSRF</span>
         </a>
       </div>
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Devora.js docs",
+            url: `${SITE_URL}/`,
+            inLanguage: "en",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareSourceCode",
+            name: "Devora.js",
+            description:
+              "A lightweight, Vite-based, security-first web framework with native multi-app support — one project, multiple sites, sharing a core, deployable independently.",
+            url: `${SITE_URL}/`,
+            image: OG_IMAGE,
+            codeRepository: "https://github.com/hassanalsa3aka/devora.js",
+            programmingLanguage: "TypeScript",
+            runtimePlatform: "Node.js",
+            license: "https://opensource.org/licenses/MIT",
+            ...(version ? { version } : {}),
+          },
+        ]}
+      />
     </PageShell>
   );
 }

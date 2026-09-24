@@ -2,14 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/render-modes", {
     title: "Render modes",
-    description: "ssr, ssg, csr, isr, and streaming, explained with code examples.",
-  };
+    description:
+      "Devora.js render modes — ssr, ssg, csr, isr, and streaming — chosen per route, each explained with code examples.",
+  });
 }
 
 export async function loader() {

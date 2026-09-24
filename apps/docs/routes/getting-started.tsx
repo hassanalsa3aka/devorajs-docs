@@ -2,14 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/getting-started", {
     title: "Getting started",
-    description: "Scaffold a new devora.js project with create-devora and understand what it generates.",
-  };
+    description:
+      "Scaffold a new Devora.js project with create-devora, run it locally, and understand every file and folder it generates.",
+  });
 }
 
 export async function loader() {

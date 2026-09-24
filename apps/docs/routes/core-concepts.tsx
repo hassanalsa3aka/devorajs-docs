@@ -2,14 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/core-concepts", {
     title: "Core concepts",
-    description: "Multi-app architecture, shared/isolated/none auth, the shared backend pattern, and file-based routing.",
-  };
+    description:
+      "Devora.js core concepts: multi-app projects, shared/isolated/none auth modes, the shared backend pattern, and file-based routing.",
+  });
 }
 
 export async function loader() {

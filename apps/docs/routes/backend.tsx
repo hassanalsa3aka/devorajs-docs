@@ -2,15 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/backend", {
     title: "Backend",
     description:
-      "Explicit domain modules, generic API routes, native + Express/Fastify middleware, and backend-only apps.",
-  };
+      "How the Devora.js backend works: explicit domain modules, generic API routes, native plus Express/Fastify middleware, and backend-only apps.",
+  });
 }
 
 export async function loader() {

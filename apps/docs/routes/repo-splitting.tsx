@@ -2,14 +2,16 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout } from "../docs-layout.js";
+import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
 
 export function meta() {
-  return {
+  return pageMeta("/repo-splitting", {
     title: "Repo-splitting",
-    description: "Splitting an app or the shared backend into its own git repo — devora split/sync/status.",
-  };
+    description:
+      "Split a Devora.js app or the shared backend into its own git repo, then keep it in sync with devora split, sync, and status.",
+  });
 }
 
 export async function loader() {
