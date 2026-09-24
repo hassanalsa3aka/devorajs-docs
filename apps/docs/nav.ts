@@ -8,6 +8,7 @@ import type { NavLink } from "@devorajs/core";
 export const DOCS_NAV: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Docs", href: "/getting-started" },
+  { label: "Compare", href: "/compare" },
   { label: "Search", href: "#search-overlay" },
   { label: "Theme", href: "#theme" },
 ];

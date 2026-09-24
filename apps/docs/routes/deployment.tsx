@@ -92,7 +92,67 @@ git push -u origin main`}
         or Netlify.
       </p>
 
-      <h2>2. Deploying to Vercel <Tag color="gray">Vercel</Tag></h2>
+      <h2 id="session-store">2. Configure a session store (apps with login)</h2>
+      <Callout kind="danger" title="A session secret alone is not enough">
+        <p>
+          Since @devorajs/core 0.3.0, a production server for any app with{" "}
+          <code>auth: "shared"</code> or <code>"isolated"</code> refuses to start until{" "}
+          <code>shared.sessions.store</code> is set in <code>devora.config.ts</code> — even with{" "}
+          <code>DEVORA_SESSION_SECRET</code> set. It fails at boot, not on the first login:
+        </p>
+        <pre style={{ margin: "0.6rem 0 0", whiteSpace: "pre-wrap" }}>
+{`Error: [devora] no session store configured. Set shared.sessions.store in devora.config.ts — a path to a module whose default export is a SessionStore backed by your database (...), or "memory" to explicitly accept in-process sessions (single long-lived server only — not serverless).`}
+        </pre>
+      </Callout>
+      <p>
+        <code>devora dev</code> never shows this error: it falls back to an in-memory store
+        instead, so a project can work locally and still fail on its first deploy. Freshly
+        scaffolded projects ship with the setting commented out. Pick a value based on where the
+        app runs:
+      </p>
+      <table>
+        <thead><tr><th>Target</th><th><code>shared.sessions.store</code></th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Vercel, Netlify (serverless)</td>
+            <td>
+              A path to your own store module, backed by a database every function instance can
+              reach (Postgres, Redis, …). <strong>Not <code>"memory"</code></strong>, and not a
+              SQLite file on the function's own disk — each instance would have its own copy, and
+              users would be logged out at random.
+            </td>
+          </tr>
+          <tr>
+            <td>Docker / VPS, one <code>devora start</code> process</td>
+            <td>
+              <code>"memory"</code> works, but every restart or redeploy signs everyone out. Use a
+              store module to keep sessions across restarts or to run more than one instance.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`// devora.config.ts
+shared: {
+  core: "packages/core",
+  backend: "packages/backend",
+  auth: "shared",
+  sessions: { store: "packages/backend/sessionStore.ts" }, // or "memory"
+},`}
+        </pre>
+      </div>
+      <p>
+        The store is three methods (<code>get</code>/<code>set</code>/<code>delete</code>) over your
+        own database — <a href="/security#sessions">Security model → Sessions</a> has a complete
+        working example. It's read at build time and bundled into each app's server output (the
+        Vercel and Netlify functions included), so it's committed code, not a dashboard setting;
+        whatever connection string the store reads (e.g. <code>DATABASE_URL</code>) does need to
+        be set in each platform's environment variables. Apps with <code>auth: "none"</code> skip
+        this step entirely.
+      </p>
+
+      <h2>3. Deploying to Vercel <Tag color="gray">Vercel</Tag></h2>
       <ol className="deploy-steps">
         <li className="deploy-step">
           In the Vercel dashboard: <strong>Add New… → Project</strong>, import the repo you just
@@ -116,14 +176,17 @@ git push -u origin main`}
           <strong>Settings → Environment Variables</strong>, add{" "}
           <code>DEVORA_SESSION_SECRET</code> (shared) or{" "}
           <code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code> (isolated — uppercase app name), a
-          random value (<code>openssl rand -base64 32</code> works well). An app with{" "}
-          <code>auth: "none"</code> needs none of this.
+          random value (<code>openssl rand -base64 32</code> works well). Also add whatever your
+          session store module needs to reach its database — and make sure{" "}
+          <code>shared.sessions.store</code> is set and committed (
+          <a href="#session-store">step 2</a>); without it the function fails on every request. An
+          app with <code>auth: "none"</code> needs none of this.
         </li>
         <li className="deploy-step">Deploy. Changing an env var afterward needs a redeploy to take effect.</li>
         <li className="deploy-step">Repeat as a separate Vercel project, once per app.</li>
       </ol>
 
-      <h2>3. Deploying to Netlify <Tag color="emerald">Netlify</Tag></h2>
+      <h2>4. Deploying to Netlify <Tag color="emerald">Netlify</Tag></h2>
       <p>Same shape as Vercel, with a few platform-specific gotchas worth knowing up front:</p>
       <ol className="deploy-steps">
         <li className="deploy-step">
@@ -154,7 +217,7 @@ git push -u origin main`}
               either was set:
             </p>
             <pre style={{ margin: "0.6rem 0 0", whiteSpace: "pre-wrap" }}>
-{`Build command:      cd ../.. && node packages/cli/dist/index.js build --app=<name> --adapter=netlify
+{`Build command:      cd ../.. && ./node_modules/.bin/devora build --app=<name> --adapter=netlify
 Publish directory:   dist/client
 Package directory:   (leave blank)`}
             </pre>
@@ -162,7 +225,10 @@ Package directory:   (leave blank)`}
         </li>
         <li className="deploy-step">
           Environment variables — same shared/isolated/none rule as Vercel above, under{" "}
-          <strong>Environment variables</strong> in this site's own settings.
+          <strong>Environment variables</strong> in this site's own settings, including your
+          session store's database connection. Same requirement too: a database-backed{" "}
+          <code>shared.sessions.store</code> (<a href="#session-store">step 2</a>), never{" "}
+          <code>"memory"</code> on Netlify's functions.
         </li>
         <li className="deploy-step">
           Deploy, then check the build log. It should read{" "}
@@ -207,14 +273,15 @@ Package directory:   (leave blank)`}
         push through the dashboard integration described above.
       </p>
 
-      <h2>4. Docker <Tag color="blue">Docker</Tag></h2>
+      <h2>5. Docker <Tag color="blue">Docker</Tag></h2>
       <p>Each app builds and runs as its own container image, one app per image via a build arg:</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`docker build --build-arg APP_NAME=marketing -t devora-marketing .
 docker run -p 4173:4173 devora-marketing
 
-# shared/isolated apps need their session secret passed in
+# shared/isolated apps need their session secret passed in, AND
+# shared.sessions.store set in devora.config.ts before the image is built
 docker run -p 4173:4173 -e DEVORA_SESSION_SECRET=... devora-dashboard
 
 # all apps together, via docker compose
@@ -224,10 +291,13 @@ docker compose up --build`}
       </div>
       <p>
         Under the hood this runs the same self-hosted Node adapter described below — Docker isn't
-        a separate deployment target with its own adapter, just a way to package and run it.
+        a separate deployment target with its own adapter, just a way to package and run it. The
+        session store is baked in at build time (<a href="#session-store">step 2</a>):{" "}
+        <code>"memory"</code> is acceptable for a single container, but every container restart
+        signs everyone out, and two replicas won't see each other's sessions.
       </p>
 
-      <h2>5. Self-hosted VPS <Tag color="purple">VPS</Tag></h2>
+      <h2>6. Self-hosted VPS <Tag color="purple">VPS</Tag></h2>
       <p>
         For a bare server, build each app you want to run, start them, then generate a reverse
         proxy config from the domains already declared in <code>devora.config.ts</code> — no
@@ -235,12 +305,21 @@ docker compose up --build`}
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`devora build --app=marketing && devora build --app=dashboard && devora build --app=admin
-devora start                          # serves all built apps, sequential ports
-devora generate:proxy --target=nginx  # or --target=caddy
+{`npm run build                              # builds every app (or: npm run build -- --app=dashboard)
+npm run start                              # serves all built apps, sequential ports from 4173
+npx devora generate:proxy --target=nginx   # or --target=caddy
 # install the generated config for your distro, then reload nginx/caddy`}
         </pre>
       </div>
+      <p>
+        Run these from the project root after <code>npm install</code> — the <code>devora</code>{" "}
+        binary lives in the project's <code>node_modules</code>, not on your <code>PATH</code>.{" "}
+        <code>generate:proxy</code> has no npm script, so it goes through <code>npx</code>, which
+        is only safe inside the project (see{" "}
+        <a href="/getting-started">Getting started</a>). As with Docker, any app with login needs{" "}
+        <code>shared.sessions.store</code> set before building (<a href="#session-store">step
+        2</a>) — <code>npm run start</code> exits with the error above otherwise.
+      </p>
       <p>
         The generated nginx config listens on plain HTTP only — issuing a real TLS certificate
         needs a real, DNS-resolving domain, so the documented next step there is{" "}

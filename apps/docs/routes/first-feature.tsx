@@ -138,7 +138,7 @@ export async function action(formData, ctx) {
 
       <h2>4. Run it</h2>
       <p>
-        <code>devora dev</code>, then log in (a <code>shared</code>/<code>isolated</code>-auth
+        <code>npm run dev</code>, then log in (a <code>shared</code>/<code>isolated</code>-auth
         scaffold already generated a <code>login.tsx</code> route) and visit{" "}
         <code>/guestbook</code>. Submitting without logging in first throws from{" "}
         <code>requireAuth()</code>; submitting with a stale/missing CSRF field throws from{" "}

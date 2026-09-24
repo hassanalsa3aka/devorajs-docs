@@ -57,6 +57,40 @@ export default function CliReference() {
         <code>--app &lt;name&gt;</code> to run just one app instead — the common case once a
         project has more than one app and you're only working on one of them.
       </p>
+      <p>
+        <strong>Ports start at 10000</strong>, one per app in <code>devora.config.ts</code> order
+        (10000, 10001, 10002, …). Set <code>devPort</code> on an app's entry in{" "}
+        <code>devora.config.ts</code> to pin a different one. If a port is taken, that app moves to
+        the next free port and the CLI says so, rather than failing. These are dev-only;{" "}
+        <code>devora start</code> uses its own ports (from 4173).
+      </p>
+      <p>
+        <strong>On boot it prints every app's URLs and route table</strong> — page routes and{" "}
+        <code>api/**</code> routes, with each app's auth mode — so you can see what's actually
+        being served without opening <code>routes/</code>:
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`  dashboard  (auth: shared, prod domain: dashboard.example.com)
+    Local:    http://localhost:10001/
+    Network:  use --host to expose
+    API:      http://localhost:10001/api
+    Routes:
+      page /
+      page /account
+      page /login
+      page /logout
+      api  /api/orders/[id]`}
+        </pre>
+      </div>
+      <p>
+        <strong><code>--host</code></strong> (off by default) listens on all network interfaces
+        instead of just <code>localhost</code>, and adds each app's LAN address to that output (
+        <code>Network: http://192.168.x.x:10000/</code>) — for testing on a phone or another device
+        on the same network. It prints a warning when enabled, since anyone on that network can
+        then reach your dev server. Scaffolded projects include it as a script:{" "}
+        <code>npm run dev:host</code>.
+      </p>
 
       <h2 id="build"><code>devora build</code></h2>
       <p>

@@ -40,22 +40,41 @@ export default function CoreConcepts() {
       <div className="devora-card" style={{ borderTopColor: "#3b82f6" }}>
         <p style={{ marginTop: 0 }}>
           <Tag color="blue">shared</Tag> <strong>the default.</strong> All apps set to{" "}
-          <code>shared</code> use one project-wide session cookie, so a user logs in once and that
-          session is valid across marketing, dashboard, and admin alike.
+          <code>shared</code> are one session scope: one secret (<code>DEVORA_SESSION_SECRET</code>)
+          and one server-side session store, so a session created by any of them is accepted by all
+          of them — marketing, dashboard, and admin alike. The client holds only an opaque session
+          ID, and it works the same over either transport: an <code>HttpOnly</code> cookie for
+          browsers, or <code>Authorization: Bearer &lt;id&gt;</code> for mobile and API clients.
+          Revoking it deletes the record from the store, so it stops working everywhere at once.
+        </p>
+        <p style={{ marginBottom: 0 }}>
+          One browser caveat: the cookie is host-only (0.3.x sets no cookie <code>Domain</code>),
+          so browsers only send it back to the host that set it. Apps on the same host — including
+          every app in <code>devora dev</code>, all on <code>localhost</code> — share a browser
+          login. Apps on separate subdomains in production don't yet, even though the server would
+          accept the same session. Bearer clients aren't affected.
         </p>
       </div>
       <div className="devora-card" style={{ borderTopColor: "#a855f7", marginTop: "0.85rem" }}>
         <p style={{ marginTop: 0 }}>
-          <Tag color="purple">isolated</Tag> this app gets its own session cookie name and can be
-          given its own secret (<code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code>). Useful when
-          one app genuinely needs a separate identity provider or session boundary — an admin panel
-          is the typical case.
+          <Tag color="purple">isolated</Tag> this app is its own session scope: its own cookie name
+          and, optionally, its own secret (<code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code>). A
+          session issued by a <code>shared</code> app isn't found here — as a cookie or as a Bearer
+          token — even if the two share a secret and a store. Useful when one app genuinely needs a
+          separate identity provider or session boundary — an admin panel is the typical case.
         </p>
       </div>
+      <p>
+        Both modes keep session records in the store configured at{" "}
+        <code>shared.sessions.store</code> in <code>devora.config.ts</code>. In dev an in-memory
+        store is used if it's unset; in production it's required — see{" "}
+        <a href="/security#sessions">Security model → Sessions</a> and{" "}
+        <a href="/deployment#session-store">Deployment</a>.
+      </p>
       <div className="devora-card" style={{ borderTopColor: "var(--devora-fg-muted)", marginTop: "0.85rem" }}>
         <p style={{ marginTop: 0, marginBottom: 0 }}>
-          <Tag color="gray">none</Tag> disables the session/cookie/CSRF carrier entirely for that
-          app. This isn't the same as inheriting the project default; it's a real third state, set
+          <Tag color="gray">none</Tag> disables sessions entirely for that app — no session
+          cookie, no Bearer lookup, no CSRF, and no session secret or store required. This isn't the same as inheriting the project default; it's a real third state, set
           explicitly. It exists because an app with no login route anywhere (a marketing site)
           shouldn't need to configure a session secret it will never use. Calling a session method
           (<code>setSession()</code>, <code>requireAuth()</code>, etc., on the request context)
