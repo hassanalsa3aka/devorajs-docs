@@ -834,6 +834,15 @@ export default function Home({ data }) {
           Security model
           <span>CSP, sessions, CSRF</span>
         </a>
+        <a
+          className="home-next-link reveal"
+          href="https://discord.gg/wYFYmFxdS8"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Community
+          <span>Join on Discord — questions, feedback, contributors</span>
+        </a>
       </div>
       <JsonLd
         data={[
