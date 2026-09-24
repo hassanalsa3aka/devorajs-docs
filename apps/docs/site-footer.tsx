@@ -3,6 +3,8 @@ const FOOTER_LINKS = [
   { label: "Docs home", href: "/" },
   { label: "GitHub — devora.js", href: "https://github.com/hassanalsa3aka/devora.js" },
   { label: "GitHub — docs", href: "https://github.com/hassanalsa3aka/devorajs-docs" },
+  { label: "Discord — community", href: "https://discord.gg/wYFYmFxdS8" },
+  { label: "X — updates", href: "https://x.com/hassansayed2002" },
   { label: "Privacy", href: "/privacy" },
   // Handled by assets/js/analytics.js — reopens the consent banner.
   { label: "Cookie settings", href: "#cookie-settings" },
