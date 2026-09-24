@@ -26,7 +26,7 @@
  */
 (function () {
   // Paste the Measurement ID from GA → Admin → Data streams → your web stream.
-  var GA_ID = "G-XXXXXXXXXX";
+  var GA_ID = "G-KEHQV89XCM";
   var PRODUCTION_HOST = "devorajs-docs-docs.vercel.app";
   var CONSENT_KEY = "devora-analytics-consent"; // "granted" | "denied"
   var DEBUG_KEY = "devora-analytics-debug";
