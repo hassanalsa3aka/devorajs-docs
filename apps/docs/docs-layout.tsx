@@ -120,6 +120,7 @@ export function DocsLayout({ active, children }) {
             border-radius: 999px;
             padding: 0.3rem 0.7rem;
           }
+          .docs-sidebar-link.active { border-color: var(--devora-accent-from); }
         }
 
         /* Eyebrow — colored category label above each page's h1 */
@@ -208,7 +209,14 @@ export function DocsLayout({ active, children }) {
         }
 
         /* Tables */
-        .docs-content table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: 0.88rem; }
+        /* Wide tables scroll inside their own box instead of pushing the
+           whole page sideways on narrow screens. */
+        .docs-table-wrap {
+          margin: 1.25rem 0;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+        .docs-content table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
         .docs-content th {
           text-align: left;
           font-size: 0.7rem;
@@ -228,7 +236,11 @@ export function DocsLayout({ active, children }) {
         }
         .docs-content th:first-child, .docs-content td:first-child { padding-left: 0; }
         .docs-content tr:last-child td { border-bottom: none; }
-        .docs-content td code { color: var(--devora-fg); white-space: nowrap; }
+        .docs-content td code { color: var(--devora-fg); }
+        /* Long identifiers in running text (env var names, file paths) break
+           rather than overflow on phones. Table cells are left alone — their
+           wrap box scrolls instead. */
+        .docs-content :is(p, li, h2, h3, h4) code { overflow-wrap: anywhere; }
       `}</style>
       <nav className="docs-sidebar" aria-label="Docs">
         {DOCS_GROUPS.map((group) => (

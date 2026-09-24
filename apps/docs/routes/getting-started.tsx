@@ -155,23 +155,25 @@ npm run dev`}
         CLIs work exactly the same way. It also means every project runs the exact CLI version it
         pins. Your options:
       </p>
-      <table>
-        <thead><tr><th>Command</th><th>Notes</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><code>npm run dev</code></td>
-            <td><strong>Recommended.</strong> Runs the project's <code>dev</code> script, which calls its own pinned CLI. It's what the installer prints, and it can never pick up the wrong package. Other commands are scripts too: <code>npm run build</code>, <code>npm run start</code>, <code>npm run dev:host</code>.</td>
-          </tr>
-          <tr>
-            <td><code>npx devora dev</code></td>
-            <td>Also runs the project's own CLI, for any command without a script (e.g. <code>npx devora list</code>). <strong>Only inside the project, after <code>npm install</code></strong>: anywhere else, npx looks up the npm package literally named <code>devora</code>, which is an unrelated third-party tool — decline if npx offers to install it.</td>
-          </tr>
-          <tr>
-            <td><code>npm install -g @devorajs/cli</code></td>
-            <td>Makes a bare <code>devora</code> command available everywhere. A convenience tradeoff, not the recommended default: the global copy doesn't follow each project's pinned version, so it can drift out of sync with the CLI a given project was built and tested against.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Command</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>npm run dev</code></td>
+              <td><strong>Recommended.</strong> Runs the project's <code>dev</code> script, which calls its own pinned CLI. It's what the installer prints, and it can never pick up the wrong package. Other commands are scripts too: <code>npm run build</code>, <code>npm run start</code>, <code>npm run dev:host</code>.</td>
+            </tr>
+            <tr>
+              <td><code>npx devora dev</code></td>
+              <td>Also runs the project's own CLI, for any command without a script (e.g. <code>npx devora list</code>). <strong>Only inside the project, after <code>npm install</code></strong>: anywhere else, npx looks up the npm package literally named <code>devora</code>, which is an unrelated third-party tool — decline if npx offers to install it.</td>
+            </tr>
+            <tr>
+              <td><code>npm install -g @devorajs/cli</code></td>
+              <td>Makes a bare <code>devora</code> command available everywhere. A convenience tradeoff, not the recommended default: the global copy doesn't follow each project's pinned version, so it can drift out of sync with the CLI a given project was built and tested against.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         See the <a href="/cli-reference">CLI reference</a> for every command, or go straight to{" "}
         <a href="/first-feature">Build your first feature</a> for a complete worked example.

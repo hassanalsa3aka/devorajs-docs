@@ -287,31 +287,33 @@ export const handler = apiRoute((req, ctx) => {
         falling back to an insecure default or to in-memory sessions. An app with{" "}
         <code>auth: "none"</code> needs neither.
       </p>
-      <table>
-        <thead><tr><th>Setting</th><th>Required when</th><th>Set to</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><code>shared.sessions.store</code> in <code>devora.config.ts</code></td>
-            <td>Any <code>shared</code>/<code>isolated</code>-auth app, in production</td>
-            <td>A path to your store module, or <code>"memory"</code> for a single long-lived server (never serverless)</td>
-          </tr>
-          <tr>
-            <td><code>DEVORA_SESSION_SECRET</code></td>
-            <td>A <code>shared</code>-auth app, in production</td>
-            <td>A random value — <code>openssl rand -base64 32</code> works well. Keys the HMAC that turns session IDs into store keys; rotating it signs everyone out</td>
-          </tr>
-          <tr>
-            <td><code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code></td>
-            <td>An <code>isolated</code>-auth app, in production (uppercase app name)</td>
-            <td>Same — a distinct value per isolated app is recommended but not load-bearing for isolation, since the app's scope is part of the HMAC too</td>
-          </tr>
-          <tr>
-            <td><code>NODE_ENV</code></td>
-            <td>Always, in production</td>
-            <td><code>production</code> — <code>devora build</code>/<code>start</code>/<code>deploy</code> set this themselves; only matters if you invoke the built output another way</td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Setting</th><th>Required when</th><th>Set to</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>shared.sessions.store</code> in <code>devora.config.ts</code></td>
+              <td>Any <code>shared</code>/<code>isolated</code>-auth app, in production</td>
+              <td>A path to your store module, or <code>"memory"</code> for a single long-lived server (never serverless)</td>
+            </tr>
+            <tr>
+              <td><code>DEVORA_SESSION_SECRET</code></td>
+              <td>A <code>shared</code>-auth app, in production</td>
+              <td>A random value — <code>openssl rand -base64 32</code> works well. Keys the HMAC that turns session IDs into store keys; rotating it signs everyone out</td>
+            </tr>
+            <tr>
+              <td><code>DEVORA_SESSION_SECRET_&lt;APPNAME&gt;</code></td>
+              <td>An <code>isolated</code>-auth app, in production (uppercase app name)</td>
+              <td>Same — a distinct value per isolated app is recommended but not load-bearing for isolation, since the app's scope is part of the HMAC too</td>
+            </tr>
+            <tr>
+              <td><code>NODE_ENV</code></td>
+              <td>Always, in production</td>
+              <td><code>production</code> — <code>devora build</code>/<code>start</code>/<code>deploy</code> set this themselves; only matters if you invoke the built output another way</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         See <a href="/deployment">Deployment</a> for where to set environment variables on
         Vercel/Netlify/Docker.

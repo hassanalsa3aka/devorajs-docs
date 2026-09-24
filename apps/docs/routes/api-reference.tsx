@@ -32,28 +32,30 @@ export default function ApiReference() {
 
       <h2>Where things come from</h2>
       <p>Three entry points, not one — importing from the wrong one is the most common mistake:</p>
-      <table>
-        <thead>
-          <tr><th>Import path</th><th>Use it from</th><th>Has</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>@devorajs/core</code></td>
-            <td>Any <code>ssr</code>/<code>ssg</code>/<code>isr</code>/<code>streaming</code> route or server file</td>
-            <td>Everything below except the client-only row</td>
-          </tr>
-          <tr>
-            <td><code>@devorajs/core/client</code></td>
-            <td>A <code>csr</code> route, or any island component</td>
-            <td><code>PageShell</code>, <code>AppHeader</code>, theme — browser-safe subset only</td>
-          </tr>
-          <tr>
-            <td><code>@devorajs/core/config</code></td>
-            <td><code>devora.config.ts</code> / <code>app.config.ts</code></td>
-            <td><code>defineProject</code>, <code>defineApp</code></td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead>
+            <tr><th>Import path</th><th>Use it from</th><th>Has</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>@devorajs/core</code></td>
+              <td>Any <code>ssr</code>/<code>ssg</code>/<code>isr</code>/<code>streaming</code> route or server file</td>
+              <td>Everything below except the client-only row</td>
+            </tr>
+            <tr>
+              <td><code>@devorajs/core/client</code></td>
+              <td>A <code>csr</code> route, or any island component</td>
+              <td><code>PageShell</code>, <code>AppHeader</code>, theme — browser-safe subset only</td>
+            </tr>
+            <tr>
+              <td><code>@devorajs/core/config</code></td>
+              <td><code>devora.config.ts</code> / <code>app.config.ts</code></td>
+              <td><code>defineProject</code>, <code>defineApp</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <Callout kind="warning" title="Why the split exists">
         <p>
           The main entry's export chain reaches real Node builtins (
@@ -94,17 +96,19 @@ export default function ApiReference() {
         <code>defineApp(config)</code> — <code>apps/&lt;name&gt;/app.config.ts</code>'s default
         export. Identity wrapper for type inference; every field is optional.
       </p>
-      <table>
-        <thead><tr><th>Field</th><th>Type</th><th>Does</th></tr></thead>
-        <tbody>
-          <tr><td><code>defaultRenderMode</code></td><td><code>RenderMode</code></td><td>Applies to any route in this app with no <code>renderMode</code> export of its own</td></tr>
-          <tr><td><code>security.csp</code></td><td><code>string</code></td><td>Overrides the default Content-Security-Policy for this app — see <a href="/security">Security</a></td></tr>
-          <tr><td><code>security.hsts</code></td><td><code>boolean</code></td><td>Toggles the HSTS header</td></tr>
-          <tr><td><code>security.frameOptions</code></td><td><code>"DENY" | "SAMEORIGIN"</code></td><td>Overrides <code>X-Frame-Options</code></td></tr>
-          <tr><td><code>sitemap</code></td><td><code>boolean</code></td><td>Serves <code>/sitemap.xml</code> for this app. Opt-in, default <code>false</code></td></tr>
-          <tr><td><code>backendOnly</code></td><td><code>boolean</code></td><td>Pure-API app — skips the client build and SSR entry entirely. See <a href="/backend">Backend</a></td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Field</th><th>Type</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr><td><code>defaultRenderMode</code></td><td><code>RenderMode</code></td><td>Applies to any route in this app with no <code>renderMode</code> export of its own</td></tr>
+            <tr><td><code>security.csp</code></td><td><code>string</code></td><td>Overrides the default Content-Security-Policy for this app — see <a href="/security">Security</a></td></tr>
+            <tr><td><code>security.hsts</code></td><td><code>boolean</code></td><td>Toggles the HSTS header</td></tr>
+            <tr><td><code>security.frameOptions</code></td><td><code>"DENY" | "SAMEORIGIN"</code></td><td>Overrides <code>X-Frame-Options</code></td></tr>
+            <tr><td><code>sitemap</code></td><td><code>boolean</code></td><td>Serves <code>/sitemap.xml</code> for this app. Opt-in, default <code>false</code></td></tr>
+            <tr><td><code>backendOnly</code></td><td><code>boolean</code></td><td>Pure-API app — skips the client build and SSR entry entirely. See <a href="/backend">Backend</a></td></tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         <code>defineProject(config)</code> — the project-root <code>devora.config.ts</code>'s
         default export: <code>{`{ apps: AppConfig[], shared: SharedConfig }`}</code>. Each{" "}
@@ -123,18 +127,20 @@ export default function ApiReference() {
 
       <h2>Route modules</h2>
       <p>What a file under <code>routes/</code> may export — nothing here is required:</p>
-      <table>
-        <thead><tr><th>Export</th><th>Signature</th><th>Does</th></tr></thead>
-        <tbody>
-          <tr><td><code>renderMode</code></td><td><code>RenderMode</code></td><td>How this route renders — see <a href="/render-modes">Render modes</a></td></tr>
-          <tr><td><code>revalidate</code></td><td><code>{`{ seconds: number }`}</code></td><td><code>isr</code> only — how long a render stays fresh</td></tr>
-          <tr><td><code>loader</code></td><td><code>(ctx) =&gt; Promise&lt;Data&gt; | Data</code></td><td>Server-side data for the page</td></tr>
-          <tr><td><code>getStaticParams</code></td><td><code>() =&gt; Promise&lt;Record&lt;string,string&gt;[]&gt;</code></td><td>Required for <code>ssg</code>/<code>isr</code> on a dynamic route — one static file per entry returned</td></tr>
-          <tr><td><code>action</code></td><td><code>(formData, ctx) =&gt; Promise&lt;unknown&gt;</code></td><td>Handles a form POST — may return <code>redirect(to)</code> instead of data</td></tr>
-          <tr><td><code>meta</code></td><td><code>(data?) =&gt; {`{ title?, description? }`}</code></td><td>Page <code>&lt;title&gt;</code>/description</td></tr>
-          <tr><td>default export</td><td><code>(props: {`{ data?, csrfToken? }`}) =&gt; JSX</code></td><td>The page's UI</td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Export</th><th>Signature</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr><td><code>renderMode</code></td><td><code>RenderMode</code></td><td>How this route renders — see <a href="/render-modes">Render modes</a></td></tr>
+            <tr><td><code>revalidate</code></td><td><code>{`{ seconds: number }`}</code></td><td><code>isr</code> only — how long a render stays fresh</td></tr>
+            <tr><td><code>loader</code></td><td><code>(ctx) =&gt; Promise&lt;Data&gt; | Data</code></td><td>Server-side data for the page</td></tr>
+            <tr><td><code>getStaticParams</code></td><td><code>() =&gt; Promise&lt;Record&lt;string,string&gt;[]&gt;</code></td><td>Required for <code>ssg</code>/<code>isr</code> on a dynamic route — one static file per entry returned</td></tr>
+            <tr><td><code>action</code></td><td><code>(formData, ctx) =&gt; Promise&lt;unknown&gt;</code></td><td>Handles a form POST — may return <code>redirect(to)</code> instead of data</td></tr>
+            <tr><td><code>meta</code></td><td><code>(data?) =&gt; {`{ title?, description? }`}</code></td><td>Page <code>&lt;title&gt;</code>/description</td></tr>
+            <tr><td>default export</td><td><code>(props: {`{ data?, csrfToken? }`}) =&gt; JSX</code></td><td>The page's UI</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2>The request context (<code>ctx</code>)</h2>
       <p>
@@ -144,19 +150,21 @@ export default function ApiReference() {
         lookup — see <a href="/security#sessions">Security model</a>. Checking <em>who</em>{" "}
         someone is stays your code's job.
       </p>
-      <table>
-        <thead><tr><th>Member</th><th>Signature</th><th>Does</th></tr></thead>
-        <tbody>
-          <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route</td></tr>
-          <tr><td><code>session</code></td><td><code>unknown | undefined</code></td><td>The current session's data, if any — from the cookie or a Bearer token alike</td></tr>
-          <tr><td><code>sessionTransport</code></td><td><code>"cookie" | "bearer" | undefined</code></td><td>Which transport authenticated this request</td></tr>
-          <tr><td><code>requireAuth()</code></td><td><code>() =&gt; void</code></td><td>Throws a <code>401</code> <code>HttpError</code> if there's no valid session on either transport</td></tr>
-          <tr><td><code>setSession(data, options?)</code></td><td><code>(data: unknown, {`{ transport?: "cookie" | "bearer" }`}?) =&gt; Promise&lt;string&gt;</code></td><td>Starts a new server-side session holding <code>data</code> and resolves to its ID. <code>"cookie"</code> (the default for a request that isn't already Bearer-authenticated) sets the session cookie; <code>"bearer"</code> sets none — return the ID to the client. Always issues a fresh ID, revoking any session the request already had</td></tr>
-          <tr><td><code>revokeSession(sessionId?)</code></td><td><code>(sessionId?: string) =&gt; Promise&lt;void&gt;</code></td><td>Deletes the current session server-side (and clears its cookie) — dead on both transports immediately. Pass another session's ID to revoke that one instead</td></tr>
-          <tr><td><code>clearSession()</code></td><td><code>() =&gt; Promise&lt;void&gt;</code></td><td>Alias for <code>revokeSession()</code> with no argument</td></tr>
-          <tr><td><code>verifyCsrf(submitted)</code></td><td><code>(FormData | string) =&gt; void</code></td><td>Throws a <code>403</code> <code>HttpError</code> if the token doesn't match this browser's CSRF cookie — form posts pass <code>FormData</code>, a same-origin API call passes the header value as a plain string. Passes without a token for a Bearer-authenticated request</td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Member</th><th>Signature</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route</td></tr>
+            <tr><td><code>session</code></td><td><code>unknown | undefined</code></td><td>The current session's data, if any — from the cookie or a Bearer token alike</td></tr>
+            <tr><td><code>sessionTransport</code></td><td><code>"cookie" | "bearer" | undefined</code></td><td>Which transport authenticated this request</td></tr>
+            <tr><td><code>requireAuth()</code></td><td><code>() =&gt; void</code></td><td>Throws a <code>401</code> <code>HttpError</code> if there's no valid session on either transport</td></tr>
+            <tr><td><code>setSession(data, options?)</code></td><td><code>(data: unknown, {`{ transport?: "cookie" | "bearer" }`}?) =&gt; Promise&lt;string&gt;</code></td><td>Starts a new server-side session holding <code>data</code> and resolves to its ID. <code>"cookie"</code> (the default for a request that isn't already Bearer-authenticated) sets the session cookie; <code>"bearer"</code> sets none — return the ID to the client. Always issues a fresh ID, revoking any session the request already had</td></tr>
+            <tr><td><code>revokeSession(sessionId?)</code></td><td><code>(sessionId?: string) =&gt; Promise&lt;void&gt;</code></td><td>Deletes the current session server-side (and clears its cookie) — dead on both transports immediately. Pass another session's ID to revoke that one instead</td></tr>
+            <tr><td><code>clearSession()</code></td><td><code>() =&gt; Promise&lt;void&gt;</code></td><td>Alias for <code>revokeSession()</code> with no argument</td></tr>
+            <tr><td><code>verifyCsrf(submitted)</code></td><td><code>(FormData | string) =&gt; void</code></td><td>Throws a <code>403</code> <code>HttpError</code> if the token doesn't match this browser's CSRF cookie — form posts pass <code>FormData</code>, a same-origin API call passes the header value as a plain string. Passes without a token for a Bearer-authenticated request</td></tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         The framework waits for <code>setSession</code>/<code>revokeSession</code>'s store write
         before sending the response even if you don't <code>await</code> it — but awaiting is
@@ -253,13 +261,15 @@ export const handler = apiRoute((req) => {
         <code>/api</code> — gets a JSON <code>404</code>, <code>{`{ "message": "Not found" }`}</code>,
         never an HTML page. Page routes are unaffected: their errors and 404s stay HTML.
       </p>
-      <table>
-        <thead><tr><th>Type</th><th>Shape</th></tr></thead>
-        <tbody>
-          <tr><td><code>ApiRequest</code></td><td><code>{`{ method, url, headers, params, body: Buffer }`}</code> — body is raw bytes, not pre-parsed, so a webhook can verify an HMAC against the exact bytes first</td></tr>
-          <tr><td><code>ApiResponse</code></td><td><code>{`{ status, headers?, body? }`}</code></td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Type</th><th>Shape</th></tr></thead>
+          <tbody>
+            <tr><td><code>ApiRequest</code></td><td><code>{`{ method, url, headers, params, body: Buffer }`}</code> — body is raw bytes, not pre-parsed, so a webhook can verify an HMAC against the exact bytes first</td></tr>
+            <tr><td><code>ApiResponse</code></td><td><code>{`{ status, headers?, body? }`}</code></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2>Sessions — the store</h2>
       <p>

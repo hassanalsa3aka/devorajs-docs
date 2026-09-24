@@ -111,27 +111,29 @@ git push -u origin main`}
         scaffolded projects ship with the setting commented out. Pick a value based on where the
         app runs:
       </p>
-      <table>
-        <thead><tr><th>Target</th><th><code>shared.sessions.store</code></th></tr></thead>
-        <tbody>
-          <tr>
-            <td>Vercel, Netlify (serverless)</td>
-            <td>
-              A path to your own store module, backed by a database every function instance can
-              reach (Postgres, Redis, …). <strong>Not <code>"memory"</code></strong>, and not a
-              SQLite file on the function's own disk — each instance would have its own copy, and
-              users would be logged out at random.
-            </td>
-          </tr>
-          <tr>
-            <td>Docker / VPS, one <code>devora start</code> process</td>
-            <td>
-              <code>"memory"</code> works, but every restart or redeploy signs everyone out. Use a
-              store module to keep sessions across restarts or to run more than one instance.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>Target</th><th><code>shared.sessions.store</code></th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Vercel, Netlify (serverless)</td>
+              <td>
+                A path to your own store module, backed by a database every function instance can
+                reach (Postgres, Redis, …). <strong>Not <code>"memory"</code></strong>, and not a
+                SQLite file on the function's own disk — each instance would have its own copy, and
+                users would be logged out at random.
+              </td>
+            </tr>
+            <tr>
+              <td>Docker / VPS, one <code>devora start</code> process</td>
+              <td>
+                <code>"memory"</code> works, but every restart or redeploy signs everyone out. Use a
+                store module to keep sessions across restarts or to run more than one instance.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`// devora.config.ts

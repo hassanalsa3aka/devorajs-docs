@@ -28,29 +28,31 @@ export default function CliReference() {
         <code>npm exec</code>, or <code>yarn</code>, whichever your project uses.
       </p>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Command</th>
-            <th>Does</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td><a href="#dev"><code>dev</code></a></td><td>Run every app (or one) in dev mode</td><td></td></tr>
-          <tr><td><a href="#build"><code>build</code></a></td><td>Build for production, optionally for an adapter</td><td></td></tr>
-          <tr><td><a href="#start"><code>start</code></a></td><td>Serve a production build (self-hosted)</td><td></td></tr>
-          <tr><td><a href="#deploy"><code>deploy</code></a></td><td>Build and push straight to Vercel/Netlify</td><td></td></tr>
-          <tr><td><a href="#new"><code>new</code></a></td><td>Scaffold a new app in the project</td><td></td></tr>
-          <tr><td><a href="#add"><code>add</code></a></td><td>Alias of <code>new</code></td><td></td></tr>
-          <tr><td><a href="#remove"><code>remove</code></a></td><td>Delete an app (alias: <code>rm</code>)</td><td></td></tr>
-          <tr><td><a href="#list"><code>list</code></a></td><td>List every registered app (alias: <code>ls</code>)</td><td></td></tr>
-          <tr><td><a href="#split"><code>split</code></a></td><td>Split an app/backend into its own repo</td><td><Tag color="gray">0.2+</Tag></td></tr>
-          <tr><td><a href="#sync"><code>sync</code></a></td><td>Pull/push a split-off piece's remote</td><td><Tag color="gray">0.2+</Tag></td></tr>
-          <tr><td><a href="#status"><code>status</code></a></td><td>Sync state across every split-off piece</td><td><Tag color="gray">0.2+</Tag></td></tr>
-          <tr><td><a href="#generate-proxy"><code>generate:proxy</code></a></td><td>Write an nginx/Caddy reverse-proxy config</td><td></td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Does</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><a href="#dev"><code>dev</code></a></td><td>Run every app (or one) in dev mode</td><td></td></tr>
+            <tr><td><a href="#build"><code>build</code></a></td><td>Build for production, optionally for an adapter</td><td></td></tr>
+            <tr><td><a href="#start"><code>start</code></a></td><td>Serve a production build (self-hosted)</td><td></td></tr>
+            <tr><td><a href="#deploy"><code>deploy</code></a></td><td>Build and push straight to Vercel/Netlify</td><td></td></tr>
+            <tr><td><a href="#new"><code>new</code></a></td><td>Scaffold a new app in the project</td><td></td></tr>
+            <tr><td><a href="#add"><code>add</code></a></td><td>Alias of <code>new</code></td><td></td></tr>
+            <tr><td><a href="#remove"><code>remove</code></a></td><td>Delete an app (alias: <code>rm</code>)</td><td></td></tr>
+            <tr><td><a href="#list"><code>list</code></a></td><td>List every registered app (alias: <code>ls</code>)</td><td></td></tr>
+            <tr><td><a href="#split"><code>split</code></a></td><td>Split an app/backend into its own repo</td><td><Tag color="gray">0.2+</Tag></td></tr>
+            <tr><td><a href="#sync"><code>sync</code></a></td><td>Pull/push a split-off piece's remote</td><td><Tag color="gray">0.2+</Tag></td></tr>
+            <tr><td><a href="#status"><code>status</code></a></td><td>Sync state across every split-off piece</td><td><Tag color="gray">0.2+</Tag></td></tr>
+            <tr><td><a href="#generate-proxy"><code>generate:proxy</code></a></td><td>Write an nginx/Caddy reverse-proxy config</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2 id="dev"><code>devora dev</code></h2>
       <p>

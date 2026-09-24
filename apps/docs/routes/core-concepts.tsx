@@ -128,16 +128,18 @@ import { updateSettings } from "@devorajs/backend/settings";
         <code>action</code> for mutations (form posts). Nothing is inferred beyond the path itself
         — there's no special meaning attached to a filename beyond where it sits in the tree.
       </p>
-      <table>
-        <thead><tr><th>File</th><th>URL</th></tr></thead>
-        <tbody>
-          <tr><td><code>routes/index.tsx</code></td><td><code>/</code></td></tr>
-          <tr><td><code>routes/about.tsx</code></td><td><code>/about</code></td></tr>
-          <tr><td><code>routes/blog/index.tsx</code></td><td><code>/blog</code></td></tr>
-          <tr><td><code>routes/blog/[slug].tsx</code></td><td><code>/blog/hello-world</code>, etc.</td></tr>
-          <tr><td><code>routes/settings/profile.tsx</code></td><td><code>/settings/profile</code></td></tr>
-        </tbody>
-      </table>
+      <div className="docs-table-wrap">
+          <table>
+          <thead><tr><th>File</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td><code>routes/index.tsx</code></td><td><code>/</code></td></tr>
+            <tr><td><code>routes/about.tsx</code></td><td><code>/about</code></td></tr>
+            <tr><td><code>routes/blog/index.tsx</code></td><td><code>/blog</code></td></tr>
+            <tr><td><code>routes/blog/[slug].tsx</code></td><td><code>/blog/hello-world</code>, etc.</td></tr>
+            <tr><td><code>routes/settings/profile.tsx</code></td><td><code>/settings/profile</code></td></tr>
+          </tbody>
+        </table>
+      </div>
       <p>
         A folder nests exactly like this — as deep as you want, no config. <code>index.tsx</code>{" "}
         at any depth is that folder's own path (drops the <code>index</code> segment); every other

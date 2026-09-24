@@ -368,7 +368,8 @@ export default function Home({ data }) {
           text-align: center;
           letter-spacing: -0.01em;
         }
-        .home-section-title::before { content: none; }
+        .devora-page .home-section-title { padding-left: 0; }
+        .devora-page .home-section-title::before { content: none; }
         .home-section-title::after {
           content: var(--pseudo-content);
           display: block;
@@ -393,6 +394,7 @@ export default function Home({ data }) {
           max-width: 62rem;
         }
         .home-compare-card {
+          min-width: 0;
           padding: 1.5rem 1.75rem;
           border-radius: var(--devora-radius);
           border: 1px solid var(--devora-border);
@@ -423,6 +425,8 @@ export default function Home({ data }) {
         }
         @media (max-width: 640px) {
           .home-compare { grid-template-columns: 1fr; }
+          .home-compare-card { padding: 1.25rem; }
+          .home-compare-card code { overflow-wrap: anywhere; }
         }
         ${COMPARE_TABLE_CSS}
         .home-compare-more {
@@ -579,7 +583,7 @@ export default function Home({ data }) {
         }
 
         @media (max-width: 640px) {
-          .home-hero { padding: 10.25rem 1.25rem; }
+          .home-hero { padding: 2.25rem 1.25rem; }
         }
       `}</style>
 
