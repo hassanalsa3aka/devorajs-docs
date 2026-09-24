@@ -63,7 +63,7 @@ const MAX_DOWNLOADS = DOWNLOADS[0].count;
 
 function Note({ children }) {
   return (
-    <p className="compare-note">
+    <p className="compare-note reveal">
       <strong>Honest note:</strong> {children}
     </p>
   );
@@ -129,7 +129,17 @@ export default function Compare() {
         }
         .compare-jump a:hover { border-color: var(--devora-accent-from); }
 
-        .compare-section-title { text-align: center; font-size: 1.7rem; margin: 3.5rem 0 0.5rem; }
+        .compare-section-title { text-align: center; font-size: 1.7rem; margin: 3.5rem 0 0.5rem; padding-left: 0; }
+        .compare-section-title::before { content: none; }
+        .compare-section-title::after {
+          content: var(--pseudo-content);
+          display: block;
+          width: 48px;
+          height: 3px;
+          margin: 0.75rem auto 0;
+          border-radius: 2px;
+          background: linear-gradient(90deg, var(--devora-accent-from), var(--devora-accent-to));
+        }
         .compare-section-subtitle { text-align: center; color: var(--devora-fg-muted); margin: 0 0 1.5rem; }
         .compare-sub { max-width: 62rem; margin: 2.25rem auto 0; font-size: 1.1rem; }
         .compare-prose { max-width: 62rem; margin-left: auto; margin-right: auto; line-height: 1.7; }
@@ -209,7 +219,71 @@ export default function Compare() {
         .compare-choose-card h3 .home-compare-logo { width: 22px; height: 22px; fill: var(--devora-fg-muted); }
         .compare-choose-card h3 .home-compare-logo-devora { width: 24px; height: 24px; }
         .compare-choose-card h3 .home-compare-logo-group { display: inline-flex; gap: 0.2rem; }
+        .compare-choose-card { transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+        .compare-choose-card:hover {
+          transform: translateY(-3px);
+          box-shadow: var(--devora-shadow);
+          border-color: var(--devora-accent-from);
+        }
+        .compare-choose-card h3 .home-compare-logo,
+        .compare-choose-card h3 .home-compare-logo-group { transition: transform 0.2s ease; }
+        .compare-choose-card:hover h3 .home-compare-logo,
+        .compare-choose-card:hover h3 .home-compare-logo-group { transform: scale(1.12) rotate(-6deg); }
         .compare-choose-devora { border-color: var(--devora-accent-from); box-shadow: var(--devora-shadow); }
+        .compare-jump a { transition: border-color 0.15s ease, transform 0.15s ease; }
+        .compare-jump a:hover { transform: translateY(-1px); }
+
+        /* Motion — same approach as the landing page (see its comments in
+           routes/index.tsx): hero fades up once on load; everything else
+           uses a pure-CSS scroll timeline, so content is fully visible by
+           default and only animates where the browser supports it. All of
+           it is skipped under prefers-reduced-motion. */
+        @media (prefers-reduced-motion: no-preference) {
+          @keyframes compare-fade-up {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .compare-hero > * { animation: compare-fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+          .compare-hero h1 { animation-delay: 0.04s; }
+          .compare-hero p { animation-delay: 0.12s; }
+          .compare-hero .compare-verified { animation-delay: 0.2s; }
+          .compare-hero .compare-jump { animation-delay: 0.28s; }
+          @keyframes compare-gradient-pan {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+          }
+          .compare-hero-gradient {
+            background-image: linear-gradient(90deg, var(--devora-accent-from), var(--devora-accent-to), var(--devora-accent-from));
+            background-size: 200% auto;
+            animation: compare-gradient-pan 6s ease-in-out infinite;
+          }
+        }
+        .reveal { opacity: 1; }
+        @supports (animation-timeline: view()) {
+          @media (prefers-reduced-motion: no-preference) {
+            .reveal {
+              opacity: 0;
+              animation: compare-reveal-in linear both;
+              animation-timeline: view();
+              animation-range: entry 0% cover 25%;
+            }
+            @keyframes compare-reveal-in {
+              from { opacity: 0; transform: translateY(20px); }
+              to { opacity: 1; transform: translateY(0); }
+            }
+            /* Download bars grow from zero as the chart scrolls in. */
+            .scale-bar span {
+              transform-origin: left center;
+              animation: compare-bar-grow linear both;
+              animation-timeline: view();
+              animation-range: entry 20% cover 45%;
+            }
+            @keyframes compare-bar-grow {
+              from { transform: scaleX(0); }
+              to { transform: scaleX(1); }
+            }
+          }
+        }
       `}</style>
 
       <section className="compare-hero">
@@ -233,11 +307,11 @@ export default function Compare() {
         </nav>
       </section>
 
-      <h2 className="compare-section-title" id="scale">Scale, honestly</h2>
-      <p className="compare-section-subtitle">
+      <h2 className="compare-section-title reveal" style={{ "--pseudo-content": '""' }} id="scale">Scale, honestly</h2>
+      <p className="compare-section-subtitle reveal">
         Devora.js is new and small — npm weekly downloads, week of August 24–30, 2026.
       </p>
-      <div className="compare-table-wrap">
+      <div className="compare-table-wrap reveal">
         <table className="compare-table scale-table">
           <tbody>
             {DOWNLOADS.map((d) => (
@@ -259,7 +333,7 @@ export default function Compare() {
           </tbody>
         </table>
       </div>
-      <p className="compare-caption">
+      <p className="compare-caption reveal">
         <strong>Why that week:</strong> npm's download API is currently missing data for several
         September days (it reports zero for every package on Sep 3, 7–8, 15 and 17), so September
         "weekly" totals undercount — the Sep 15–21 total, for example, is missing two of its seven
@@ -270,7 +344,7 @@ export default function Compare() {
         Router user, not just framework mode. All of these include CI runs and transitive installs,
         which inflate <code>express</code> the most.
       </p>
-      <p className="compare-prose">
+      <p className="compare-prose reveal">
         Per{" "}
         <a href="https://2025.stateofjs.com/en-US/libraries/meta-frameworks/">State of JS 2025</a>{" "}
         (the most recent edition): Next.js leads meta-framework usage but is losing satisfaction;
@@ -279,18 +353,19 @@ export default function Compare() {
         Express leads usage with NestJS growing; Hono tops satisfaction (outside our comparison
         scope below, but worth knowing it exists).
       </p>
-      <p className="compare-note">
+      <p className="compare-note reveal">
         <strong>Pick Devora.js for what it does differently, not for maturity.</strong> That's the
         honest framing for everything below.
       </p>
 
-      <h2 className="compare-section-title" id="frontend">vs. frontend frameworks</h2>
-      <p className="compare-section-subtitle">
+      <h2 className="compare-section-title reveal" style={{ "--pseudo-content": '""' }} id="frontend">vs. frontend frameworks</h2>
+      <p className="compare-section-subtitle reveal">
         Next.js, React Router v8 (framework mode — formerly Remix), SvelteKit, and Astro.
       </p>
 
-      <h3 className="compare-sub">Rendering model</h3>
+      <h3 className="compare-sub reveal">Rendering model</h3>
       <CompareTable
+        className="reveal"
         minWidth={760}
         columns={[
           { label: "Next.js 16", logo: LOGO_NEXTJS },
@@ -327,8 +402,9 @@ export default function Compare() {
         not an "only we do this" point.
       </Note>
 
-      <h3 className="compare-sub" id="multi-app">Multi-app architecture</h3>
+      <h3 className="compare-sub reveal" id="multi-app">Multi-app architecture</h3>
       <CompareTable
+        className="reveal"
         minWidth={720}
         columns={[
           { label: "Next.js (Multi-Zones)", logo: LOGO_NEXTJS },
@@ -393,8 +469,9 @@ export default function Compare() {
         cookie sharing for free, which Devora.js's one-domain-per-app model doesn't yet.
       </Note>
 
-      <h3 className="compare-sub" id="sessions">Sessions &amp; auth</h3>
+      <h3 className="compare-sub reveal" id="sessions">Sessions &amp; auth</h3>
       <CompareTable
+        className="reveal"
         minWidth={600}
         columns={[
           { label: "React Router v8", logo: LOGO_REACT_ROUTER },
@@ -423,11 +500,12 @@ export default function Compare() {
         to maintain.</strong> See <a href="/security#sessions">Security model → Sessions</a>.
       </Note>
 
-      <h2 className="compare-section-title" id="backend">vs. backend frameworks</h2>
-      <p className="compare-section-subtitle">Express, Fastify, and NestJS.</p>
+      <h2 className="compare-section-title reveal" style={{ "--pseudo-content": '""' }} id="backend">vs. backend frameworks</h2>
+      <p className="compare-section-subtitle reveal">Express, Fastify, and NestJS.</p>
 
-      <h3 className="compare-sub">API error handling</h3>
+      <h3 className="compare-sub reveal">API error handling</h3>
       <CompareTable
+        className="reveal"
         minWidth={720}
         columns={[
           { label: "Express", logo: LOGO_EXPRESS },
@@ -455,14 +533,15 @@ export default function Compare() {
           },
         ]}
       />
-      <p className="compare-caption">
+      <p className="compare-caption reveal">
         Behavior tested directly, in production mode, on Express 5.2.1, Fastify 5.12.5, NestJS
         12.1.0, and Devora.js {DEVORA_VERSION} — defaults only, no extra config. All four declare
         methods per route; the difference is only what a request with the wrong method gets back.
       </p>
 
-      <h3 className="compare-sub">What's built in vs. bring-your-own</h3>
+      <h3 className="compare-sub reveal">What's built in vs. bring-your-own</h3>
       <CompareTable
+        className="reveal"
         minWidth={720}
         columns={[
           { label: "Express", logo: LOGO_EXPRESS },
@@ -514,12 +593,12 @@ export default function Compare() {
         contract and route-matching guarantees Express doesn't give you by default.
       </Note>
 
-      <h2 className="compare-section-title" id="limitations">Known limitations</h2>
-      <p className="compare-section-subtitle">
+      <h2 className="compare-section-title reveal" style={{ "--pseudo-content": '""' }} id="limitations">Known limitations</h2>
+      <p className="compare-section-subtitle reveal">
         As of <code>@devorajs/core@{DEVORA_VERSION}</code> — checked directly in its source, not
         assumed.
       </p>
-      <ul className="compare-list">
+      <ul className="compare-list reveal">
         <li>React 18 only — the peer dependency (<code>react@^18.3.0</code>) excludes React 19</li>
         <li>No catch-all routes (<code>[...slug]</code>)</li>
         <li>An <code>action</code>'s return value is discarded unless it's a redirect</li>
@@ -532,25 +611,25 @@ export default function Compare() {
         </li>
         <li>Breaking changes still happen between minor versions (pre-1.0)</li>
       </ul>
-      <p className="compare-prose" style={{ color: "var(--devora-fg-muted)" }}>
+      <p className="compare-prose reveal" style={{ color: "var(--devora-fg-muted)" }}>
         No performance section — there are no benchmarks in either repo, and we're not going to
         publish numbers we haven't measured.
       </p>
 
-      <h2 className="compare-section-title" id="choosing">When to choose which</h2>
-      <p className="compare-section-subtitle">Different tools for overlapping problems.</p>
+      <h2 className="compare-section-title reveal" style={{ "--pseudo-content": '""' }} id="choosing">When to choose which</h2>
+      <p className="compare-section-subtitle reveal">Different tools for overlapping problems.</p>
       <div className="compare-choose">
-        <div className="compare-choose-card">
+        <div className="compare-choose-card reveal">
           <h3>{LOGO_NEXTJS} Choose Next.js</h3>
           if you want the largest ecosystem, the most Stack Overflow answers, and don't need
           multiple apps sharing one backend.
         </div>
-        <div className="compare-choose-card">
+        <div className="compare-choose-card reveal">
           <h3>{LOGO_ASTRO} Choose Astro</h3>
           if content-heavy, performance-first sites are your priority and you value the framework
           with the highest reported satisfaction.
         </div>
-        <div className="compare-choose-card">
+        <div className="compare-choose-card reveal">
           <h3>
             <span className="home-compare-logo-group">{LOGO_NEST}{LOGO_FASTIFY}</span> Choose NestJS or
             Fastify
@@ -558,7 +637,7 @@ export default function Compare() {
           if you want a mature, fully-featured backend today — dependency injection, built-in
           validation, a large plugin ecosystem.
         </div>
-        <div className="compare-choose-card compare-choose-devora">
+        <div className="compare-choose-card compare-choose-devora reveal">
           <h3>{LOGO_DEVORA} Choose Devora.js</h3>
           if you're specifically building a product with multiple apps (marketing site + dashboard
           + admin) that need to share a backend and one session system, and you're comfortable
