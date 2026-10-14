@@ -12,6 +12,7 @@ import {
 } from "../compare-table.js";
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
 import { getCoreVersion } from "../version.js";
+import { SHOWCASE, SHOWCASE_CHECKED, SHOWCASE_CSS, ShowcaseCard, LIVE_DEMOS } from "../showcase.js";
 
 export const renderMode = "ssg";
 
@@ -408,6 +409,36 @@ export default function Home({ data }) {
           .home-compare-card code { overflow-wrap: anywhere; }
         }
         ${COMPARE_TABLE_CSS}
+        ${SHOWCASE_CSS}
+        .home-backend {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+          gap: 1.5rem;
+          align-items: center;
+          max-width: 62rem;
+          margin: 1.75rem auto 3rem;
+        }
+        .devora-page .home-backend p { margin: 0 0 1rem; line-height: 1.7; }
+        .home-backend-links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .devora-page .home-backend pre { margin: 0; }
+        @media (max-width: 760px) { .home-backend { grid-template-columns: minmax(0, 1fr); } }
+        .home-backend .devora-card { min-width: 0; overflow-x: auto; }
+        .home-showcase { max-width: 62rem; margin: 0 auto 1rem; }
+        .home-demos {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem 2rem;
+          max-width: 62rem;
+          margin: 2rem auto 3rem;
+          padding: 1.25rem 1.5rem;
+          border: 1px solid var(--devora-border);
+          border-radius: var(--devora-radius-lg);
+          background: var(--devora-surface);
+        }
+        .devora-page .home-demos p { margin: 0; }
+        .home-demos-title { font-weight: 700; color: var(--devora-fg); }
         .home-compare-more {
           max-width: 62rem;
           margin: 0 auto 3rem;
@@ -783,6 +814,62 @@ export default function Home({ data }) {
         ))}
       </div>
 
+      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }} id="shared-backend">One shared backend</h2>
+      <p className="home-section-subtitle">Every app in the project calls the same functions — no API layer to write between them.</p>
+      <div className="home-backend reveal">
+        <div>
+          <p>
+            Logic more than one app needs lives once, in <code>packages/backend</code>. A page's{" "}
+            <code>loader</code> or <code>action</code> imports it and calls it directly; an API
+            route in another app calls the same function for mobile clients. One login works in
+            both, so the function can check <code>requireAuth()</code> the same way everywhere.
+          </p>
+          <div className="home-backend-links">
+            <a className="home-btn home-btn-secondary" href="/backend">Backend</a>
+            <a className="home-btn home-btn-secondary" href="/backend-capabilities">Backend capabilities</a>
+            <a className="home-btn home-btn-secondary" href="/multi-app-tutorial">Tutorial</a>
+          </div>
+        </div>
+        <div className="devora-card">
+          <pre>
+{`// packages/backend/notes.ts
+export const addNote = serverFn(async (input, ctx) => {
+  ctx${""}.requireAuth();
+  return db.notes.insert(input);
+});
+
+// apps/dashboard/routes/notes.tsx  (a form action)
+// apps/api/endpoints/notes.ts      (JSON for mobile)
+import { addNote } from "@devorajs/backend/notes";`}
+          </pre>
+        </div>
+      </div>
+
+      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }} id="built-with">Built with Devora.js</h2>
+      <p className="home-section-subtitle">Real products running on it today.</p>
+      <div className="home-showcase">
+        <div className="sc-grid">
+          {SHOWCASE.map((entry) => (
+            <ShowcaseCard entry={entry} key={entry.name} />
+          ))}
+        </div>
+        <p className="sc-note">
+          What each one uses is read from the deployed site (headers, cookies, markup, API
+          responses), checked {SHOWCASE_CHECKED}.
+        </p>
+      </div>
+
+      <div className="home-demos reveal">
+        <p>
+          <span className="home-demos-title">Live demos.</span> The {LIVE_DEMOS.length} example
+          apps from the framework repo — marketing, dashboard and admin, one project with three
+          auth modes — deployed by the maintainer.
+        </p>
+        <a className="home-btn home-btn-primary" href="/examples" style={{ "--pseudo-content": '""' }}>
+          See examples and demos →
+        </a>
+      </div>
+
       <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
       <div className="home-next">
         <a className="home-next-link reveal" href="/getting-started">
@@ -801,13 +888,13 @@ export default function Home({ data }) {
           Backend
           <span>Modules, API routes, middleware</span>
         </a>
-        <a className="home-next-link reveal" href="/repo-splitting">
-          Repo-splitting
-          <span>Split an app into its own repo</span>
+        <a className="home-next-link reveal" href="/examples">
+          Examples
+          <span>Runnable projects and live demos</span>
         </a>
-        <a className="home-next-link reveal" href="/cli-reference">
-          CLI reference
-          <span>Every command</span>
+        <a className="home-next-link reveal" href="/blog">
+          Blog
+          <span>Release notes and design write-ups</span>
         </a>
         <a className="home-next-link reveal" href="/deployment">
           Deployment

@@ -1,7 +1,8 @@
-<!-- Source for assets/og/devorajs-og.png (the 1200x630 link-preview image).
-     Regenerate: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
-       --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
-       --screenshot=assets/og/devorajs-og.png "file://$PWD/scripts/og-card.html" -->
+<!-- Source for the 1200x630 link-preview images in assets/og/.
+     With no query string it renders the site-wide card (devorajs-og.png).
+     ?title=...&sub=... renders a page card; scripts/og-cards.sh renders
+     every one of them. This file is only opened locally by Chrome, so the
+     site's CSP doesn't apply to its script. -->
 <!doctype html><html><head><meta charset="utf-8"><style>
 *{box-sizing:border-box;margin:0}
 html,body{width:1200px;height:630px;overflow:hidden}
@@ -23,7 +24,16 @@ p{margin-top:22px;font-size:30px;color:#b4b4c6;max-width:960px;line-height:1.35}
 <div class="blob a"></div><div class="blob b"></div><div class="grid"></div>
 <div class="wrap">
   <div class="brand"><img src="../assets/icons/devorajs-logo-withoutbg.png"><span>devora<span class="js">.js</span></span></div>
-  <div><h1>Multi-app by default.<br><span>Security-first.</span></h1>
-  <p>One project, multiple sites — sharing a core and a backend, each deployed independently.</p></div>
+  <div><h1 id="t">Multi-app by default.<br><span>Security-first.</span></h1>
+  <p id="s">One project, multiple sites — sharing a core and a backend, each deployed independently.</p></div>
   <div class="foot"><span class="pill">Vite-based</span><span class="pill">React SSR · SSG · Islands</span><span class="pill">npx create-devora</span></div>
-</div></body></html>
+</div>
+<script>
+  var q = new URLSearchParams(location.search);
+  if (q.get("title")) {
+    var t = document.getElementById("t");
+    t.textContent = q.get("title");
+    if (q.get("accent")) { var span = document.createElement("span"); span.textContent = " " + q.get("accent"); t.appendChild(span); }
+    document.getElementById("s").textContent = q.get("sub") || "";
+  }
+</script></body></html>

@@ -41,17 +41,19 @@ devorajs-docs/
 │   ├── site-theme.ts        # site CSS on top of the framework theme
 │   ├── compare-table.tsx    # brand marks + the home page's comparison table
 │   ├── compare-matrix.tsx   # status chips, filterable matrix and bar chart (/compare)
+│   ├── showcase.tsx         # "Built with Devora.js" entries and live demos (home, /examples)
 │   ├── data/                # generated data (npm downloads for /compare)
 │   ├── seo.tsx              # meta(), canonical links, JSON-LD
 │   ├── version.ts           # reads the installed @devorajs/core version
 │   ├── nav.ts               # header links
 │   └── vercel.json, netlify.toml
-├── assets/                  # public folder: icons, OG image, scripts, video, Pagefind index
+├── assets/                  # public folder: icons, OG cards, showcase shots, scripts, video, Pagefind index
 ├── packages/backend/        # the shared-backend stub every project has (unused here)
 ├── scripts/
 │   ├── build-docs.sh            # adapter build + Pagefind index
 │   ├── fetch-npm-downloads.mjs  # refreshes apps/docs/data/npm-downloads.json
-│   └── og-card.html             # source of assets/og/devorajs-og.png
+│   ├── og-card.html             # template for the link-preview cards in assets/og/
+│   └── og-cards.sh              # renders those cards (site-wide and per page)
 ├── drafts/                  # earlier drafts of the compare page, not published
 └── devora.config.ts
 ```

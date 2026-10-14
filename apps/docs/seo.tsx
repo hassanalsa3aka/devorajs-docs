@@ -16,8 +16,9 @@ export const OG_IMAGE = `${SITE_URL}/og/devorajs-og.png`;
  * meta() return value for a route. `title` is the page's own name; it gets
  * a " — Devora.js docs" suffix in the browser tab / search result unless
  * `fullTitle` is given (pages whose title already names the product).
+ * `image` is a path under assets/ ("/og/examples.png") for a page's own card.
  */
-export function pageMeta(path, { title, description, fullTitle = undefined, type = "article" }) {
+export function pageMeta(path, { title, description, fullTitle = undefined, type = "article", image = undefined }) {
   const url = `${SITE_URL}${path === "/" ? "/" : path}`;
   return {
     title: fullTitle ?? `${title} — Devora.js docs`,
@@ -31,7 +32,8 @@ export function pageMeta(path, { title, description, fullTitle = undefined, type
       description,
       type: path === "/" ? "website" : type,
       url,
-      image: OG_IMAGE,
+      // A page card from scripts/og-cards.sh, or the site-wide one.
+      image: image ? `${SITE_URL}${image}` : OG_IMAGE,
     },
   };
 }
