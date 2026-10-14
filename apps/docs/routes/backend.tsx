@@ -24,9 +24,11 @@ export default function Backend() {
       <DocsLayout active="backend">
       <h1>Backend</h1>
       <p>
-        Domain modules, API routes, middleware, dynamic-route static params, and a dev
-        reload-safety hook. Available since <code>@devorajs/core@0.2.2</code> and{" "}
-        <code>@devorajs/cli@0.2.0</code>.
+        Domain modules, API routes, middleware, backend-only apps, dynamic-route static params,
+        and a dev reload-safety hook. Available since <code>@devorajs/core@0.2.2</code> and{" "}
+        <code>@devorajs/cli@0.2.0</code>; 0.3.2 added a configurable API folder (
+        <code>apiDir</code>), CORS, request access and a status response at <code>/</code> for
+        backend-only apps.
       </p>
 
       <h2>Explicit domain modules</h2>
@@ -63,13 +65,21 @@ const app = defineModule({ name: "app" }, (root) => {
         The real gap this closes: a server function was previously only reachable via a page
         route's <code>loader</code>/<code>action</code>, so nothing like a payment-provider webhook
         had anywhere to live. <code>apiRoute()</code> is a plain request handler, decoupled from
-        page rendering entirely — file-based under <code>apps/&lt;name&gt;/api/**</code>, matched
-        by the exact same router as <code>routes/</code> (dynamic segments included:{" "}
-        <code>api/users/[id].ts</code> serves <code>/api/users/123</code>).
+        page rendering entirely — file-based under the app's API folder, matched by the exact same
+        router as <code>routes/</code> (dynamic segments included:{" "}
+        <code>endpoints/users/[id].ts</code> serves <code>/api/users/123</code>).
+      </p>
+      <p>
+        The folder is <code>apiDir</code> in <code>app.config.ts</code>: <code>"endpoints"</code>{" "}
+        in apps created by <code>create-devora</code> or <code>devora add</code>, <code>"api"</code>{" "}
+        by default for older apps. Only the folder changes — URLs are always under{" "}
+        <code>/api</code>. Avoid <code>api/</code> for an app you deploy to Vercel with the app as
+        the Root Directory: Vercel treats a top-level <code>api/</code> folder as its own functions
+        (see <a href="/deployment">Deployment</a>).
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/dashboard/api/hello.ts
+{`// apps/dashboard/endpoints/hello.ts
 import { apiRoute } from "@devorajs/core";
 
 export const handler = apiRoute((req, ctx) => {
@@ -81,8 +91,8 @@ export const handler = apiRoute((req, ctx) => {
       <Callout kind="tip" title="Ownership rule">
         <p>
           Shared backend logic goes in <code>packages/backend</code>, exactly like{" "}
-          <code>serverFn</code> already works — an app-local <code>api/</code> file is the
-          exception, for something genuinely app-specific (a webhook only that app receives).
+          <code>serverFn</code> already works — an app-local API file is the exception, for
+          something genuinely app-specific (a webhook only that app receives).
         </p>
       </Callout>
       <Callout kind="danger" title="Security, worth getting right">
@@ -114,6 +124,53 @@ export const handler = apiRoute((req, ctx) => {
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`export const methods = ["GET", "POST"];
 export const handler = apiRoute((req, ctx) => { ... });`}
+        </pre>
+      </div>
+
+      <h3>What an API route always does</h3>
+      <ul>
+        <li>
+          <strong>Answers JSON.</strong> A thrown <code>HttpError</code> (or anything with a 4xx/5xx{" "}
+          <code>status</code>) becomes <code>{"{ message }"}</code> with that status; an unexpected
+          error is a 500 whose message is hidden in production; an unmatched <code>/api/**</code>{" "}
+          path is a JSON 404.
+        </li>
+        <li>
+          <strong>Sees the request.</strong> <code>req.url</code> (path and query string),{" "}
+          <code>req.headers</code>, <code>req.params</code> and the raw <code>req.body</code> bytes
+          (not parsed, so a webhook can verify a signature first), plus <code>ctx.url</code>,{" "}
+          <code>ctx.headers</code> and <code>ctx.ip</code>. Behind a proxy, set{" "}
+          <code>trustProxy</code> so the scheme, host and client IP come from the forwarded
+          headers.
+        </li>
+        <li>
+          <strong>Caps the body</strong> at <code>maxBodyBytes</code> (10 MB by default); a larger
+          one gets a 413.
+        </li>
+      </ul>
+      <p>
+        Two limits today: <code>headers</code> on the response is a plain object, so one response
+        can send only one <code>Set-Cookie</code> header (sessions set through{" "}
+        <code>ctx{"."}setSession()</code> are separate and fine); and the body is sent in one piece —
+        no server-sent events or WebSockets from an API route.
+      </p>
+
+      <h3>CORS</h3>
+      <p>
+        Off unless configured. With <code>cors</code> in <code>app.config.ts</code>, preflights are
+        answered with 204 before any route runs, an allowed <code>Origin</code> is echoed back, and
+        any other origin gets no CORS headers (the browser blocks it). Pages never get CORS
+        headers.
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`// apps/api/app.config.ts
+export default defineApp({
+  cors: {
+    origins: ["https://app.example.com", "https://*.example.com"],
+    credentials: true, // cookies on cross-origin requests; can't be combined with origins: "*"
+  },
+});`}
         </pre>
       </div>
 
@@ -163,7 +220,15 @@ export const handler = withMiddleware(rawHandler, logging, requireAuthMw);`}
         <code>devora build</code>/<code>devora dev</code> skip the Vite client build and the{" "}
         <code>entry-server.tsx</code> SSR entry entirely; the app can have zero{" "}
         <code>routes/</code> directory and no <code>react</code>/<code>react-dom</code> dependency
-        at all.
+        at all. <code>devora add &lt;name&gt; --kind=api</code> scaffolds one (in a project whose
+        apps are all backend-only, that's the default).
+      </p>
+      <p>
+        <code>GET /</code> on a backend-only app answers 200 with a small status: JSON (
+        <code>{`{ "app": "api", "status": "ok", "api": "/api" }`}</code>) for API clients, a small
+        HTML page for a browser. For clients that authenticate with <code>Authorization: Bearer</code>{" "}
+        and keep no cookies, <code>csrf: false</code> in <code>app.config.ts</code> stops the CSRF
+        cookie from being issued at all (see <a href="/security">Security</a>).
       </p>
 
       <h2>Static params for dynamic routes</h2>

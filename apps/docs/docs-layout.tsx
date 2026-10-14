@@ -8,6 +8,7 @@ const DOCS_GROUPS = [
       { id: "getting-started", label: "Getting started", href: "/getting-started" },
       { id: "core-concepts", label: "Core concepts", href: "/core-concepts" },
       { id: "first-feature", label: "Build your first feature", href: "/first-feature" },
+      { id: "multi-app-tutorial", label: "Build a multi-app project", href: "/multi-app-tutorial" },
     ],
   },
   {
@@ -15,6 +16,7 @@ const DOCS_GROUPS = [
     color: "#a855f7",
     items: [
       { id: "render-modes", label: "Render modes", href: "/render-modes" },
+      { id: "pages-forms-errors", label: "Pages, forms and errors", href: "/pages-forms-errors" },
       { id: "backend", label: "Backend", href: "/backend" },
       { id: "backend-capabilities", label: "Backend capabilities", href: "/backend-capabilities" },
       { id: "repo-splitting", label: "Repo-splitting", href: "/repo-splitting" },
@@ -28,6 +30,7 @@ const DOCS_GROUPS = [
       { id: "cli-reference", label: "CLI reference", href: "/cli-reference" },
       { id: "deployment", label: "Deployment", href: "/deployment" },
       { id: "security", label: "Security", href: "/security" },
+      { id: "upgrading", label: "Upgrading to 0.3.2", href: "/upgrading" },
     ],
   },
 ];
@@ -56,7 +59,7 @@ export function DocsLayout({ active, children }) {
 
   return (
     <div className="docs-layout">
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .devora-page { max-width: 1040px; }
         .docs-layout {
           display: grid;
@@ -67,6 +70,9 @@ export function DocsLayout({ active, children }) {
         .docs-sidebar {
           position: sticky;
           top: 4.5rem;
+          max-height: calc(100vh - 5.5rem);
+          overflow-y: auto;
+          padding-right: 0.25rem;
           display: flex;
           flex-direction: column;
           gap: 1.4rem;
@@ -108,6 +114,8 @@ export function DocsLayout({ active, children }) {
           .docs-layout { grid-template-columns: 1fr; gap: 1.5rem; }
           .docs-sidebar {
             position: static;
+            max-height: none;
+            overflow: visible;
             flex-direction: row;
             flex-wrap: wrap;
             gap: 0.4rem;
@@ -241,7 +249,7 @@ export function DocsLayout({ active, children }) {
            rather than overflow on phones. Table cells are left alone — their
            wrap box scrolls instead. */
         .docs-content :is(p, li, h2, h3, h4) code { overflow-wrap: anywhere; }
-      `}</style>
+      ` }} />
       <nav className="docs-sidebar" aria-label="Docs">
         {DOCS_GROUPS.map((group) => (
           <div className="docs-sidebar-group" key={group.label}>

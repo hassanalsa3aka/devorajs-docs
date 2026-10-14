@@ -1,6 +1,3 @@
-import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
@@ -14,6 +11,7 @@ import {
   LOGO_TURBOREPO,
 } from "../compare-table.js";
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
+import { getCoreVersion } from "../version.js";
 
 export const renderMode = "ssg";
 
@@ -24,25 +22,6 @@ export function meta() {
     description:
       "A lightweight, Vite-based web framework whose headline feature is native multi-app support — one project, multiple sites, sharing a core, deployable independently.",
   });
-}
-
-function getCoreVersion() {
-  try {
-    const require = createRequire(import.meta.url);
-    let dir = dirname(require.resolve("@devorajs/core"));
-    for (let i = 0; i < 5; i++) {
-      try {
-        const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf-8"));
-        if (pkg.name === "@devorajs/core") return pkg.version;
-      } catch {
-        // keep walking up
-      }
-      dir = dirname(dir);
-    }
-  } catch {
-    // package not resolvable; fall through
-  }
-  return null;
 }
 
 export async function loader() {
@@ -114,10 +93,10 @@ export default function Home({ data }) {
   const version = data?.version;
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         body { overflow-x: hidden; }
         .devora-page { max-width: 1180px; }
-        .home-prose { max-width: 46rem; margin-left: auto; margin-right: auto; }
+        .devora-page .home-prose { max-width: 46rem; margin-left: auto; margin-right: auto; }
         .home-video-hero {
           position: relative;
           display: block;
@@ -192,7 +171,7 @@ export default function Home({ data }) {
         }
         .home-blob-a { background: var(--devora-accent-from); top: -140px; left: -90px; }
         .home-blob-b { background: var(--devora-accent-to); bottom: -160px; right: -100px; }
-        .home-hero > * { position: relative; z-index: 1; }
+        .home-hero > :not(.home-blob) { position: relative; z-index: 1; }
         .home-eyebrow {
           display: inline-flex;
           align-items: center;
@@ -585,9 +564,9 @@ export default function Home({ data }) {
         @media (max-width: 640px) {
           .home-hero { padding: 2.25rem 1.25rem; }
         }
-      `}</style>
+      ` }} />
 
-      <a href="#watch-demo" className="home-video-hero" aria-label="Watch the devora.js demo with sound">
+      <a href="#watch-demo" className="home-video-hero" aria-label="Muted: watch the devora.js demo with sound">
         <video autoPlay muted loop playsInline preload="auto">
           <source src="/video/devorajs.mp4" type="video/mp4" />
         </video>

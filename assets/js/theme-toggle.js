@@ -26,7 +26,8 @@
     root.style.setProperty("--theme-icon", isDark() ? iconUrl(SUN_SVG) : iconUrl(MOON_SVG));
     var btn = document.querySelector('a[href="#theme"]');
     if (btn) {
-      btn.setAttribute("aria-label", isDark() ? "Switch to light mode" : "Switch to dark mode");
+      // Starts with the link's own text ("Theme") so the accessible name contains the visible label.
+      btn.setAttribute("aria-label", isDark() ? "Theme: switch to light mode" : "Theme: switch to dark mode");
       btn.setAttribute("title", isDark() ? "Switch to light mode" : "Switch to dark mode");
     }
   }

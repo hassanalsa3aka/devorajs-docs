@@ -59,7 +59,7 @@ export const LOGO_NEST = (
 export const COMPARE_TABLE_CSS = `
 .compare-table-wrap {
   margin: 1.5rem auto 1rem;
-  max-width: 62rem;
+  max-width: 80rem;
   overflow-x: auto;
   border: 1px solid var(--devora-border);
   border-radius: calc(var(--devora-radius) + 6px);

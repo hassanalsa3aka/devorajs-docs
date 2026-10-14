@@ -101,7 +101,7 @@ export default function RepoSplitting() {
       <p>
         Two conventions from <a href="/backend">Backend</a> matter most exactly when
         different people own different split-off pieces: shared backend logic still goes in{" "}
-        <code>packages/backend</code> (an app's <code>api/</code> file just imports from{" "}
+        <code>packages/backend</code> (an app's API route file just imports from{" "}
         <code>@devorajs/backend</code> normally — splitting only changes how that package's source
         is tracked, not where routes are declared), and every use of a middleware ecosystem
         adapter is still registered in one place, <code>packages/backend/middleware.ts</code> —

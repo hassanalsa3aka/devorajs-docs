@@ -1,0 +1,40 @@
+{
+  "source": "https://api.npmjs.org/downloads/range/",
+  "fetchedOn": "2026-10-14",
+  "weekStart": "2026-09-28",
+  "weekEnd": "2026-10-04",
+  "packages": [
+    {
+      "pkg": "express",
+      "downloads": 169483150
+    },
+    {
+      "pkg": "next",
+      "downloads": 76902421
+    },
+    {
+      "pkg": "react-router",
+      "downloads": 68732660
+    },
+    {
+      "pkg": "@nestjs/core",
+      "downloads": 19147858
+    },
+    {
+      "pkg": "fastify",
+      "downloads": 18133557
+    },
+    {
+      "pkg": "astro",
+      "downloads": 7930766
+    },
+    {
+      "pkg": "@sveltejs/kit",
+      "downloads": 3634608
+    },
+    {
+      "pkg": "@devorajs/core",
+      "downloads": 91
+    }
+  ]
+}

@@ -132,7 +132,11 @@ export default function IsrPage({ data }) {
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`export const renderMode = "streaming";
+{`import { island, Island } from "@devorajs/core";
+
+const SlowWidget = island(() => import("../components/SlowWidget"));
+
+export const renderMode = "streaming";
 
 export async function loader() {
   return { renderedAt: new Date().toISOString() };
@@ -154,7 +158,9 @@ export default function StreamingPage({ data }) {
         uses is decided by which render mode is actively rendering it. GET-only, on purpose: an{" "}
         <code>action</code> needs to decide "redirect or re-render" before any HTML is sent, which
         conflicts with a response that's already streaming — the same restriction <code>ssg</code>/
-        <code>isr</code> already have, for an unrelated reason.
+        <code>isr</code> already have, for an unrelated reason. Under <code>devora start</code> and
+        in the Vercel function the response really streams; Netlify's function format delivers the
+        same HTML as one buffered response.
       </p>
 
       <h2>Islands and client-only components</h2>
@@ -165,6 +171,15 @@ export default function StreamingPage({ data }) {
         never run on the server at all (touches <code>window</code> at module scope, say) uses{" "}
         <code>clientOnly(() =&gt; import("./Widget"))</code> instead, which renders nothing
         server-side and only resolves in a real browser.
+      </p>
+      <p>
+        Islands are found while the build follows your app's imports, so an <code>island()</code>{" "}
+        can live in a shared component or a workspace package, not only in a route file. The call
+        must have the literal shape <code>island(() =&gt; import("./path"))</code> so the build
+        knows which file to ship to the browser; anything else (<code>island(loader)</code>, a
+        computed path, a path that doesn't resolve) stops <code>devora dev</code> and{" "}
+        <code>devora build</code> with the file and line, instead of shipping an island that never
+        hydrates.
       </p>
       </DocsLayout>
     </PageShell>

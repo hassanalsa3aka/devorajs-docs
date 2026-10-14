@@ -29,10 +29,15 @@ export default function GettingStarted() {
       </p>
       <div className="devora-card">
         <p style={{ margin: 0 }}>
-          <code>npx create-devora@latest</code>
+          <code>npm create devora@latest</code>
         </p>
       </div>
-      <p>Yarn and pnpm both work the same way: <code>yarn create devora</code> or <code>pnpm create devora</code>.</p>
+      <p>
+        Yarn and pnpm work the same way: <code>yarn create devora</code> or{" "}
+        <code>pnpm create devora</code> (<code>npx create-devora@latest</code> does too). You need
+        Node 20 or newer. New projects depend on <code>@devorajs/core</code> and{" "}
+        <code>@devorajs/cli</code> <code>^0.3.2</code> and start on React 18 (React 19 also works).
+      </p>
 
       <h2>What it asks</h2>
       <p>Run with no flags in a real terminal, it prompts for four things in order:</p>
@@ -45,8 +50,8 @@ export default function GettingStarted() {
         generates page apps plus one shared backend, <code>packages/backend</code>.{" "}
         <Tag color="purple">frontend</Tag> generates page apps only, with no{" "}
         <code>packages/backend</code> at all. <Tag color="emerald">backend</Tag> generates API-only
-        apps — an <code>api/</code> folder of routes, no pages and no React — plus the shared
-        backend. Either way a project gets at most one shared backend; logic only one app needs can
+        apps — an <code>endpoints/</code> folder of routes, served under <code>/api</code>, with no
+        pages and no React — plus the shared backend. Either way a project gets at most one shared backend; logic only one app needs can
         live inside that app instead (see{" "}
         <a href="/core-concepts#shared-backend">The shared backend pattern</a>).
       </p>
@@ -75,8 +80,14 @@ export default function GettingStarted() {
         straight to the defaults above, and{" "}
         <code>--scope=fullstack|frontend|backend</code>, <code>--apps=</code> and{" "}
         <code>--auth=name:mode,...</code> flags let you skip the prompts entirely while scripting a
-        scaffold.
+        scaffold. <code>--pm=npm|pnpm|yarn</code> picks the package manager (otherwise it's the one
+        you ran the installer with) and <code>--skip-install</code> only writes the files:
       </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`npm create devora@latest my-app -- --scope=fullstack --apps=site,app --auth=site:none,app:shared --pm=npm`}
+        </pre>
+      </div>
 
       <h2>Resulting project structure</h2>
       <p>For the default answers (full-stack, three apps, all shared auth), you get:</p>
@@ -84,7 +95,8 @@ export default function GettingStarted() {
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`my-devora-app/
 ├── devora.config.ts        # declares every app + the project-wide auth default
-├── package.json            # dev / dev:host / build / start scripts
+├── package.json            # dev / dev:host / build / start / typecheck scripts
+├── tsconfig.json, tsconfig.base.json
 ├── .env.example            # the session secrets production needs
 ├── packages/
 │   └── backend/            # the shared backend — server functions + your DB client
@@ -92,9 +104,11 @@ export default function GettingStarted() {
 └── apps/
     ├── marketing/
     │   ├── routes/         # index.tsx, plus login/logout/account.tsx for an app with auth
-    │   ├── app.config.ts
+    │   ├── error.tsx       # the app's 404 and error page
+    │   ├── app.config.ts   # apiDir: "endpoints", sitemap, head
     │   ├── vite.config.ts
     │   ├── entry-server.tsx, island-client.tsx, csr-client.tsx
+    │   ├── package.json, tsconfig.json
     │   └── vercel.json, netlify.toml
     ├── dashboard/          # same layout
     └── admin/              # same layout`}
@@ -107,8 +121,12 @@ export default function GettingStarted() {
         <a href="/security#sessions">Security model</a>. An app scaffolded with <code>none</code>{" "}
         gets only <code>index.tsx</code> — no login routes, no session dependency. The{" "}
         <code>assets/</code> folder (logo, favicon) and a few config files (
-        <code>tsconfig.base.json</code>, <code>pnpm-workspace.yaml</code>,{" "}
-        <code>.gitignore</code>, <code>.npmrc</code>) sit at the project root too.
+        <code>pnpm-workspace.yaml</code>, <code>.gitignore</code>, <code>.npmrc</code>, a{" "}
+        <code>README.md</code>) sit at the project root too. API routes for a page app go in an{" "}
+        <code>endpoints/</code> folder you create when you need one (<code>apiDir</code> in{" "}
+        <code>app.config.ts</code>); they're served under <code>/api</code>. Not{" "}
+        <code>api/</code>: on Vercel a top-level <code>api/</code> folder is Vercel's own
+        functions folder (see <a href="/deployment">Deployment</a>).
       </p>
       <p>
         A <strong>frontend</strong> project is the same minus <code>packages/backend</code>. A{" "}
@@ -125,9 +143,10 @@ export default function GettingStarted() {
 │       └── db/index.ts
 └── apps/
     └── api/
-        ├── api/            # health.ts, plus session.ts (token login/logout) and me.ts for an app with auth
-        ├── app.config.ts   # backendOnly: true
+        ├── endpoints/      # health.ts, plus session.ts (token login/logout) and me.ts for an app with auth
+        ├── app.config.ts   # backendOnly: true, apiDir: "endpoints"
         ├── vite.config.ts
+        ├── package.json, tsconfig.json
         └── vercel.json, netlify.toml`}
         </pre>
       </div>
@@ -144,9 +163,14 @@ npm run dev`}
         </pre>
       </div>
       <p>
-        That starts every app in dev mode and prints each one's URL and route table. Ports start
-        at <code>10000</code>, one per app in <code>devora.config.ts</code> order. To run a single
-        app, pass the flag through npm: <code>npm run dev -- --app=dashboard</code>.
+        That starts every app in dev mode and prints a short header with the CLI version and how
+        long startup took, every app's URLs, then each app's routes (pages always; API routes
+        listed up to 10 per app, counted above that). Ports start at <code>10000</code>, one per
+        app in <code>devora.config.ts</code> order. To run a single app, pass the flag through npm:{" "}
+        <code>npm run dev -- --app=dashboard</code>. <code>--routes</code> lists every API route,{" "}
+        <code>--quiet</code> prints only the URLs, warnings and errors, and{" "}
+        <code>npm run dev:host</code> exposes the dev servers on your local network (with a
+        warning). <code>.env</code> files in the project root are loaded automatically.
       </p>
       <p>
         <strong>Why not just <code>devora dev</code>?</strong> The CLI is installed into the

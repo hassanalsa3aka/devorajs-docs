@@ -58,9 +58,23 @@ export const addMessage = serverFn(async (input: { author: string; text: string 
         </pre>
       </div>
       <p>
+        Then make it importable: <code>packages/backend/package.json</code> only exports{" "}
+        <code>./db</code> in a fresh project, so add the new file to its <code>exports</code>:
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`"exports": {
+  "./db": "./db/index.ts",
+  "./guestbook": "./functions/guestbook.ts"
+}`}
+        </pre>
+      </div>
+      <p>
         A real app swaps the in-memory array for a DB call (Prisma, Drizzle, whichever) — the
         shape of <code>serverFn</code> itself doesn't change either way; see{" "}
-        <a href="/core-concepts">The shared backend pattern</a>.
+        <a href="/core-concepts">The shared backend pattern</a>. The array lives in one app's
+        server; another app importing the same file gets its own copy, which is one more reason
+        to use a database.
       </p>
 
       <h2>2. The route: loader + form</h2>
@@ -142,9 +156,13 @@ export async function action(formData, ctx) {
         <code>npm run dev</code>, then log in (a <code>shared</code>/<code>isolated</code>-auth
         scaffold already generated a <code>login.tsx</code> route) and visit{" "}
         <code>/guestbook</code>. Submitting without logging in first throws from{" "}
-        <code>requireAuth()</code>; submitting with a stale/missing CSRF field throws from{" "}
-        <code>verifyCsrf</code>. Both are real errors, not silent no-ops — see{" "}
-        <a href="/security">Security model</a> for why.
+        <code>requireAuth()</code> — a <code>401</code>, rendered by the app's{" "}
+        <code>error.tsx</code>; submitting with a stale or missing CSRF field throws from{" "}
+        <code>verifyCsrf</code> — a <code>403</code>. Both are real errors, not silent no-ops —
+        see <a href="/security">Security model</a> for why. To show a validation message on the
+        form instead of an error page, return <code>fail(400, {"{ error }"})</code> from the
+        action and read <code>actionData</code> in the component (see{" "}
+        <a href="/pages-forms-errors">Pages, forms and errors</a>).
       </p>
       <p>
         From here: swap the array for a real DB client, move validation into{" "}

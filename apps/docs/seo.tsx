@@ -1,10 +1,11 @@
 // One place for everything search engines and link previews read, so each
 // route only states its own path, title, and description.
 //
-// The framework's <head> (packages/core html.ts) renders title,
-// description, and og:title/description/type/image/url — nothing else. No
-// canonical link, twitter:card, or <html lang> yet; those need a
-// framework change, not something a route can add.
+// The framework's <head> renders title, description, and
+// og:title/description/type/image/url. Since @devorajs/core 0.3.2 a route's
+// meta() can add its own tags through `head`, which is how every page gets
+// a canonical link and a twitter:card below; <html lang> is set once in
+// app.config.ts.
 
 export const SITE_URL = "https://devorajs-docs-docs.vercel.app";
 export const SITE_NAME = "Devora.js";
@@ -17,14 +18,19 @@ export const OG_IMAGE = `${SITE_URL}/og/devorajs-og.png`;
  * `fullTitle` is given (pages whose title already names the product).
  */
 export function pageMeta(path, { title, description, fullTitle = undefined, type = "article" }) {
+  const url = `${SITE_URL}${path === "/" ? "/" : path}`;
   return {
     title: fullTitle ?? `${title} — Devora.js docs`,
     description,
+    head: {
+      links: [{ rel: "canonical", href: url }],
+      meta: [{ name: "twitter:card", content: "summary_large_image" }],
+    },
     og: {
       title: fullTitle ?? title,
       description,
       type: path === "/" ? "website" : type,
-      url: `${SITE_URL}${path === "/" ? "/" : path}`,
+      url,
       image: OG_IMAGE,
     },
   };

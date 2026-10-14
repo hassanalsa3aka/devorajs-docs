@@ -1,32 +1,139 @@
-const FOOTER_LINKS = [
-  { label: "Getting started", href: "/getting-started" },
-  { label: "Docs home", href: "/" },
-  { label: "GitHub — devora.js", href: "https://github.com/hassanalsa3aka/devora.js" },
-  { label: "GitHub — docs", href: "https://github.com/hassanalsa3aka/devorajs-docs" },
-  { label: "Discord — community", href: "https://discord.gg/wYFYmFxdS8" },
-  { label: "X — updates", href: "https://x.com/hassansayed2002" },
-  { label: "Privacy", href: "/privacy" },
-  // Handled by assets/js/analytics.js — reopens the consent banner.
-  { label: "Cookie settings", href: "#cookie-settings" },
+import { SITE_THEME_CSS } from "./site-theme.js";
+
+const EXTERNAL = { target: "_blank", rel: "noopener noreferrer" } as const;
+
+const FOOTER_COLUMNS = [
+  {
+    title: "Docs",
+    links: [
+      { label: "Getting started", href: "/getting-started" },
+      { label: "Build a multi-app project", href: "/multi-app-tutorial" },
+      { label: "API reference", href: "/api-reference" },
+      { label: "Deployment", href: "/deployment" },
+    ],
+  },
+  {
+    title: "Project",
+    links: [
+      { label: "Compare", href: "/compare" },
+      { label: "Upgrading to 0.3.2", href: "/upgrading" },
+      { label: "Changelog", href: "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md" },
+      { label: "npm packages", href: "https://www.npmjs.com/package/@devorajs/core" },
+    ],
+  },
+  {
+    title: "Source",
+    links: [
+      { label: "devora.js on GitHub", href: "https://github.com/hassanalsa3aka/devora.js" },
+      { label: "These docs on GitHub", href: "https://github.com/hassanalsa3aka/devorajs-docs" },
+      { label: "Report an issue", href: "https://github.com/hassanalsa3aka/devora.js/issues" },
+    ],
+  },
 ];
 
+const ICON_GITHUB = (
+  <path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z" />
+);
+const ICON_DISCORD = (
+  <path d="M20.32 4.37A19.8 19.8 0 0 0 15.4 2.9l-.62 1.27a18.3 18.3 0 0 0-5.56 0L8.6 2.9a19.7 19.7 0 0 0-4.92 1.47C.57 9.05-.27 13.6.15 18.1a19.9 19.9 0 0 0 6.03 3.05l1.3-2.13a12.9 12.9 0 0 1-2.05-.98l.5-.39a14.2 14.2 0 0 0 12.14 0l.5.39c-.65.39-1.34.72-2.05.98l1.3 2.13a19.8 19.8 0 0 0 6.03-3.05c.5-5.2-.84-9.72-3.53-13.73zM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.95-2.42 2.16-2.42c1.2 0 2.18 1.09 2.16 2.42 0 1.33-.96 2.42-2.16 2.42zm7.97 0c-1.19 0-2.16-1.09-2.16-2.42s.95-2.42 2.16-2.42c1.2 0 2.17 1.09 2.16 2.42 0 1.33-.95 2.42-2.16 2.42z" />
+);
+const ICON_X = <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.67l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64z" />;
+
+const SOCIAL = [
+  { label: "devora.js on GitHub", href: "https://github.com/hassanalsa3aka/devora.js", icon: ICON_GITHUB },
+  { label: "Devora.js Discord", href: "https://discord.gg/wYFYmFxdS8", icon: ICON_DISCORD },
+  { label: "Updates on X", href: "https://x.com/hassansayed2002", icon: ICON_X },
+];
+
+// Every <style> on this site is written with dangerouslySetInnerHTML: as a
+// text child, React HTML-escapes it (" becomes &quot;, > becomes &gt;),
+// which silently drops any rule with a quoted string or a child combinator.
+// The CSS is static, never user input.
 export function SiteFooter() {
   return (
     <>
-      <style>{`
-        .site-footer-links {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.25rem 1.25rem;
+      <style dangerouslySetInnerHTML={{ __html: `${SITE_THEME_CSS}
+        /* Footer: brand column + three link columns, then a legal row. */
+        .devora-footer-inner { padding-top: 3rem; padding-bottom: 1.5rem; gap: 2rem; }
+        .devora-footer-custom { display: block; }
+        .site-footer {
+          display: grid;
+          grid-template-columns: minmax(14rem, 1.4fr) repeat(3, minmax(9rem, 1fr));
+          gap: 2.5rem 2rem;
         }
-        .site-footer-copy a,
-        .site-footer-links a {
-          color: var(--devora-link, inherit);
+        .site-footer-brand { display: flex; flex-direction: column; gap: 0.85rem; max-width: 22rem; }
+        .site-footer-logo {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 1.05rem;
+          font-weight: 700;
+          color: var(--devora-fg);
           text-decoration: none;
         }
-        .site-footer-copy a:hover,
-        .site-footer-links a:hover {
-          text-decoration: underline;
+        .site-footer-logo img { width: 26px; height: 26px; }
+        .site-footer-logo span span {
+          background: linear-gradient(90deg, var(--devora-accent-from), var(--devora-accent-to));
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+        }
+        .site-footer-tagline { margin: 0; font-size: 0.875rem; line-height: 1.6; color: var(--devora-fg-muted); }
+        .site-footer-social { display: flex; gap: 0.5rem; }
+        .site-footer-social a {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 10px;
+          border: 1px solid var(--devora-border);
+          color: var(--devora-fg-muted);
+          transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+        }
+        .site-footer-social a:hover { color: var(--devora-fg); border-color: var(--devora-accent-from); background: var(--devora-hover); }
+        .site-footer-social svg { width: 17px; height: 17px; fill: currentColor; }
+        .site-footer-col h2 {
+          margin: 0 0 0.85rem;
+          padding: 0;
+          font-size: 0.72rem;
+          font-weight: 700;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+          color: var(--devora-fg);
+          border: 0;
+        }
+        .devora-page .site-footer-col h2::before, .site-footer-col h2::before { content: none; }
+        .site-footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.55rem; }
+        .site-footer-col a, .site-footer-legal a {
+          color: var(--devora-fg-muted);
+          text-decoration: none;
+          font-size: 0.875rem;
+        }
+        .site-footer-col a:hover, .site-footer-legal a:hover { color: var(--devora-fg); text-decoration: underline; }
+        .site-footer-legal {
+          grid-column: 1 / -1;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.5rem 1.5rem;
+          padding-top: 1.25rem;
+          border-top: 1px solid var(--devora-border);
+          font-size: 0.8rem;
+          color: var(--devora-fg-subtle);
+        }
+        .site-footer-legal a { font-size: 0.8rem; }
+        .site-footer-legal .site-footer-copy { margin-right: auto; }
+        .site-footer-legal .site-footer-copy a { color: var(--devora-fg); }
+        /* The framework's "Built with devora.js" row moves into the legal row below. */
+        .devora-footer-row { display: none; }
+        @media (max-width: 900px) {
+          .site-footer { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+          .site-footer-brand { grid-column: 1 / -1; max-width: none; }
+        }
+        @media (max-width: 560px) {
+          .site-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+          .site-footer-legal .site-footer-copy { margin-right: 0; width: 100%; }
         }
 
         /* Consent banner — created by assets/js/analytics.js, only when GA
@@ -255,26 +362,57 @@ export function SiteFooter() {
           color: var(--devora-link);
           font-weight: 600;
         }
-      `}</style>
-      <span className="site-footer-copy">
-        © 2026{" "}
-        <a href="https://www.hassansayed.dev" target="_blank" rel="noopener noreferrer">
-          Hassan Sayed
-        </a>
-      </span>
-      <nav className="site-footer-links" aria-label="Footer">
-        {FOOTER_LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            {...(link.href.startsWith("http")
-              ? { target: "_blank", rel: "noopener noreferrer" }
-              : {})}
-          >
-            {link.label}
+      ` }} />
+      <div className="site-footer">
+        <div className="site-footer-brand">
+          <a href="/" className="site-footer-logo">
+            <img src="/icons/devorajs-logo-withoutbg.png" alt="" width={26} height={26} />
+            <span>
+              devora<span>.js</span>
+            </span>
           </a>
+          <p className="site-footer-tagline">
+            A Vite-based React framework for projects with more than one app: one shared backend,
+            one login, each app deployed on its own.
+          </p>
+          <div className="site-footer-social">
+            {SOCIAL.map((s) => (
+              <a key={s.href} href={s.href} aria-label={s.label} title={s.label} {...EXTERNAL}>
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">{s.icon}</svg>
+              </a>
+            ))}
+          </div>
+        </div>
+        {FOOTER_COLUMNS.map((col) => (
+          <nav className="site-footer-col" aria-label={col.title} key={col.title}>
+            <h2>{col.title}</h2>
+            <ul>
+              {col.links.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href} {...(link.href.startsWith("http") ? EXTERNAL : {})}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         ))}
-      </nav>
+        <div className="site-footer-legal">
+          <span className="site-footer-copy">
+            © 2026{" "}
+            <a href="https://www.hassansayed.dev" {...EXTERNAL}>
+              Hassan Sayed
+            </a>{" "}
+            · MIT License
+          </span>
+          <a href="/privacy">Privacy</a>
+          {/* Handled by assets/js/analytics.js — reopens the consent banner. */}
+          <a href="#cookie-settings">Cookie settings</a>
+          <span>
+            Built with <a href="https://github.com/hassanalsa3aka/devora.js" {...EXTERNAL}>devora.js</a>
+          </span>
+        </div>
+      </div>
 
       <div id="search-overlay" className="search-overlay">
         <div className="search-overlay-box">

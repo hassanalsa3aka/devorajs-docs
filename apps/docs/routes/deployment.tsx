@@ -22,7 +22,7 @@ export default function Deployment() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="deployment">
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         .deploy-steps {
           list-style: none;
           counter-reset: deploy-step;
@@ -61,7 +61,7 @@ export default function Deployment() {
         }
         .deploy-step strong { color: var(--devora-fg); }
         .deploy-step .devora-card { margin-top: 0.75rem; margin-bottom: 0; }
-      `}</style>
+      ` }} />
       <h1>Deployment</h1>
       <p>
         A multi-app project doesn't deploy as one unit — each app in{" "}
@@ -70,6 +70,15 @@ export default function Deployment() {
         devora.js convention: a marketing site, dashboard, and admin panel are three independently
         deployable things, each repeating the same steps below.
       </p>
+      <Callout kind="info" title="What's verified for 0.3.2">
+        <p>
+          For 0.3.2, the Vercel and Netlify functions <code>devora build --adapter</code> generates
+          were run outside the framework's monorepo (real pages, login, CSRF, a CommonJS
+          dependency), <code>devora start</code> and the Docker image were run locally, and the
+          maintainer has deployed 0.3.2 apps to both Vercel and Netlify. Container platforms
+          (Cloud Run, App Runner, Container Apps) haven't been tested.
+        </p>
+      </Callout>
 
       <h2>1. Push the project to GitHub</h2>
       <p>Both Vercel and Netlify deploy by connecting to a git repository — do this once, first:</p>
@@ -85,12 +94,11 @@ git push -u origin main`}
         </pre>
       </div>
       <p>
-        A committed <code>.github/workflows/ci.yml</code> ships with every project scaffolded by
-        this framework — it runs a real <code>devora build</code> for every app (plain, plus both{" "}
-        <code>--adapter</code> targets) on every push and pull request to <code>main</code>, across
-        all three supported package managers, plus the real test suite. No setup needed beyond
-        pushing the code; it's the gate that catches a broken build before it ever reaches Vercel
-        or Netlify.
+        Scaffolded projects don't include a CI workflow. Worth adding one that runs{" "}
+        <code>npm ci</code>, <code>npm run typecheck</code> and{" "}
+        <code>npx devora build --adapter=vercel</code> (or <code>netlify</code>) for each app: the
+        adapter build runs the same preflight checks as the platform, so a missing session store
+        or a misplaced <code>api/</code> folder fails in CI instead of on the platform.
       </p>
 
       <h2 id="session-store">2. Configure a session store (apps with login)</h2>
@@ -156,6 +164,18 @@ shared: {
       </p>
 
       <h2>3. Deploying to Vercel <Tag color="gray">Vercel</Tag></h2>
+      <Callout kind="warning" title="Keep API routes out of a top-level api/ folder">
+        <p>
+          <code>api/</code> at the root of a Vercel project is Vercel's own functions folder. With
+          the Root Directory set to <code>apps/&lt;name&gt;</code>, Vercel turns every file in{" "}
+          <code>apps/&lt;name&gt;/api/</code> into a separate function on top of the one Devora
+          builds (and can hit the Hobby plan's function limit), or type-checks it with its own
+          settings. Apps created by <code>create-devora</code>/<code>devora add</code> already use{" "}
+          <code>apiDir: "endpoints"</code>. For an older app, move the folder and set{" "}
+          <code>apiDir</code> in <code>app.config.ts</code>; URLs stay under <code>/api</code>. The
+          preflight check warns when it finds an <code>api/</code> folder there.
+        </p>
+      </Callout>
       <ol className="deploy-steps">
         <li className="deploy-step">
           In the Vercel dashboard: <strong>Add New… → Project</strong>, import the repo you just
@@ -188,6 +208,44 @@ shared: {
         <li className="deploy-step">Deploy. Changing an env var afterward needs a redeploy to take effect.</li>
         <li className="deploy-step">Repeat as a separate Vercel project, once per app.</li>
       </ol>
+      <p>What the build does on Vercel, so its log makes sense:</p>
+      <ul>
+        <li>
+          <strong>Runtime.</strong> The function runtime isn't hardcoded (it used to be{" "}
+          <code>nodejs20.x</code>, which Vercel now rejects). It's{" "}
+          <code>vercel: {"{ runtime: \"nodejs22.x\" }"}</code> from <code>app.config.ts</code> if
+          set, else the Node major running the build, else the newest one{" "}
+          <code>engines.node</code> allows, else <code>nodejs24.x</code>. The build prints which one
+          and why; an <code>engines.node</code> no supported runtime satisfies fails the build.
+        </li>
+        <li>
+          <strong>Preflight.</strong> Before building it checks the session secret and store for
+          the app's auth mode (a missing secret is an error when building on Vercel), the runtime,
+          and the <code>api/</code> folder above.
+        </li>
+        <li>
+          <strong>CommonJS dependencies</strong> such as <code>pg</code> work inside the bundled
+          function (they used to fail with <code>Dynamic require of "events" is not supported</code>).
+          Packages with native addons haven't been verified in the function.
+        </li>
+        <li>
+          <strong>Proxy headers.</strong> Inside the function <code>trustProxy</code> defaults to{" "}
+          <code>true</code> (only Vercel's edge can reach it), so <code>ctx.ip</code>,{" "}
+          <code>ctx.url</code> and <code>secure: "auto"</code> cookies see the real client.
+        </li>
+        <li>
+          <strong>Codegen.</strong> A clean checkout doesn't have generated files (a Prisma client,
+          compiled CSS). List those commands in <code>prebuild</code> in <code>app.config.ts</code>;
+          they run before every <code>devora build</code>/<code>deploy</code>.
+        </li>
+      </ul>
+      <p>
+        <strong>Root Directory = the repo root instead</strong> (if you can't move an{" "}
+        <code>api/</code> folder yet): leave Root Directory empty, set the Framework Preset to
+        Other and the build command to{" "}
+        <code>./node_modules/.bin/devora build --app=&lt;name&gt; --adapter=vercel --out=.vercel/output</code>{" "}
+        per project. The repo root itself then must not have an <code>api/</code> folder.
+      </p>
 
       <h2>4. Deploying to Netlify <Tag color="emerald">Netlify</Tag></h2>
       <p>Same shape as Vercel, with a few platform-specific gotchas worth knowing up front:</p>
@@ -260,8 +318,10 @@ Package directory:   (leave blank)`}
             </li>
           </ul>
           Both are already fixed in every scaffolded app's committed <code>netlify.toml</code> (
-          <code>included_files</code> lists <code>routes/**</code>, <code>api/**</code>,{" "}
-          <code>dist/**</code>, <code>package.json</code>, and <code>node_modules/**</code>) — this
+          <code>included_files</code> lists <code>routes/**</code>, the app's API folder (
+          <code>endpoints/**</code> in new apps — it must match <code>apiDir</code>; the preflight
+          check warns if it doesn't), <code>dist/**</code>, <code>package.json</code>, and{" "}
+          <code>node_modules/**</code>) — this
           is documented here in case a future platform change reintroduces the same class of gap:
           anything the function reads from disk at runtime, rather than statically imports, has to
           be named in that list explicitly, or it silently never reaches the deployed function.
@@ -277,7 +337,14 @@ Package directory:   (leave blank)`}
       </p>
 
       <h2>5. Docker <Tag color="blue">Docker</Tag></h2>
-      <p>Each app builds and runs as its own container image, one app per image via a build arg:</p>
+      <p>
+        Scaffolded projects don't include a Dockerfile; the framework repo has a working one
+        (<a href="https://github.com/hassanalsa3aka/devora.js/blob/main/Dockerfile">Dockerfile</a>,{" "}
+        <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/docker-compose.yml">docker-compose.yml</a>)
+        to copy and adapt — it runs <code>devora start --app=$APP_NAME</code> and listens on{" "}
+        <code>PORT</code> (4173 unless you set it). Each app builds and runs as its own container
+        image, one app per image via a build arg:
+      </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`docker build --build-arg APP_NAME=marketing -t devora-marketing .
@@ -299,6 +366,37 @@ docker compose up --build`}
         <code>"memory"</code> is acceptable for a single container, but every container restart
         signs everyone out, and two replicas won't see each other's sessions.
       </p>
+
+      <h2 id="containers">Container platforms <Tag color="gray">untested</Tag></h2>
+      <p>
+        Cloud Run, AWS App Runner/Fargate and Azure Container Apps run the same image. None of them
+        has been tested; this is what the framework needs from them:
+      </p>
+      <ul>
+        <li>
+          <strong>Port.</strong> The platform sets or lets you choose <code>PORT</code>;{" "}
+          <code>devora start</code> reads it. Leave <code>HOST</code> unset so the platform's
+          router can reach the process.
+        </li>
+        <li>
+          <strong>HTTPS at the load balancer.</strong> TLS ends in front of the container. Session
+          cookies are <code>Secure</code> by default, which is right for an HTTPS public URL; set{" "}
+          <code>trustProxy: true</code> in <code>app.config.ts</code> so <code>ctx.url</code>,{" "}
+          <code>ctx.ip</code> and <code>secure: "auto"</code> see the real scheme and client.
+        </li>
+        <li>
+          <strong>A shared session store.</strong> Several instances, replaced at will:{" "}
+          <code>"memory"</code> doesn't work. Point <code>shared.sessions.store</code> at your
+          database or Redis.
+        </li>
+        <li>
+          <strong>Secrets</strong> in the platform's secret settings, not in the image.
+        </li>
+        <li>
+          <strong><code>isr</code></strong> caches on each instance's own disk.
+        </li>
+      </ul>
+      <p>An Oracle Cloud VM, or any VM, is the VPS setup below.</p>
 
       <h2>6. Self-hosted VPS <Tag color="purple">VPS</Tag></h2>
       <p>
@@ -322,6 +420,17 @@ npx devora generate:proxy --target=nginx   # or --target=caddy
         <a href="/getting-started">Getting started</a>). As with Docker, any app with login needs{" "}
         <code>shared.sessions.store</code> set before building (<a href="#session-store">step
         2</a>) — <code>npm run start</code> exits with the error above otherwise.
+      </p>
+      <p>
+        Bind each app to loopback so only the proxy reaches it:{" "}
+        <code>HOST=127.0.0.1 npm run start</code> (<code>PORT</code> sets the first app's port).
+        Session cookies are <code>Secure</code> by default in production, so{" "}
+        <strong>logins over plain HTTP won't stick</strong> until the proxy serves HTTPS — the
+        server logs a warning when it sends a <code>Secure</code> cookie over what looks like plain
+        HTTP. For a mixed setup set <code>shared.sessions.cookie.secure: "auto"</code> in{" "}
+        <code>devora.config.ts</code> and <code>trustProxy: true</code> in each app (the generated
+        configs send <code>X-Forwarded-Proto</code>); <code>false</code> is for a deliberately
+        plain-HTTP deployment. See <a href="/security">Security</a>.
       </p>
       <p>
         The generated nginx config listens on plain HTTP only — issuing a real TLS certificate

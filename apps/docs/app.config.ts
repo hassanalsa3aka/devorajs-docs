@@ -2,6 +2,8 @@ import { defineApp } from "@devorajs/core/config";
 
 export default defineApp({
   defaultRenderMode: "ssr",
+  // <html lang="en"> on every page (screen readers, Pagefind's language detection).
+  head: { lang: "en" },
   // This is a public-facing docs site, so opt in — sitemap.xml helps search
   // engines discover every page (opt-in/off by default for internal apps).
   sitemap: true,

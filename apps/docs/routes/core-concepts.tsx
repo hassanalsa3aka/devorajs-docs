@@ -50,11 +50,13 @@ export default function CoreConcepts() {
           Revoking it deletes the record from the store, so it stops working everywhere at once.
         </p>
         <p style={{ marginBottom: 0 }}>
-          One browser caveat: the cookie is host-only (0.3.x sets no cookie <code>Domain</code>),
-          so browsers only send it back to the host that set it. Apps on the same host — including
-          every app in <code>devora dev</code>, all on <code>localhost</code> — share a browser
-          login. Apps on separate subdomains in production don't yet, even though the server would
-          accept the same session. Bearer clients aren't affected.
+          One browser detail: by default the cookie is host-only, so browsers only send it back to
+          the host that set it. Apps on the same host — including every app in{" "}
+          <code>devora dev</code>, all on <code>localhost</code> — share a browser login. For apps
+          on separate subdomains in production, set{" "}
+          <code>shared.sessions.cookie.domain: "example.com"</code> in{" "}
+          <code>devora.config.ts</code>; every shared app must be served from that domain or a
+          subdomain of it (checked at build and dev start). Bearer clients aren't affected.
         </p>
       </div>
       <div className="devora-card" style={{ borderTopColor: "#a855f7", marginTop: "0.85rem" }}>
@@ -152,7 +154,16 @@ import { updateSettings } from "@devorajs/backend/settings";
         static route at the same depth always wins over a dynamic one (
         <code>routes/users/new.tsx</code> beats <code>routes/users/[id].tsx</code> for{" "}
         <code>/users/new</code>). <code>ssr</code>/<code>csr</code> support dynamic routes with no
-        extra work — a live request already carries its own params.
+        extra work — a live request already carries its own params. A <code>[param]</code> matches
+        exactly one path segment; there are no catch-all (<code>[...slug]</code>) routes.
+      </p>
+      <p>
+        Next to <code>routes/</code>, an app can have an <code>error.tsx</code> (its 404 and error
+        page) and an API folder — <code>endpoints/</code> in new apps, set by{" "}
+        <code>apiDir</code> in <code>app.config.ts</code> — whose files are served under{" "}
+        <code>/api</code> by the same router. See{" "}
+        <a href="/pages-forms-errors">Pages, forms and errors</a> and{" "}
+        <a href="/backend">Backend</a>.
       </p>
       <p>
         <code>ssg</code>/<code>isr</code> on a dynamic route need a <code>getStaticParams()</code>{" "}

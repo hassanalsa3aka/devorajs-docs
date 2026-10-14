@@ -25,7 +25,17 @@ export default function CliReference() {
       <h1>CLI reference</h1>
       <p>
         Every command below runs as <code>devora &lt;command&gt;</code> — via <code>pnpm exec</code>,{" "}
-        <code>npm exec</code>, or <code>yarn</code>, whichever your project uses.
+        <code>npm exec</code>/<code>npx</code>, or <code>yarn</code>, whichever your project uses
+        (or a <code>package.json</code> script). This page describes <code>@devorajs/cli</code>{" "}
+        0.3.2; <code>npx devora --version</code> prints yours.
+      </p>
+      <p>
+        <code>dev</code>, <code>build</code>, <code>start</code> and <code>deploy</code> load the
+        project root's <code>.env</code> files first (<code>.env</code>, <code>.env.local</code>,{" "}
+        <code>.env.&lt;mode&gt;</code>, <code>.env.&lt;mode&gt;.local</code>, with Vite's
+        precedence; mode is <code>development</code> for <code>dev</code>,{" "}
+        <code>production</code> otherwise). A variable already set in the environment always
+        wins, and only file names are printed, never values.
       </p>
 
       <div className="docs-table-wrap">
@@ -68,24 +78,67 @@ export default function CliReference() {
         <code>devora start</code> uses its own ports (from 4173).
       </p>
       <p>
-        <strong>On boot it prints every app's URLs and route table</strong> — page routes and{" "}
-        <code>api/**</code> routes, with each app's auth mode — so you can see what's actually
-        being served without opening <code>routes/</code>:
+        <strong>On boot it prints a short header, then every app's URLs, then the routes per
+        app</strong> — so you can see what's actually being served without opening{" "}
+        <code>routes/</code>. Pages are always listed; an app's API routes are listed when it has
+        10 or fewer and counted above that. This is real output from a fresh three-app project
+        (<code>NO_COLOR=1</code>; in a color terminal the mark is drawn in the logo's gradient):
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`  dashboard  (auth: shared, prod domain: dashboard.example.com)
+{`         ▄█
+    ▄▄▄▄▄██  ▄     devora.js 0.3.2
+  ▄█▀▀▀▀▀██  ▀█▄   dev · 3 apps · ready in 1.2 s
+  ██     ██   ▄█▀
+   ▀███████  █▀
+
+  marketing  auth: none · marketing.example.com
+    Local:    http://localhost:10000/
+    Network:  use --host to expose
+
+  dashboard  auth: shared · dashboard.example.com
     Local:    http://localhost:10001/
     Network:  use --host to expose
     API:      http://localhost:10001/api
-    Routes:
-      page /
-      page /account
-      page /login
-      page /logout
-      api  /api/orders/[id]`}
+
+  admin  auth: isolated · admin.example.com
+    Local:    http://localhost:10002/
+    Network:  use --host to expose
+
+  Routes
+    marketing
+      page  /
+    dashboard
+      page  /
+      page  /account
+      page  /login
+      page  /logout
+      api   /api/hello
+    admin
+      page  /
+      page  /account
+      page  /login
+      page  /logout`}
         </pre>
       </div>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>Flag</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr><td><code>--app &lt;name&gt;</code></td><td>Run only this app</td></tr>
+            <tr><td><code>--host</code></td><td>Listen on every network interface and print LAN URLs (with a warning)</td></tr>
+            <tr><td><code>--routes</code></td><td>List every API route, however many (same as <code>DEVORA_ROUTES=all</code>)</td></tr>
+            <tr><td><code>--quiet</code></td><td>Only warnings, errors and one URL line per app; Vite logs at <code>warn</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Terminal output</strong> follows the usual conventions: color in a terminal, plain
+        text when piped or in CI (<code>CI</code> set), <code>NO_COLOR=1</code> turns color off and{" "}
+        <code>FORCE_COLOR</code> (<code>0</code> off, <code>1</code>/<code>2</code>/<code>3</code>{" "}
+        for 16/256/truecolor) overrides both. Terminals narrower than 43 columns get a one-line
+        header. Nothing animates.
+      </p>
       <p>
         <strong><code>--host</code></strong> (off by default) listens on all network interfaces
         instead of just <code>localhost</code>, and adds each app's LAN address to that output (
@@ -100,15 +153,48 @@ export default function CliReference() {
         Builds every app for production (or one, with <code>--app &lt;name&gt;</code>). Add{" "}
         <code>--adapter &lt;target&gt;</code> (<code>vercel</code> or <code>netlify</code>) to also
         write that platform's build output format alongside the standard build — needed before a
-        Vercel or Netlify deploy, not needed for self-hosting.
+        Vercel or Netlify deploy, not needed for self-hosting. Any other <code>--adapter</code>{" "}
+        value is an error.
       </p>
+      <ul>
+        <li>
+          Always builds with <code>NODE_ENV=production</code>, and says so if it overrides a value
+          you set.
+        </li>
+        <li>
+          Runs the app's <code>prebuild</code> commands (<code>app.config.ts</code>) first, in the
+          app folder, with <code>node_modules/.bin</code> on <code>PATH</code>; a failing command
+          stops the build.
+        </li>
+        <li>
+          With <code>--adapter</code>, runs preflight checks before any build work: session secret
+          and store for the app's auth mode (both platforms); a supported function runtime and no
+          top-level <code>api/</code> folder in the Vercel project (Vercel); the API folder listed
+          in <code>netlify.toml</code>'s <code>included_files</code> (Netlify).
+        </li>
+        <li>
+          <code>--out &lt;dir&gt;</code> (with <code>--adapter=vercel --app=&lt;name&gt;</code>)
+          writes the Build Output directory somewhere other than{" "}
+          <code>apps/&lt;name&gt;/.vercel/output</code> — e.g. <code>--out=.vercel/output</code>{" "}
+          when the Vercel project's Root Directory is the repo root.
+        </li>
+        <li><code>--quiet</code> keeps only warnings and errors.</li>
+      </ul>
 
       <h2 id="start"><code>devora start</code></h2>
       <p>
         Serves a production build with the plain Node adapter — run <code>devora build</code>{" "}
-        first. Pass <code>--app &lt;name&gt;</code> to serve just one app, or{" "}
-        <code>--port &lt;port&gt;</code> to set the starting port (each additional app increments
-        from there automatically, so multiple apps never collide on the same host).
+        first. Pass <code>--app &lt;name&gt;</code> to serve just one app. The port is{" "}
+        <code>--port</code>, else the <code>PORT</code> environment variable, else 4173; each
+        additional app gets the next port, so multiple apps never collide on the same host. The
+        interface is <code>--host</code>, else <code>HOST</code>, else every interface (use{" "}
+        <code>HOST=127.0.0.1</code> behind a reverse proxy). Values taken from the environment are
+        printed. It always runs with <code>NODE_ENV=production</code>. The same server is
+        available as <code>createNodeServer()</code> from{" "}
+        <a href="https://www.npmjs.com/package/@devorajs/adapter-node">
+          <code>@devorajs/adapter-node</code>
+        </a>{" "}
+        if you need your own entry point.
       </p>
 
       <h2 id="deploy"><code>devora deploy</code></h2>
@@ -129,7 +215,9 @@ export default function CliReference() {
         registers it in <code>devora.config.ts</code>. Prompts whether the app needs auth/sessions
         unless you pass <code>--auth shared|isolated|none</code>, and <code>--domain
         &lt;domain&gt;</code> sets the domain recorded in the config (otherwise a placeholder is
-        used).
+        used). <code>--kind pages|api</code> picks a page app or a backend-only API app; without
+        it, a project whose apps are all backend-only gets an API app, otherwise a page app. New
+        apps keep API routes in <code>endpoints/</code> (<code>apiDir: "endpoints"</code>).
       </p>
 
       <h2 id="add"><code>devora add &lt;app-name&gt;</code></h2>

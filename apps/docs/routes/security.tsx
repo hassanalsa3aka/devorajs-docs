@@ -65,7 +65,9 @@ export default function Security() {
       <p>
         Each of these is overridable per app (<code>security.csp</code>, <code>security.frameOptions</code>,{" "}
         <code>security.hsts</code> in <code>app.config.ts</code>) — the point is that you have to
-        opt out, not opt in.
+        opt out, not opt in. <code>security.noindex: true</code> adds{" "}
+        <code>X-Robots-Tag: noindex</code> to every response of an app search engines shouldn't
+        index (an admin panel); on Vercel and Netlify it's also set on statically served files.
       </p>
 
       <h2 id="sessions">Sessions</h2>
@@ -207,7 +209,7 @@ export default defineSessionStore({
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/web/api/session.ts — token login and logout for mobile/API clients
+{`// apps/web/endpoints/session.ts — token login and logout for mobile/API clients
 import { apiRoute, HttpError } from "@devorajs/core";
 
 export const methods = ["POST", "DELETE"];
@@ -256,11 +258,20 @@ export const handler = apiRoute(async (req, ctx) => {
         <code>Authorization</code> header — so for a request that successfully authenticated with a
         Bearer token, <code>verifyCsrf()</code> passes without a token. Cookie-authenticated and
         unauthenticated requests (a login form, say) are always checked. A failed check throws a{" "}
-        <code>403</code>; a failed <code>requireAuth()</code> throws a <code>401</code>.
+        <code>403</code>; a failed <code>requireAuth()</code> throws a <code>401</code>. On a page
+        that status is kept and the app's <code>error.tsx</code> renders; in an API route it's a
+        JSON <code>{"{ message }"}</code>.
+      </p>
+      <p>
+        <strong>Bearer-only APIs:</strong> <code>csrf: false</code> in an app's{" "}
+        <code>app.config.ts</code> stops the <code>devora_csrf</code> cookie from being issued at
+        all (a mobile client's login call used to receive one). <code>verifyCsrf()</code> then
+        passes only for Bearer-authenticated requests and rejects everything else with a 403 — it
+        never silently passes.
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/web/api/transfer.ts — one route, safe for both browsers and mobile clients
+{`// apps/web/endpoints/transfer.ts — one route, safe for both browsers and mobile clients
 import { apiRoute, CSRF_HEADER_NAME } from "@devorajs/core";
 
 export const methods = ["POST"];
@@ -274,10 +285,58 @@ export const handler = apiRoute((req, ctx) => {
 });`}
         </pre>
       </div>
+      <h3 id="cookies" style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>Cookies, proxies and subdomains</h3>
       <p>
-        Session and CSRF cookies get <code>Secure</code> in production (conditional on the
-        environment, so plain HTTP still works in dev), plus <code>HttpOnly</code> and{" "}
-        <code>SameSite=Lax</code> always.
+        Session and CSRF cookies are always <code>HttpOnly</code>. Their other attributes apply in
+        production only (<code>devora dev</code> never sets <code>Secure</code> or{" "}
+        <code>Domain</code>, so plain HTTP keeps working locally) and are set in{" "}
+        <code>shared.sessions.cookie</code> in <code>devora.config.ts</code>, with per-app
+        overrides in <code>app.config.ts</code> <code>sessions.cookie</code>:
+      </p>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>Setting</th><th>Default</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>secure</code></td>
+              <td><code>true</code></td>
+              <td>
+                <code>true</code>: always <code>Secure</code>. Browsers drop a <code>Secure</code>{" "}
+                cookie over plain HTTP, so a login served over HTTP won't stick (the server logs a
+                warning). <code>"auto"</code>: only on HTTPS requests — a TLS connection, or{" "}
+                <code>X-Forwarded-Proto: https</code> with <code>trustProxy</code>.{" "}
+                <code>false</code>: never, for a deliberately plain-HTTP deployment
+              </td>
+            </tr>
+            <tr>
+              <td><code>sameSite</code></td>
+              <td><code>"lax"</code></td>
+              <td><code>"lax"</code>, <code>"strict"</code> or <code>"none"</code> (which requires <code>secure: true</code>)</td>
+            </tr>
+            <tr>
+              <td><code>domain</code></td>
+              <td>unset (host-only)</td>
+              <td>
+                <code>"example.com"</code> shares one login across subdomains. Session cookie only
+                (the CSRF cookie stays host-only); every shared app must be served from that domain
+                or a subdomain, checked at build and dev start
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <code>trustProxy</code> (in each app's <code>app.config.ts</code>) tells the app it sits
+        behind a proxy: <code>true</code> trusts one hop, a number trusts that many (a CDN in front
+        of nginx is <code>2</code>). It's what makes <code>secure: "auto"</code>,{" "}
+        <code>ctx.url</code> and <code>ctx.ip</code> use the forwarded scheme, host and client IP.
+        Default <code>false</code> for <code>devora start</code>; <code>true</code> inside the
+        generated Vercel/Netlify functions, which only the platform's edge can reach. Only enable
+        it when the app can't be reached except through that proxy, or a client could send the
+        headers itself. Session lifetimes (<code>activeSeconds</code>/<code>idleSeconds</code>) can
+        also be set per app for <code>auth: "isolated"</code> apps. Settings that can't work — a
+        domain that doesn't cover the app, session settings on an <code>auth: "none"</code> app —
+        fail the build and the dev server with a message.
       </p>
 
       <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What production requires</h3>

@@ -28,9 +28,10 @@ export default function BackendCapabilities() {
       <DocsLayout active="backend-capabilities">
       <h1>Adding common backend capabilities</h1>
       <p>
-        Devora.js deliberately ships no built-in validation library, logger, CORS layer, rate
-        limiter, or upload handler — the same "bring your own" line it draws for databases and auth
-        providers. Every real project reaches for these early, though, so this page gives one
+        Devora.js deliberately ships no built-in validation library, logger, or rate limiter —
+        the same "bring your own" line it draws for databases and auth providers. (Since 0.3.2 it
+        does have built-in CORS for API routes and multipart parsing for page forms; both are
+        covered below.) Every real project reaches for these early, so this page gives one
         recommended, working pattern for each. None of it is framework code: it's ordinary
         middleware and helpers you own, built on the primitives in{" "}
         <a href="/backend">Backend</a> — <code>apiRoute()</code>,{" "}
@@ -122,7 +123,7 @@ export function parseQuery<S extends ZodTypeAny>(req: ApiRequest, schema: S): Pa
       <p>Then in a route — the schema doubles as the TypeScript type of the parsed data:</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/dashboard/api/bookings.ts
+{`// apps/dashboard/endpoints/bookings.ts
 import { apiRoute } from "@devorajs/core";
 import { z } from "zod";
 import { parseJsonBody } from "@devorajs/backend/validation";
@@ -221,7 +222,24 @@ export const requestLogger = defineMiddleware((next) => async (req, ctx) => {
       <p>
         You only need CORS when a <em>browser</em> on a different origin calls your API (a separate
         web frontend, another app in the project on its own domain). Mobile apps and
-        server-to-server calls aren't subject to it at all. Use an explicit allowlist:
+        server-to-server calls aren't subject to it at all.
+      </p>
+      <p>
+        <strong>Since 0.3.2 the simplest option is built in:</strong> <code>cors</code> in the
+        app's <code>app.config.ts</code> answers preflights before any route runs and echoes
+        allowed origins, with config errors for an invalid origin or <code>credentials</code> with{" "}
+        <code>"*"</code>:
+      </p>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`// apps/api/app.config.ts
+export default defineApp({
+  cors: { origins: ["https://app.example.com", "https://*.example.com"], credentials: true },
+});`}
+        </pre>
+      </div>
+      <p>
+        Use middleware instead when the rules differ per route. An explicit allowlist:
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
@@ -313,19 +331,14 @@ export function rateLimit(opts: {
     return next(req, ctx);
   };
 }
-
-// The client's IP, as reported by the proxy in front of you (see below).
-export function clientIp(req: ApiRequest): string | undefined {
-  const forwarded = req.headers["x-forwarded-for"];
-  const value = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-  return value?.split(",")[0]?.trim() || undefined;
-}`}
+`}
         </pre>
       </div>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/dashboard/api/login.ts — 10 attempts per IP per 15 minutes
-const loginLimit = rateLimit({ limit: 10, windowMs: 15 * 60_000, key: (req) => clientIp(req) });
+{`// apps/dashboard/endpoints/login.ts — 10 attempts per IP per 15 minutes
+// ctx.ip: the client IP, read from X-Forwarded-For only when trustProxy is set (see below).
+const loginLimit = rateLimit({ limit: 10, windowMs: 15 * 60_000, key: (_req, ctx) => ctx.ip });
 export const handler = withMiddleware(apiRoute(login), requestLogger, loginLimit);
 
 // Authenticated routes: key by user, not IP (many users can share one IP).
@@ -343,12 +356,13 @@ const perUser = rateLimit({ limit: 100, windowMs: 60_000,
           shape.
         </p>
         <p>
-          <strong>Where the IP comes from.</strong> An API route sees request headers, not the TCP
-          connection, so the client IP comes from <code>X-Forwarded-For</code>. Only trust it when a
-          proxy you control sets it: Vercel and Netlify do, and the nginx config from{" "}
-          <code>devora generate:proxy</code> does. Exposed directly to the internet with no proxy,
-          any client can put whatever it likes in that header — key by something else (session,
-          account) in that setup.
+          <strong>Where the IP comes from.</strong> <code>ctx.ip</code> is the TCP peer unless the
+          app sets <code>trustProxy</code> in <code>app.config.ts</code> (<code>true</code> for one
+          proxy, a number for a chain, e.g. <code>2</code> for a CDN in front of nginx). Then it's
+          read from the right of <code>X-Forwarded-For</code>, skipping the trusted hops, so a
+          client can't spoof it by sending the header itself. The generated Vercel and Netlify
+          functions trust their platform's proxy by default. Don't hand-parse{" "}
+          <code>X-Forwarded-For</code>: its leftmost entry is whatever the client sent.
         </p>
       </Callout>
 
@@ -360,8 +374,12 @@ const perUser = rateLimit({ limit: 100, windowMs: 60_000,
       </p>
       <ul>
         <li>
-          <strong>Small files</strong> (avatars, documents a few MB at most): accept{" "}
-          <code>multipart/form-data</code> directly in an API route.
+          <strong>Small files</strong> (avatars, documents a few MB at most): a page form with{" "}
+          <code>encType="multipart/form-data"</code> — the route's <code>action</code> receives
+          file fields as <code>File</code> objects, nothing to set up (see{" "}
+          <a href="/pages-forms-errors">Pages, forms and errors</a>) — or{" "}
+          <code>multipart/form-data</code> parsed in an API route, below. The 10 MB cap is{" "}
+          <code>maxBodyBytes</code> in <code>app.config.ts</code>.
         </li>
         <li>
           <strong>Anything larger</strong>, or anything on serverless: have the client upload
@@ -377,7 +395,7 @@ const perUser = rateLimit({ limit: 100, windowMs: 60_000,
       </p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-{`// apps/dashboard/api/avatar.ts
+{`// apps/dashboard/endpoints/avatar.ts
 import { randomUUID } from "node:crypto";
 import { apiRoute, CSRF_HEADER_NAME } from "@devorajs/core";
 import { json } from "@devorajs/backend/http";
@@ -456,9 +474,9 @@ export const handler = apiRoute(async (req, ctx) => {
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`// packages/backend/middleware.ts — requestLogger and cors (above) live here, plus:
-export const authLimit = rateLimit({ limit: 10, windowMs: 15 * 60_000, key: (req) => clientIp(req) });
+export const authLimit = rateLimit({ limit: 10, windowMs: 15 * 60_000, key: (_req, ctx) => ctx.ip });
 
-// apps/dashboard/api/login.ts
+// apps/dashboard/endpoints/login.ts
 import { apiRoute, withMiddleware } from "@devorajs/core";
 import { requestLogger, cors, authLimit } from "@devorajs/backend/middleware";
 
