@@ -24,7 +24,10 @@ export function pageMeta(path, { title, description, fullTitle = undefined, type
     title: fullTitle ?? `${title} — Devora.js docs`,
     description,
     head: {
-      links: [{ rel: "canonical", href: url }],
+      // site-header.css styles the nav before it paints (see that file). It
+      // is added here, per page, rather than in app.config.ts's head: route
+      // code reloads in `devora dev`, app.config.ts only at boot.
+      links: [{ rel: "canonical", href: url }, { rel: "stylesheet", href: "/css/site-header.css" }],
       meta: [{ name: "twitter:card", content: "summary_large_image" }],
     },
     og: {

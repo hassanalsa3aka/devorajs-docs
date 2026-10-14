@@ -116,8 +116,8 @@ export function SiteFooter() {
         .site-footer-col a:hover, .site-footer-legal a:hover { color: var(--devora-fg); text-decoration: underline; }
         .site-footer-legal {
           grid-column: 1 / -1;
-          display: flex;
-          flex-wrap: wrap;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
           align-items: center;
           gap: 0.5rem 1.5rem;
           padding-top: 1.25rem;
@@ -126,11 +126,17 @@ export function SiteFooter() {
           color: var(--devora-fg-subtle);
         }
         .site-footer-legal a { font-size: 0.8rem; }
-        .site-footer-legal .site-footer-copy { margin-right: auto; }
-        .site-footer-legal .site-footer-copy a { color: var(--devora-fg); }
+        .site-footer-copy { justify-self: start; }
+        .site-footer-built { justify-self: center; text-align: center; }
+        .site-footer-meta { justify-self: end; display: flex; gap: 1.25rem; }
+        .site-footer-copy a { color: var(--devora-fg); }
         /* Links inside a sentence are underlined, not told apart by color alone. */
-        .site-footer-legal span a { text-decoration: underline; text-underline-offset: 3px; }
-        /* The framework's "Built with devora.js" row moves into the legal row below. */
+        .site-footer-copy a, .site-footer-built a { text-decoration: underline; text-underline-offset: 3px; }
+        @media (max-width: 700px) {
+          .site-footer-legal { grid-template-columns: 1fr; justify-items: start; }
+          .site-footer-built { justify-self: start; text-align: left; }
+          .site-footer-meta { justify-self: start; }
+        }
         .devora-footer-row { display: none; }
         @media (max-width: 900px) {
           .site-footer { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -138,7 +144,6 @@ export function SiteFooter() {
         }
         @media (max-width: 560px) {
           .site-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; }
-          .site-footer-legal .site-footer-copy { margin-right: 0; width: 100%; }
         }
 
         /* Consent banner — created by assets/js/analytics.js, only when GA
@@ -350,11 +355,13 @@ export function SiteFooter() {
             </a>{" "}
             · MIT License
           </span>
-          <a href="/privacy">Privacy</a>
-          {/* Handled by assets/js/analytics.js — reopens the consent banner. */}
-          <a href="#cookie-settings">Cookie settings</a>
-          <span>
+          <span className="site-footer-built">
             Built with <a href="https://github.com/hassanalsa3aka/devora.js" {...EXTERNAL}>devora.js</a>
+          </span>
+          <span className="site-footer-meta">
+            <a href="/privacy">Privacy</a>
+            {/* Handled by assets/js/analytics.js — reopens the consent banner. */}
+            <a href="#cookie-settings">Cookie settings</a>
           </span>
         </div>
       </div>
