@@ -18,6 +18,7 @@ cd "$(dirname "$0")/.."
 
 ADAPTER="$1"
 if [ -n "$ADAPTER" ]; then
+  node scripts/build-rss.mjs   # into assets/ (the public folder) before the build copies it
   ./node_modules/.bin/devora build --app=docs --adapter="$ADAPTER"
 fi
 

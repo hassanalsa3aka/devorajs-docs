@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "devora dev",
+    "prebuild": "node scripts/build-rss.mjs",
     "build": "devora build",
     "postbuild": "bash scripts/build-docs.sh",
     "start": "devora start"

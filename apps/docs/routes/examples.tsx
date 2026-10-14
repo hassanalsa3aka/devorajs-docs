@@ -10,7 +10,7 @@ export function meta() {
   return pageMeta("/examples", {
     title: "Examples and live demos",
     description:
-      "Runnable Devora.js example projects, and the framework's example apps deployed by the maintainer on Vercel.",
+      "Three runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site — and the example apps deployed by the maintainer.",
     image: "/og/examples.png",
   });
 }
@@ -19,18 +19,30 @@ export async function loader() {
   return {};
 }
 
-const PLANNED = [
+const REPO = "https://github.com/hassanalsa3aka/devora.js/tree/main/examples";
+
+// Each folder in devora.js/examples is a standalone project on the
+// published packages; CI runs npm ci, typecheck, build and real requests
+// against every one (examples/check.mjs).
+const EXAMPLES = [
   {
+    slug: "multi-app",
     title: "Marketing site + dashboard + shared API",
-    body: "The multi-app default: a public site, a logged-in dashboard and a JSON API sharing one backend and one login.",
+    shows: "The multi-app default: a public site, a logged-in dashboard and a JSON API sharing one backend function and one login. A token from the API is accepted by the dashboard.",
+    apps: ["site · auth none", "app · shared", "api · shared, backend-only"],
+    tutorial: "/multi-app-tutorial",
   },
   {
+    slug: "api-bearer",
     title: "Backend-only API with Bearer login",
-    body: "An API for a mobile client: token login and logout, revocation, CORS, no pages and no React.",
+    shows: "An API for a mobile client: token login and revocation, a todos endpoint, csrf: false, and CORS for one browser origin. No pages, no React.",
+    apps: ["api · shared, backend-only"],
   },
   {
+    slug: "content-site",
     title: "Content site with ssg and islands",
-    body: "Pre-rendered pages, getStaticParams() for dynamic routes, and one interactive island.",
+    shows: "Pre-rendered pages, a dynamic route with getStaticParams(), one interactive island, route CSS and a sitemap.",
+    apps: ["blog · auth none"],
   },
 ];
 
@@ -42,27 +54,31 @@ export default function Examples() {
         .devora-page { max-width: 1180px; }
         ${SHOWCASE_CSS}
         .ex-intro { max-width: 46rem; }
-        .ex-planned {
+        .ex-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+          gap: 1.25rem;
           margin: 1.25rem 0 0;
         }
-        .devora-page .ex-planned .devora-card { margin: 0; border-top-width: 1px; }
-        .devora-page .ex-planned h3 { margin: 0 0 0.4rem; font-size: 1rem; }
-        .devora-page .ex-planned p { margin: 0; font-size: 0.9rem; }
-        .ex-badge {
-          display: inline-block;
-          margin-bottom: 0.6rem;
-          padding: 0.1rem 0.5rem;
-          border-radius: 999px;
+        .ex-card {
+          display: flex;
+          flex-direction: column;
+          gap: 0.7rem;
+          min-width: 0;
+          padding: 1.25rem;
           border: 1px solid var(--devora-border);
-          font-size: 0.7rem;
-          font-weight: 700;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          color: var(--devora-fg-muted);
+          border-radius: var(--devora-radius-lg);
+          background: var(--devora-card);
         }
+        .devora-page .ex-card h3 { margin: 0; font-size: 1.05rem; }
+        .devora-page .ex-card p { margin: 0; font-size: 0.9rem; line-height: 1.55; }
+        .devora-page .ex-card .ex-cmd {
+          margin: 0.2rem 0 0;
+          font-size: 0.78rem;
+          white-space: pre;
+          overflow-x: auto;
+        }
+        .devora-page .ex-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: auto; }
       ` }} />
       <h1>Examples and live demos</h1>
       <p className="devora-lead ex-intro">
@@ -72,17 +88,31 @@ export default function Examples() {
 
       <h2 id="examples">Runnable examples</h2>
       <p className="ex-intro">
-        These are being written in the framework repo's <code>examples/</code> folder. Each one will
-        run from a fresh checkout with the commands on its card, and be built in CI so it can't go
-        stale.
+        Each one is a standalone project in the framework repo's{" "}
+        <a href={REPO}><code>examples/</code></a> folder that installs the published packages
+        from npm. CI installs, typechecks, builds and sends real requests to every one, so they
+        don't go stale. Node 20 or newer.
       </p>
-      <div className="ex-planned">
-        {PLANNED.map((p) => (
-          <div className="devora-card" key={p.title}>
-            <span className="ex-badge">In progress</span>
-            <h3>{p.title}</h3>
-            <p>{p.body}</p>
-          </div>
+      <div className="ex-grid">
+        {EXAMPLES.map((ex) => (
+          <article className="ex-card" key={ex.slug}>
+            <h3>{ex.title}</h3>
+            <p>{ex.shows}</p>
+            <ul className="sc-tags" aria-label="Apps in this example">
+              {ex.apps.map((a) => (
+                <li key={a}>{a}</li>
+              ))}
+            </ul>
+            <pre className="ex-cmd" tabIndex={0} aria-label={`Commands to run ${ex.slug}`}>
+{`git clone https://github.com/hassanalsa3aka/devora.js.git
+cd devora.js/examples/${ex.slug}
+npm ci && npm run dev`}
+            </pre>
+            <p className="ex-links">
+              <a href={`${REPO}/${ex.slug}`}>Code and README ↗</a>
+              {ex.tutorial ? <a href={ex.tutorial}>Step-by-step tutorial</a> : null}
+            </p>
+          </article>
         ))}
       </div>
 

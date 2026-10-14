@@ -42,7 +42,8 @@ devorajs-docs/
 │   ├── compare-table.tsx    # brand marks + the home page's comparison table
 │   ├── compare-matrix.tsx   # status chips, filterable matrix and bar chart (/compare)
 │   ├── showcase.tsx         # "Built with Devora.js" entries and live demos (home, /examples)
-│   ├── data/                # generated data (npm downloads for /compare)
+│   ├── blog-post.tsx        # blog post layout, BlogPosting JSON-LD (posts are routes/blog/*.tsx)
+│   ├── data/                # npm downloads for /compare (generated), blog post list
 │   ├── seo.tsx              # meta(), canonical links, JSON-LD
 │   ├── version.ts           # reads the installed @devorajs/core version
 │   ├── nav.ts               # header links
@@ -51,6 +52,7 @@ devorajs-docs/
 ├── packages/backend/        # the shared-backend stub every project has (unused here)
 ├── scripts/
 │   ├── build-docs.sh            # adapter build + Pagefind index
+│   ├── build-rss.mjs            # assets/rss.xml from data/blog-posts.json (runs before every build)
 │   ├── fetch-npm-downloads.mjs  # refreshes apps/docs/data/npm-downloads.json
 │   ├── og-card.html             # template for the link-preview cards in assets/og/
 │   └── og-cards.sh              # renders those cards (site-wide and per page)
@@ -91,6 +93,12 @@ the most recent full week npm has complete data for).
   text write `ctx{"."}requireAuth()`.
 - Claims about the framework are checked against its source or a fresh scaffold before they go
   in, and the site says where another framework is the better choice.
+
+## Blog
+
+A post is a route in `apps/docs/routes/blog/<slug>.tsx` wrapped in `<BlogPost slug>` plus an
+entry in `apps/docs/data/blog-posts.json` (title, date, description). The index, the post's
+JSON-LD and `/rss.xml` all read that file.
 
 ## Deployment
 
