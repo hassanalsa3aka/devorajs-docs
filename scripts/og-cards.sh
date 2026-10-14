@@ -18,3 +18,4 @@ card() { # name title accent subtitle
   --screenshot=assets/og/devorajs-og.png "file://$PWD/scripts/og-card.html" 2>/dev/null
 card examples "Examples" "and live demos." "Runnable Devora.js projects, and the example apps deployed on Vercel."
 card blog "Blog" "" "Release notes and design write-ups from the Devora.js project."
+card performance "Performance," "measured." "Devora.js next to Next.js, Astro, SvelteKit and React Router on the same pages."

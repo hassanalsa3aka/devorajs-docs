@@ -43,16 +43,18 @@ devorajs-docs/
 │   ├── compare-matrix.tsx   # status chips, filterable matrix and bar chart (/compare)
 │   ├── showcase.tsx         # "Built with Devora.js" entries and live demos (home, /examples)
 │   ├── blog-post.tsx        # blog post layout, BlogPosting JSON-LD (posts are routes/blog/*.tsx)
-│   ├── data/                # npm downloads for /compare (generated), blog post list
+│   ├── benchmark-widget.tsx # the benchmark panel (/performance, home), read from data/benchmarks.json
+│   ├── data/                # npm downloads (generated), benchmark results (copied), blog post list
 │   ├── seo.tsx              # meta(), canonical links, JSON-LD
 │   ├── version.ts           # reads the installed @devorajs/core version
 │   ├── nav.ts               # header links
 │   └── vercel.json, netlify.toml
-├── assets/                  # public folder: icons, OG cards, showcase shots, scripts, video, Pagefind index
+├── assets/                  # public folder: icons, OG cards, showcase shots, header CSS, scripts, video, Pagefind index
 ├── packages/backend/        # the shared-backend stub every project has (unused here)
 ├── scripts/
 │   ├── build-docs.sh            # adapter build + Pagefind index
 │   ├── build-rss.mjs            # assets/rss.xml from data/blog-posts.json (runs before every build)
+│   ├── sync-benchmarks.mjs      # copies devora.js/benchmarks/results/latest.json into data/
 │   ├── fetch-npm-downloads.mjs  # refreshes apps/docs/data/npm-downloads.json
 │   ├── og-card.html             # template for the link-preview cards in assets/og/
 │   └── og-cards.sh              # renders those cards (site-wide and per page)
@@ -93,6 +95,12 @@ the most recent full week npm has complete data for).
   text write `ctx{"."}requireAuth()`.
 - Claims about the framework are checked against its source or a fresh scaffold before they go
   in, and the site says where another framework is the better choice.
+
+## Benchmarks
+
+`/performance` and the home page's panel show the numbers in `apps/docs/data/benchmarks.json`,
+a copy of the devora.js repo's `benchmarks/results/latest.json`. After a new run there:
+`node scripts/sync-benchmarks.mjs`, then rebuild. Nothing on those pages is typed by hand.
 
 ## Blog
 

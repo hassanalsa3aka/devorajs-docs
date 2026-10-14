@@ -18,6 +18,7 @@ const FOOTER_COLUMNS = [
       { label: "Examples", href: "/examples" },
       { label: "Blog", href: "/blog" },
       { label: "Compare", href: "/compare" },
+      { label: "Performance", href: "/performance" },
       { label: "Upgrading to 0.3.2", href: "/upgrading" },
       { label: "Changelog", href: "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md" },
       { label: "npm packages", href: "https://www.npmjs.com/package/@devorajs/core" },
@@ -46,14 +47,6 @@ const SOCIAL = [
   { label: "Devora.js Discord", href: "https://discord.gg/wYFYmFxdS8", icon: ICON_DISCORD },
   { label: "Updates on X", href: "https://x.com/hassansayed2002", icon: ICON_X },
 ];
-
-// Header icons for the GitHub and Discord nav links, as CSS mask images
-// (data: URLs are allowed by the CSP's img-src).
-const GITHUB_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.42-2.7 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>';
-const DISCORD_SVG =
-  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.32 4.37A19.8 19.8 0 0 0 15.4 2.9l-.62 1.27a18.3 18.3 0 0 0-5.56 0L8.6 2.9a19.7 19.7 0 0 0-4.92 1.47C.57 9.05-.27 13.6.15 18.1a19.9 19.9 0 0 0 6.03 3.05l1.3-2.13a12.9 12.9 0 0 1-2.05-.98l.5-.39a14.2 14.2 0 0 0 12.14 0l.5.39c-.65.39-1.34.72-2.05.98l1.3 2.13a19.8 19.8 0 0 0 6.03-3.05c.5-5.2-.84-9.72-3.53-13.73zM8.02 15.33c-1.18 0-2.16-1.09-2.16-2.42s.95-2.42 2.16-2.42c1.2 0 2.18 1.09 2.16 2.42 0 1.33-.96 2.42-2.16 2.42zm7.97 0c-1.19 0-2.16-1.09-2.16-2.42s.95-2.42 2.16-2.42c1.2 0 2.17 1.09 2.16 2.42 0 1.33-.95 2.42-2.16 2.42z"/></svg>';
-const maskUrl = (svg: string) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 
 // Every <style> on this site is written with dangerouslySetInnerHTML: as a
 // text child, React HTML-escapes it (" becomes &quot;, > becomes &gt;),
@@ -135,6 +128,8 @@ export function SiteFooter() {
         .site-footer-legal a { font-size: 0.8rem; }
         .site-footer-legal .site-footer-copy { margin-right: auto; }
         .site-footer-legal .site-footer-copy a { color: var(--devora-fg); }
+        /* Links inside a sentence are underlined, not told apart by color alone. */
+        .site-footer-legal span a { text-decoration: underline; text-underline-offset: 3px; }
         /* The framework's "Built with devora.js" row moves into the legal row below. */
         .devora-footer-row { display: none; }
         @media (max-width: 900px) {
@@ -195,70 +190,6 @@ export function SiteFooter() {
           .consent-banner { flex-direction: column; align-items: stretch; }
           .consent-banner-actions .consent-btn { flex: 1; }
         }
-        /* Header nav: text links, then Search (pill), then GitHub, Discord and
-           Theme as round icon buttons. Matched by href, not position, so the
-           order in nav.ts can change. Icon-only links keep their text as the
-           accessible name (font-size 0 hides it visually). */
-        .devora-nav a[href="#search-overlay"] {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.45rem;
-          border: 1px solid var(--devora-border);
-          border-radius: 8px;
-          padding: 0.3rem 0.6rem;
-          margin-left: 0.35rem;
-        }
-        .devora-nav a[href="#search-overlay"]:hover { border-color: var(--devora-accent-from); }
-        .devora-nav a[href="#search-overlay"]::before,
-        .devora-nav a:is([href^="https://github.com"], [href^="https://discord.gg"])::before,
-        .devora-nav a[href="#theme"]::before {
-          content: "";
-          display: inline-block;
-          flex-shrink: 0;
-          background-color: currentColor;
-          -webkit-mask-size: contain;
-          mask-size: contain;
-          -webkit-mask-repeat: no-repeat;
-          mask-repeat: no-repeat;
-          -webkit-mask-position: center;
-          mask-position: center;
-        }
-        .devora-nav a[href="#search-overlay"]::before {
-          width: 14px;
-          height: 14px;
-          -webkit-mask-image: var(--search-icon);
-          mask-image: var(--search-icon);
-        }
-        .devora-nav a:is([href^="https://github.com"], [href^="https://discord.gg"]),
-        .devora-nav a[href="#theme"] {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 2rem;
-          height: 2rem;
-          padding: 0;
-          flex-shrink: 0;
-          border: 1px solid var(--devora-border);
-          border-radius: 50%;
-          font-size: 0;
-          line-height: 0;
-          color: var(--devora-fg-muted);
-          transition: border-color 0.15s, color 0.15s, transform 0.2s;
-        }
-        .devora-nav a:is([href^="https://github.com"], [href^="https://discord.gg"]):hover,
-        .devora-nav a[href="#theme"]:hover { border-color: var(--devora-accent-from); color: var(--devora-fg); }
-        .devora-nav a[href="#theme"]:active { transform: scale(0.92); }
-        .devora-nav a:is([href^="https://github.com"], [href^="https://discord.gg"])::before { width: 16px; height: 16px; }
-        .devora-nav a[href^="https://github.com"]::before { -webkit-mask-image: ${maskUrl(GITHUB_SVG)}; mask-image: ${maskUrl(GITHUB_SVG)}; }
-        .devora-nav a[href^="https://discord.gg"]::before { -webkit-mask-image: ${maskUrl(DISCORD_SVG)}; mask-image: ${maskUrl(DISCORD_SVG)}; }
-        .devora-nav a[href="#theme"]::before {
-          width: 15px;
-          height: 15px;
-          -webkit-mask-image: var(--theme-icon);
-          mask-image: var(--theme-icon);
-        }
-        .devora-header-left { width: 100%; }
-        .devora-nav { margin-left: auto; }
 
         /* Explicit light/dark override — wins over the framework's own
            prefers-color-scheme default regardless of OS setting, driven by

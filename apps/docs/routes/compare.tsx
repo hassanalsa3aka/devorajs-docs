@@ -391,6 +391,7 @@ export default function Compare({ data }) {
           <a href="#backend">Backend frameworks</a>
           <a href="#scale">Scale</a>
           <a href="#limitations">Limitations</a>
+          <a href="/performance">Performance</a>
         </nav>
       </section>
 
@@ -527,8 +528,8 @@ export default function Compare({ data }) {
           <li>Pre-1.0: behavior changes can land in any release; the CHANGELOG lists them first.</li>
         </ul>
         <p>
-          No performance section: there are no published benchmarks for Devora.js yet, and this
-          page won't show numbers that haven't been measured.
+          Build time, requests/second, memory and JavaScript sent, measured against Next.js, Astro,
+          SvelteKit and React Router on the same pages: see <a href="/performance">Performance</a>.
         </p>
       </section>
 

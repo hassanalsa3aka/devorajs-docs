@@ -13,6 +13,7 @@ import {
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
 import { getCoreVersion } from "../version.js";
 import { SHOWCASE, SHOWCASE_CHECKED, SHOWCASE_CSS, ShowcaseCard, LIVE_DEMOS } from "../showcase.js";
+import { BENCHMARK_CSS, BenchmarkWidget } from "../benchmark-widget.js";
 
 export const renderMode = "ssg";
 
@@ -410,6 +411,8 @@ export default function Home({ data }) {
         }
         ${COMPARE_TABLE_CSS}
         ${SHOWCASE_CSS}
+        ${BENCHMARK_CSS}
+        .home-bench { max-width: 62rem; margin: 0 auto 3rem; }
         .home-backend {
           display: grid;
           grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -857,6 +860,10 @@ import { addNote } from "@devorajs/backend/notes";`}
           What each one uses is read from the deployed site (headers, cookies, markup, API
           responses), checked {SHOWCASE_CHECKED}.
         </p>
+      </div>
+
+      <div className="home-bench">
+        <BenchmarkWidget id="home-bench" compact footer={<> · <a href="/performance">Full results and caveats</a></>} />
       </div>
 
       <div className="home-demos reveal">

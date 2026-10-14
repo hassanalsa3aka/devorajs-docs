@@ -12,6 +12,7 @@ export const DOCS_NAV: NavLink[] = [
   { label: "Examples", href: "/examples" },
   { label: "Blog", href: "/blog" },
   { label: "Compare", href: "/compare" },
+  { label: "Performance", href: "/performance" },
   { label: "Search", href: "#search-overlay" },
   { label: "GitHub", href: "https://github.com/hassanalsa3aka/devora.js" },
   { label: "Discord", href: "https://discord.gg/wYFYmFxdS8" },
