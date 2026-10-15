@@ -19,6 +19,7 @@ const DOCS_GROUPS = [
       { id: "pages-forms-errors", label: "Pages, forms and errors", href: "/pages-forms-errors" },
       { id: "backend", label: "Backend", href: "/backend" },
       { id: "backend-capabilities", label: "Backend capabilities", href: "/backend-capabilities" },
+      { id: "live-updates", label: "Live updates", href: "/live-updates" },
       { id: "repo-splitting", label: "Repo-splitting", href: "/repo-splitting" },
     ],
   },

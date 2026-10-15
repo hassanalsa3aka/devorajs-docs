@@ -17,5 +17,6 @@ card() { # name title accent subtitle
 "$CHROME" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
   --screenshot=assets/og/devorajs-og.png "file://$PWD/scripts/og-card.html" 2>/dev/null
 card examples "Examples" "and live demos." "Runnable Devora.js projects, and the example apps deployed on Vercel."
+card live-updates "Live updates," "polled or pushed." "Poll, or run a small realtime server. The token flow, the CSP setting and a runnable example."
 card blog "Blog" "" "Release notes and design write-ups from the Devora.js project."
 card performance "Performance," "measured." "Devora.js next to Next.js, Astro, SvelteKit and React Router on the same pages."
