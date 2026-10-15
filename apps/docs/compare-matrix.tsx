@@ -5,7 +5,7 @@
 // an icon and a text label, never color alone.
 import type { ReactNode } from "react";
 
-export type Status = "built" | "partial" | "notyet" | "no" | "library" | "na";
+export type Status = "built" | "partial" | "notyet" | "no" | "library" | "na" | "unverified";
 
 const STATUS_LABEL: Record<Status, string> = {
   built: "Built in",
@@ -14,6 +14,7 @@ const STATUS_LABEL: Record<Status, string> = {
   no: "Not built in",
   library: "Use a library",
   na: "Not its job",
+  unverified: "Not verified",
 };
 
 const STATUS_ICON: Record<Status, ReactNode> = {
@@ -39,6 +40,13 @@ const STATUS_ICON: Record<Status, ReactNode> = {
     </>
   ),
   na: <path d="M6 12h12" />,
+  unverified: (
+    <>
+      <circle cx="12" cy="12" r="7.5" />
+      <path d="M9.8 9.6a2.3 2.3 0 1 1 3.3 2.1c-.7.4-1.1.8-1.1 1.6" />
+      <path d="M12 16.6v.1" />
+    </>
+  ),
 };
 
 export function StatusChip({ status }: { status: Status }) {
@@ -231,7 +239,7 @@ export const COMPARE_MATRIX_CSS = `
 .cmx-chip-built { color: #15803d; border-color: color-mix(in srgb, #16a34a 45%, transparent); background: color-mix(in srgb, #16a34a 9%, var(--devora-surface)); }
 .cmx-chip-partial { color: #a16207; border-color: color-mix(in srgb, #ca8a04 45%, transparent); background: color-mix(in srgb, #ca8a04 9%, var(--devora-surface)); }
 .cmx-chip-notyet { color: #b91c1c; border-color: color-mix(in srgb, #dc2626 40%, transparent); background: color-mix(in srgb, #dc2626 7%, var(--devora-surface)); }
-.cmx-chip-no, .cmx-chip-na { color: var(--devora-fg-muted); }
+.cmx-chip-no, .cmx-chip-na, .cmx-chip-unverified { color: var(--devora-fg-muted); }
 .cmx-chip-library { color: #1d4ed8; border-color: color-mix(in srgb, #2563eb 40%, transparent); background: color-mix(in srgb, #2563eb 7%, var(--devora-surface)); }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme=light]) .cmx-chip-built { color: #4ade80; }

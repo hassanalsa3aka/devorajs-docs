@@ -3,6 +3,8 @@ import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag } from "../docs-layout.js";
 import { pageMeta } from "../seo.js";
+import { RENDER_MODES_CSS, RenderModesBlock } from "../render-modes-block.js";
+import { COMPARE_MATRIX_CSS } from "../compare-matrix.js";
 
 export const renderMode = "ssg";
 
@@ -22,6 +24,7 @@ export default function RenderModes() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="render-modes">
+      <style dangerouslySetInnerHTML={{ __html: COMPARE_MATRIX_CSS + RENDER_MODES_CSS }} />
       <h1>Render modes</h1>
       <p>
         Every route declares how it renders, explicitly, with a <code>renderMode</code> export. A
@@ -30,7 +33,9 @@ export default function RenderModes() {
         for you based on file location or data-fetching patterns.
       </p>
 
-      <h2><Tag color="blue">ssr</Tag> Server-rendered per request</h2>
+      <RenderModesBlock />
+
+      <h2 id="ssr"><Tag color="blue">ssr</Tag> Server-rendered per request</h2>
       <p>The default. The route's <code>loader</code> runs on every request, and the page is rendered fresh each time.</p>
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
@@ -46,7 +51,7 @@ export default function Page({ data }) {
         </pre>
       </div>
 
-      <h2><Tag color="purple">ssg</Tag> Pre-rendered at build time</h2>
+      <h2 id="ssg"><Tag color="purple">ssg</Tag> Pre-rendered at build time</h2>
       <p>
         The route is rendered once during <code>devora build</code> and served as static HTML from
         then on. Good for content that doesn't change per request — this docs site itself uses{" "}
@@ -68,7 +73,7 @@ export default function AboutPage() {
       </div>
       <p>In dev, <code>ssg</code> (and <code>isr</code>) routes still render live per request, for a faster edit loop — the build-time pre-render only applies to <code>devora build</code> output.</p>
 
-      <h2><Tag color="emerald">csr</Tag> Client-only</h2>
+      <h2 id="csr"><Tag color="emerald">csr</Tag> Client-only</h2>
       <p>
         The server sends a minimal shell with no content; the route's actual component only mounts
         once a small client bootstrap script imports and renders it in the browser. No{" "}
@@ -89,7 +94,7 @@ export default function CsrDemo() {
         </pre>
       </div>
 
-      <h2><Tag color="amber">isr</Tag> Static with scheduled revalidation</h2>
+      <h2 id="isr"><Tag color="amber">isr</Tag> Static with scheduled revalidation</h2>
       <p>
         Like <code>ssg</code>, but the pre-rendered page is regenerated once a{" "}
         <code>revalidate</code> window passes (or on a manual <code>revalidatePath()</code> call).
@@ -119,7 +124,7 @@ export default function IsrPage({ data }) {
         in a serverless deployment.
       </p>
 
-      <h2><Tag color="rose">streaming</Tag> Chunked SSR</h2>
+      <h2 id="streaming"><Tag color="rose">streaming</Tag> Chunked SSR</h2>
       <p>
         Available since <code>@devorajs/core@0.2.2</code>. The page shell sends
         immediately; an island's real content patches in once its import resolves, instead of the
@@ -158,9 +163,10 @@ export default function StreamingPage({ data }) {
         uses is decided by which render mode is actively rendering it. GET-only, on purpose: an{" "}
         <code>action</code> needs to decide "redirect or re-render" before any HTML is sent, which
         conflicts with a response that's already streaming — the same restriction <code>ssg</code>/
-        <code>isr</code> already have, for an unrelated reason. Under <code>devora start</code> and
-        in the Vercel function the response really streams; Netlify's function format delivers the
-        same HTML as one buffered response.
+        <code>isr</code> already have, for an unrelated reason. Under <code>devora start</code> the
+        response really streams. The generated Vercel function uses the same code path, which has
+        not been verified on a live deployment; Netlify's function format delivers the same HTML as
+        one buffered response.
       </p>
 
       <h2>Islands and client-only components</h2>
