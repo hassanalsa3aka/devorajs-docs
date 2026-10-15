@@ -8,9 +8,12 @@ import {
   LOGO_FASTIFY,
   LOGO_NEST,
   LOGO_NEXTJS,
+  LOGO_NX,
   LOGO_REACT_ROUTER,
   LOGO_SVELTE,
+  LOGO_TURBOREPO,
 } from "../compare-table.js";
+import { RENDER_MODES_CSS, RenderModesBlock } from "../render-modes-block.js";
 import { BarChart, COMPARE_MATRIX_CSS, Matrix, type Framework, type MatrixGroup } from "../compare-matrix.js";
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
 import { getCoreVersion } from "../version.js";
@@ -35,45 +38,65 @@ export async function loader() {
 // installed @devorajs/core source. Other frameworks: their docs and, for the
 // API-behavior rows, real installs in production mode. Re-check before
 // changing a row; don't carry claims forward.
-const DEVORA_CHECKED = "October 14, 2026";
-const OTHERS_CHECKED = "September 24, 2026";
-const CHECKED_ISO = "2026-10-14";
+const DEVORA_CHECKED = "October 16, 2026";
+const OTHERS_CHECKED = "October 16, 2026";
+const CHECKED_ISO = "2026-10-16";
 
 const DEVORA: Framework = { key: "devora", label: "Devora.js", logo: LOGO_DEVORA, highlight: true };
 
+// Version numbers are the current stable releases on npm on OTHERS_CHECKED.
 const FULLSTACK: Framework[] = [
   DEVORA,
   { key: "next", label: "Next.js 16", logo: LOGO_NEXTJS },
   { key: "rr", label: "React Router v8", logo: LOGO_REACT_ROUTER },
-  { key: "svelte", label: "SvelteKit", logo: LOGO_SVELTE },
-  { key: "astro", label: "Astro", logo: LOGO_ASTRO },
+  { key: "svelte", label: "SvelteKit 3", logo: LOGO_SVELTE },
+  { key: "astro", label: "Astro 7", logo: LOGO_ASTRO },
 ];
+
+const MULTI_APP: Framework[] = [
+  DEVORA,
+  { key: "next", label: "Next.js (Multi-Zones)", logo: LOGO_NEXTJS },
+  { key: "mono", label: "Turborepo / Nx", logo: <>{LOGO_TURBOREPO}{LOGO_NX}</> },
+  { key: "others", label: "Others" },
+];
+
+const SESSION_FW: Framework[] = FULLSTACK;
 
 const BACKEND: Framework[] = [
   DEVORA,
-  { key: "express", label: "Express", logo: LOGO_EXPRESS },
-  { key: "fastify", label: "Fastify", logo: LOGO_FASTIFY },
-  { key: "nest", label: "NestJS", logo: LOGO_NEST },
+  { key: "express", label: "Express 5", logo: LOGO_EXPRESS },
+  { key: "fastify", label: "Fastify 5", logo: LOGO_FASTIFY },
+  { key: "nest", label: "NestJS 12", logo: LOGO_NEST },
 ];
 
-const FULLSTACK_GROUPS: MatrixGroup[] = [
+const RENDERING_GROUPS: MatrixGroup[] = [
   {
-    topic: "Rendering",
+    topic: "Per-route rendering",
     rows: [
       {
         label: "Render mode chosen per route",
         cells: {
-          devora: { s: "built", note: <><code>ssr</code> <code>ssg</code> <code>csr</code> <code>isr</code> <code>streaming</code></> },
-          next: { s: "built", note: <>Opt-in caching with Cache Components (<code>"use cache"</code>); implicit caching defaults on 15 and earlier</> },
-          rr: { s: "built", note: "Loader-based, explicit" },
-          svelte: { s: "built", note: "Explicit, per route" },
-          astro: { s: "built", note: "Explicit, per route" },
+          devora: { s: "built", note: <><code>ssr</code> <code>ssg</code> <code>csr</code> <code>isr</code> <code>streaming</code>, one export in the route file</> },
+          next: { s: "built", note: "Static by default, dynamic when a route uses request data; revalidate and Suspense per route" },
+          rr: { s: "partial", note: <>SSR and SPA mode are app-wide (<code>ssr</code> in config); pre-rendering lists URLs</> },
+          svelte: { s: "built", note: <><code>prerender</code>, <code>ssr</code>, <code>csr</code> exports per page or layout</> },
+          astro: { s: "built", note: <><code>prerender</code> per page; <code>output</code> sets the default</> },
         },
       },
       {
         label: <>Catch-all routes (<code>[...slug]</code>)</>,
         cells: {
-          devora: { s: "notyet", note: <><code>[param]</code> matches one segment</> },
+          devora: { s: "built", note: <>Pages and API routes; <code>ctx.catchAll.slug</code> is the array (0.3.4)</> },
+          next: { s: "built" },
+          rr: { s: "built", note: <>Splat routes: <code>"*"</code>; the rest is <code>params["*"]</code></> },
+          svelte: { s: "built", note: <>Rest parameters, <code>[...path]</code></> },
+          astro: { s: "built", note: <>Rest parameters, <code>[...path]</code></> },
+        },
+      },
+      {
+        label: "Query string and headers in data loading",
+        cells: {
+          devora: { s: "built", note: <><code>ctx.url</code>, <code>ctx.headers</code>, <code>ctx.ip</code></> },
           next: { s: "built" },
           rr: { s: "built" },
           svelte: { s: "built" },
@@ -81,17 +104,18 @@ const FULLSTACK_GROUPS: MatrixGroup[] = [
         },
       },
       {
-        label: "Query string and headers in data loading",
+        label: "Pre-rendered pages: validators and compression",
         cells: {
-          devora: { s: "built", note: <><code>ctx.url</code>, <code>ctx.headers</code>, <code>ctx.ip</code> (0.3.2)</> },
-          next: { s: "built" },
-          rr: { s: "built" },
-          svelte: { s: "built" },
-          astro: { s: "built" },
+          devora: {
+            note: <>Served from memory with an <code>ETag</code> (304 on a repeat visit) and brotli/gzip under <code>devora start</code>; 64 MB total, 2 MB per file, checked against the disk once a second</>,
+          },
         },
       },
     ],
   },
+];
+
+const MULTI_APP_GROUPS: MatrixGroup[] = [
   {
     topic: "Several apps in one project",
     rows: [
@@ -99,17 +123,18 @@ const FULLSTACK_GROUPS: MatrixGroup[] = [
         label: "Multiple apps, one repo",
         cells: {
           devora: { s: "built", note: <>One <code>devora.config.ts</code>; each app deploys separately, on its own domain</> },
-          next: { s: "partial", note: "Multi-Zones: separately deployed apps served under one domain" },
-          rr: { s: "no", note: "Not a first-class concept" },
-          svelte: { s: "no", note: "Not a first-class concept" },
-          astro: { s: "no", note: "Not a first-class concept" },
+          next: { s: "partial", note: "Separately deployed apps served under one domain, routed by rewrites" },
+          mono: { s: "built", note: "This is their core purpose" },
+          others: { s: "no", note: "Not a first-class concept" },
         },
       },
       {
         label: "Navigating between apps",
         cells: {
           devora: { note: "Full page load (separate apps)" },
-          next: { note: "Full page load (same as Devora.js)" },
+          next: { note: "Hard navigation between zones, soft within one" },
+          mono: { s: "na", note: "Not a routing tool" },
+          others: { s: "na" },
         },
       },
       {
@@ -117,17 +142,33 @@ const FULLSTACK_GROUPS: MatrixGroup[] = [
         cells: {
           devora: { s: "built", note: <>One <code>packages/backend</code> by default</> },
           next: { s: "partial", note: "Each zone has its own Route Handlers; share code as a package" },
+          mono: { s: "no", note: "You wire the backend yourself" },
+          others: { s: "na" },
         },
       },
       {
         label: "One login across apps",
         cells: {
-          devora: { s: "built", note: <>Every <code>shared</code> app accepts the same session; <code>cookie.domain</code> shares it across subdomains (0.3.2)</> },
+          devora: { s: "built", note: <>Every <code>shared</code> app accepts the same session; <code>cookie.domain</code> shares the browser login across subdomains</> },
           next: { s: "partial", note: "No sessions built in, but zones share one domain, so a cookie-based auth library carries across" },
+          mono: { s: "no", note: "You build it yourself" },
+          others: { s: "na" },
+        },
+      },
+      {
+        label: "Build caching and task orchestration",
+        cells: {
+          devora: { s: "no", note: "Not Devora.js's job" },
+          next: { s: "na" },
+          mono: { s: "built", note: "Their real strength" },
+          others: { s: "na" },
         },
       },
     ],
   },
+];
+
+const SESSION_GROUPS: MatrixGroup[] = [
   {
     topic: "Sessions",
     rows: [
@@ -135,10 +176,10 @@ const FULLSTACK_GROUPS: MatrixGroup[] = [
         label: "Server-side sessions built in",
         cells: {
           devora: { s: "built", note: "Opaque IDs in a store you provide, revocable" },
-          next: { s: "no" },
-          rr: { s: "built", note: <>Inherited from Remix (<code>createSessionStorage</code> and friends)</> },
-          svelte: { s: "no", note: "A cookies API; sessions are your code or a library" },
-          astro: { s: "built", note: "Since Astro 5.7 (2025)" },
+          next: { s: "no", note: "A cookies API; the docs recommend an auth or session library" },
+          rr: { s: "built", note: <><code>createCookieSessionStorage</code>, <code>createSessionStorage</code>, per route in loaders and actions</> },
+          svelte: { s: "no", note: "Cookies in the handle hook; sessions are your code or a library" },
+          astro: { s: "built", note: "Sessions API since Astro 5.7; needs a storage driver" },
         },
       },
       {
@@ -151,11 +192,21 @@ const FULLSTACK_GROUPS: MatrixGroup[] = [
           astro: { s: "no" },
         },
       },
+      {
+        label: "CSRF protection on by default",
+        cells: {
+          devora: { s: "built", note: <>For cookie sessions; <code>ctx{"."}verifyCsrf()</code> per action</> },
+          next: { s: "partial", note: "Server Actions check Origin; allowed origins are configurable" },
+          rr: { s: "unverified" },
+          svelte: { s: "partial", note: "Origin check on form posts" },
+          astro: { s: "partial", note: "Origin check on form posts" },
+        },
+      },
     ],
   },
 ];
 
-const BACKEND_GROUPS: MatrixGroup[] = [
+const API_ERROR_GROUPS: MatrixGroup[] = [
   {
     topic: "API behavior, defaults only",
     rows: [
@@ -163,9 +214,9 @@ const BACKEND_GROUPS: MatrixGroup[] = [
         label: "Uncaught errors become JSON",
         cells: {
           devora: { s: "built", note: "Real message hidden in production" },
-          express: { s: "no", note: "HTML error page unless you add error middleware" },
+          express: { s: "no", note: "HTML error page, message hidden in production" },
           fastify: { s: "partial", note: "JSON, but the raw error message is sent even in production" },
-          nest: { s: "built", note: "Exception filters, message hidden" },
+          nest: { s: "built", note: "JSON, message hidden" },
         },
       },
       {
@@ -188,13 +239,16 @@ const BACKEND_GROUPS: MatrixGroup[] = [
       },
     ],
   },
+];
+
+const BYO_GROUPS: MatrixGroup[] = [
   {
     topic: "Built in, or bring your own",
     rows: [
       {
         label: "CORS",
         cells: {
-          devora: { s: "built", note: <><code>cors</code> in <code>app.config.ts</code> (0.3.2)</> },
+          devora: { s: "built", note: <><code>cors</code> in <code>app.config.ts</code></> },
           express: { s: "library", note: <><code>cors</code> package</> },
           fastify: { s: "library", note: <>Official plugin (<code>@fastify/cors</code>)</> },
           nest: { s: "built", note: <><code>app.enableCors()</code></> },
@@ -214,7 +268,7 @@ const BACKEND_GROUPS: MatrixGroup[] = [
         cells: {
           devora: { s: "library", note: <a href="/backend-capabilities#validation">Documented Zod pattern</a> },
           express: { s: "library" },
-          fastify: { s: "built", note: "JSON Schema" },
+          fastify: { s: "built", note: "JSON Schema (Ajv) per route" },
           nest: { s: "built", note: <><code>ValidationPipe</code> (class-validator)</> },
         },
       },
@@ -230,19 +284,19 @@ const BACKEND_GROUPS: MatrixGroup[] = [
       {
         label: "WebSockets",
         cells: {
-          devora: { s: "notyet" },
+          devora: { s: "no", note: <>Use a separate realtime server: <a href="/live-updates">Live updates</a></> },
           express: { s: "library" },
           fastify: { s: "library", note: <>Official plugin (<code>@fastify/websocket</code>)</> },
-          nest: { s: "built", note: "Built-in module" },
+          nest: { s: "built", note: <>Gateways in <code>@nestjs/websockets</code> (socket.io or ws)</> },
         },
       },
       {
         label: "Background jobs",
         cells: {
-          devora: { s: "notyet" },
+          devora: { s: "no" },
           express: { s: "library" },
           fastify: { s: "library" },
-          nest: { s: "library", note: <>Official modules (<code>@nestjs/bullmq</code>, <code>@nestjs/schedule</code>)</> },
+          nest: { s: "library", note: <>Official modules (<code>@nestjs/bullmq</code>, needs Redis; <code>@nestjs/schedule</code>)</> },
         },
       },
       {
@@ -286,6 +340,7 @@ export default function Compare({ data }) {
       <style dangerouslySetInnerHTML={{ __html: `
         .devora-page { max-width: 1180px; }
         ${COMPARE_MATRIX_CSS}
+        ${RENDER_MODES_CSS}
         .compare-hero { text-align: center; max-width: 46rem; margin: 0 auto 2rem; }
         .compare-hero h1 {
           font-size: clamp(2rem, 4.5vw, 2.9rem);
@@ -370,6 +425,13 @@ export default function Compare({ data }) {
         .compare-note strong { color: var(--devora-fg); }
         .devora-page .compare-list { padding-left: 1.2rem; line-height: 1.7; }
         .compare-list li { margin-bottom: 0.4rem; }
+        .devora-page .compare-section h3 { margin-top: 2.25rem; }
+        .compare-choose { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+        .compare-choose-card { min-width: 0; padding: 1.1rem 1.2rem; border: 1px solid var(--devora-border); border-radius: var(--devora-radius); background: var(--devora-card); }
+        .compare-choose-card.is-devora { border-color: var(--devora-accent-from); }
+        .devora-page .compare-choose-card h3 { margin: 0 0 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+        .devora-page .compare-choose-card p { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.6; }
+        .compare-choose-card p:last-child { margin-bottom: 0; }
       ` }} />
 
       <section className="compare-hero">
@@ -378,7 +440,7 @@ export default function Compare({ data }) {
         </h1>
         <p>
           Where Devora.js stands next to the tools you're probably weighing it against — including
-          where they're ahead.
+          where they're ahead. Speed numbers live on <a href="/performance">Performance</a>.
         </p>
         <p className="compare-stamp">
           <span>
@@ -387,10 +449,13 @@ export default function Compare({ data }) {
           <span>Other frameworks: checked {OTHERS_CHECKED}</span>
         </p>
         <nav className="compare-jump" aria-label="On this page">
-          <a href="#fullstack">Full-stack frameworks</a>
-          <a href="#backend">Backend frameworks</a>
+          <a href="#rendering">Rendering</a>
+          <a href="#multi-app">Multi-app</a>
+          <a href="#sessions">Sessions</a>
+          <a href="#backend">Backend</a>
           <a href="#scale">Scale</a>
           <a href="#limitations">Limitations</a>
+          <a href="#choosing">When to choose</a>
           <a href="/performance">Performance</a>
         </nav>
       </section>
@@ -423,7 +488,7 @@ export default function Compare({ data }) {
               you need a mature, full-featured backend today — dependency injection, validation,
               WebSockets, jobs: <strong>NestJS</strong> or <strong>Fastify</strong>;
             </li>
-            <li>you need catch-all routes, WebSockets, or a long track record right now.</li>
+            <li>you need WebSockets built in, background jobs, or a long track record right now.</li>
           </ul>
         </section>
       </div>
@@ -431,36 +496,69 @@ export default function Compare({ data }) {
       <section className="compare-section" aria-labelledby="fullstack">
         <h2 id="fullstack">Full-stack and frontend frameworks</h2>
         <p>
-          Next.js, React Router v8 (framework mode — formerly Remix), SvelteKit and Astro. Pick
-          which ones to show; on a phone each feature becomes a card.
+          Next.js, React Router v8 (framework mode — formerly Remix), SvelteKit and Astro. Each
+          topic below has its own table; pick which frameworks to show, and on a phone each feature
+          becomes a card.
         </p>
-        <Matrix id="cmx-fullstack" title="Devora.js compared with full-stack frameworks" frameworks={FULLSTACK} groups={FULLSTACK_GROUPS} />
-        <p className="compare-legend">
-          A blank cell means the row doesn't apply to that framework (it has no multi-app concept).
-        </p>
+
+        <h3 id="rendering">Rendering model</h3>
+        <RenderModesBlock headingId="choose-render-mode" level={3} />
+        <Matrix id="cmx-rendering" title="Rendering: Devora.js compared with full-stack frameworks" frameworks={FULLSTACK} groups={RENDERING_GROUPS} />
         <p className="compare-note">
           <strong>Honest note:</strong> explicit render-mode selection isn't unique to Devora.js —
-          SvelteKit and Astro already do it, and Next.js 16 closed most of the gap. Built-in sessions
-          aren't unique either (React Router, Astro). The narrow, still-true claims: several apps
-          in one project sharing one backend and one login, and one session that works as a cookie
-          or a Bearer token and is revoked on both at once. Turborepo and Nx aren't in this table:
-          they're monorepo task runners, not frameworks, and can sit alongside Devora.js.
+          SvelteKit and Astro do it per route, and Next.js 16 closed most of the gap. Incremental
+          regeneration is built in on Next.js and only a platform option elsewhere; Devora.js's
+          version is the least battle-tested on serverless hosts.
+        </p>
+
+        <h3 id="multi-app">Multi-app architecture</h3>
+        <p>
+          The reason Devora.js exists. Turborepo and Nx are monorepo task runners rather than
+          frameworks, so a "—" or "Not its job" cell is not a knock against them.
+        </p>
+        <Matrix id="cmx-multiapp" title="Several apps in one project" frameworks={MULTI_APP} groups={MULTI_APP_GROUPS} />
+        <p className="compare-note">
+          <strong>Honest note:</strong> Turborepo and Nx solve "build this repo full of apps fast";
+          Devora.js solves "these apps share a backend and a session system out of the box". You
+          could use Turborepo <em>and</em> Devora.js together. Multi-Zones' one-domain model gets
+          browser cookie sharing for free; Devora.js shares the login across subdomains only when{" "}
+          <code>shared.sessions.cookie.domain</code> is set.
+        </p>
+
+        <h3 id="sessions">Sessions and auth</h3>
+        <Matrix id="cmx-sessions" title="Sessions: Devora.js compared with full-stack frameworks" frameworks={SESSION_FW} groups={SESSION_GROUPS} />
+        <p className="compare-note">
+          <strong>Honest note:</strong> built-in sessions aren't unique (React Router, Astro). The
+          narrow claim: one session that works as an HttpOnly cookie and as a Bearer token, revoked
+          on both at once, shared by every app in a project. Checking <em>who someone is</em> stays
+          your code: Devora.js ships no auth provider, and none of the others is a replacement for
+          one either.
         </p>
       </section>
 
       <section className="compare-section" aria-labelledby="backend">
         <h2 id="backend">Backend frameworks</h2>
         <p>Express, Fastify and NestJS, compared on what an API needs.</p>
-        <Matrix id="cmx-backend" title="Devora.js compared with backend frameworks" frameworks={BACKEND} groups={BACKEND_GROUPS} />
+
+        <h3 id="api-errors">API error handling</h3>
+        <Matrix id="cmx-api-errors" title="API error behavior: Devora.js compared with backend frameworks" frameworks={BACKEND} groups={API_ERROR_GROUPS} />
         <p className="compare-caption">
-          The three API-behavior rows were tested directly, in production mode, with defaults only:
-          Express 5.2.1, Fastify 5.12.5, NestJS 12.1.0 and Devora.js 0.3.1 (unchanged in {version}).
-          The CORS and upload rows come from each project's documentation and published packages.
+          Tested directly in production mode with defaults only (October 16, 2026): Express 5.3.0,
+          Fastify 5.12.7, NestJS 12.1.3 and Devora.js {version}.
+        </p>
+
+        <h3 id="byo">Built in, or bring your own</h3>
+        <Matrix id="cmx-byo" title="What is built in: Devora.js compared with backend frameworks" frameworks={BACKEND} groups={BYO_GROUPS} />
+        <p className="compare-caption">
+          Each row was checked against the framework's documentation on {OTHERS_CHECKED}. "Use a
+          library" includes the official packages each project maintains.
         </p>
         <p className="compare-note">
           <strong>Honest note:</strong> NestJS and Fastify are more complete "batteries included"
           backend frameworks today. Devora.js's backend is closer to Express's minimalism, with a
-          JSON error contract, method checks and CORS that Express doesn't give you by default.
+          JSON error contract, method checks and CORS that Express doesn't give you by default. For
+          live updates it documents a pattern, not a built-in:{" "}
+          <a href="/live-updates">Live updates</a>.
         </p>
       </section>
 
@@ -512,18 +610,29 @@ export default function Compare({ data }) {
           As of <code>@devorajs/core@{version}</code>, checked in its source:
         </p>
         <ul className="compare-list">
-          <li>No catch-all routes (<code>[...slug]</code>).</li>
           <li>
             An API route's response headers are a plain object, so one response can send only one{" "}
-            <code>Set-Cookie</code>; responses are sent in one piece (no server-sent events).
+            <code>Set-Cookie</code>; responses are sent in one piece, so there are no server-sent
+            events.
           </li>
-          <li>No built-in WebSockets, background jobs, validation or rate limiting.</li>
+          <li>
+            No built-in WebSockets, background jobs, validation or rate limiting. For live updates
+            run a separate realtime server: <a href="/live-updates">Live updates</a>.
+          </li>
           <li>
             <code>streaming</code> is GET-only, and on Netlify it arrives as one buffered response.
           </li>
           <li>
             <code>isr</code> regeneration on Vercel/Netlify's serverless filesystem hasn't been
-            verified.
+            verified; it is reliable under a long-lived Node server.
+          </li>
+          <li>
+            Pre-rendered pages and built files are held in memory (64 MB total, 2 MB per file) and
+            checked against the disk once a second; <code>devora start</code> needs a restart for
+            changed route code.
+          </li>
+          <li>
+            Desktop and native mobile apps are planned goals, not started.
           </li>
           <li>Pre-1.0: behavior changes can land in any release; the CHANGELOG lists them first.</li>
         </ul>
@@ -531,6 +640,32 @@ export default function Compare({ data }) {
           Build time, requests/second, memory and JavaScript sent, measured against Next.js, Astro,
           SvelteKit and React Router on the same pages: see <a href="/performance">Performance</a>.
         </p>
+      </section>
+
+      <section className="compare-section" aria-labelledby="choosing">
+        <h2 id="choosing">When to choose which</h2>
+        <div className="compare-choose">
+          <article className="compare-choose-card">
+            <h3>{LOGO_NEXTJS} Next.js</h3>
+            <p><strong>Choose it if</strong> you want the largest ecosystem and the most answers online, or you have one app and want the most-used React framework.</p>
+            <p><strong>Not if</strong> you want one backend and one login shared by several separately deployed apps without wiring it yourself.</p>
+          </article>
+          <article className="compare-choose-card">
+            <h3>{LOGO_ASTRO} Astro</h3>
+            <p><strong>Choose it if</strong> you are building a content-heavy site and want little client JavaScript by default.</p>
+            <p><strong>Not if</strong> you need a shared login and backend across several apps, or React-first data loading with actions.</p>
+          </article>
+          <article className="compare-choose-card">
+            <h3>{LOGO_NEST} NestJS or {LOGO_FASTIFY} Fastify</h3>
+            <p><strong>Choose it if</strong> you need a mature, full-featured backend today: dependency injection, validation, WebSockets, jobs.</p>
+            <p><strong>Not if</strong> you also need server-rendered React pages in the same project and want one tool for both.</p>
+          </article>
+          <article className="compare-choose-card is-devora">
+            <h3>{LOGO_DEVORA} Devora.js</h3>
+            <p><strong>Choose it if</strong> you are building several apps (marketing, dashboard, admin) that should share one backend and one login and deploy separately, and you accept a pre-1.0 framework with a small community.</p>
+            <p><strong>Not if</strong> you need the largest ecosystem, a long track record, or built-in WebSockets and background jobs right now.</p>
+          </article>
+        </div>
       </section>
 
       <JsonLd
