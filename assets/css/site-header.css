@@ -66,3 +66,29 @@
 }
 .devora-header-left { width: 100%; }
 .devora-nav { margin-left: auto; }
+
+/* Narrow screens (the shared header stacks the nav under the logo at 640px):
+   keep Search, GitHub, Discord and Theme as icon buttons on the logo's row,
+   and let the text links take the row below and wrap tidily. The buttons are
+   positioned inside .devora-header-inner (no markup change, nav stays a nav). */
+@media (max-width: 640px) {
+  .devora-header-inner { position: relative; }
+  .devora-nav { gap: 0; }
+  .devora-nav a { padding: 0.4rem 0.4rem; }
+  .devora-nav a:is([href="#search-overlay"], [href="#theme"], [href^="https://github.com"], [href^="https://discord.gg"]) {
+    position: absolute;
+    top: 0.85rem;
+    margin: 0;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    font-size: 0;
+    line-height: 0;
+  }
+  .devora-nav a[href="#theme"] { right: var(--devora-gutter); }
+  .devora-nav a[href^="https://discord.gg"] { right: calc(var(--devora-gutter) + 2.5rem); }
+  .devora-nav a[href^="https://github.com"] { right: calc(var(--devora-gutter) + 5rem); }
+  .devora-nav a[href="#search-overlay"] { right: calc(var(--devora-gutter) + 7.5rem); }
+}
