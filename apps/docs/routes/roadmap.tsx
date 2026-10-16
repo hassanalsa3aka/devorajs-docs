@@ -226,7 +226,7 @@ export default function Roadmap() {
             <h3 id="rm-now">Now</h3>
             <ul>
               <li>Outside testers: <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/TESTING.md">the 15-minute guide</a>; what they hit shapes the next releases.</li>
-              <li>Publish 0.3.5, then re-run the benchmark harness on the published packages and replace the numbers on <a href="/performance">Performance</a> (they come from a build of this release's code).</li>
+              <li>Deploy this site with the numbers measured on the published 0.3.5 packages, and the release post.</li>
               <li>Verify 0.3.5 on a live Vercel and Netlify deployment (finding N1).</li>
             </ul>
           </section>
@@ -288,7 +288,11 @@ export default function Roadmap() {
         <p>
           The aim is to close the gaps and publish measured results, including where Devora.js is
           behind. Numbers come from the <a href="/performance">benchmark harness</a> and are never
-          edited by hand.
+          edited by hand. After the first pass (published 0.3.5; a difference inside a framework's
+          own run-to-run spread counts as a tie), Devora.js is ahead of the other four frameworks on
+          the pre-rendered page, the server-rendered page and the form POST; on the JSON API
+          scenarios it is behind Fastify, Hono and NestJS on Fastify, and level with four
+          frameworks on the 2 ms async scenario (findings S1 to S4).
         </p>
 
         <h2 id="success">Definition of success</h2>
