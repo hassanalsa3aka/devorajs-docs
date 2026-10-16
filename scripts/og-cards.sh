@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Renders the link-preview cards in assets/og/ from scripts/og-card.html.
 # A page uses its card through pageMeta(path, { ..., image: "/og/<name>.png" }).
-# Usage: scripts/og-cards.sh   (CHROME=/path/to/chrome to override)
+# Usage: scripts/og-cards.sh [--blog-only]   (CHROME=/path/to/chrome to override)
+#   --blog-only renders just the per-post cards from data/blog-posts.json.
 set -e
 cd "$(dirname "$0")/.."
 CHROME="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
@@ -14,6 +15,7 @@ card() { # name title accent subtitle
   echo "assets/og/$1.png"
 }
 
+if [ "$1" != "--blog-only" ]; then
 "$CHROME" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 \
   --screenshot=assets/og/devorajs-og.png "file://$PWD/scripts/og-card.html" 2>/dev/null
 card examples "Examples" "and live demos." "Runnable Devora.js projects, and the example apps deployed on Vercel."
@@ -21,3 +23,10 @@ card live-updates "Live updates" "(WebSockets)." "Socket.IO, ws, or polling. The
 card background-jobs "Background jobs," "tested." "BullMQ with Redis, a SQLite queue and node-cron: three ways to run work outside a request, with the code."
 card blog "Blog" "" "Release notes and design write-ups from the Devora.js project."
 card performance "Performance," "measured." "Devora.js next to Next.js, Astro, SvelteKit and React Router on the same pages."
+fi
+
+# One card per blog post, from data/blog-posts.json: the title, and the first sentence of the description.
+node -e '
+const { posts } = require("./apps/docs/data/blog-posts.json");
+for (const p of posts) console.log([p.slug, p.title, p.description.split(/(?<=\.)\s/)[0]].join("\t"));
+' | while IFS=$'\t' read -r slug title sub; do card "blog-$slug" "$title" "" "$sub"; done

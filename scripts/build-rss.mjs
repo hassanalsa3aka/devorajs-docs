@@ -12,7 +12,7 @@ const { author, posts } = JSON.parse(readFileSync(new URL("../apps/docs/data/blo
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rfc822 = (iso) => new Date(`${iso}T00:00:00Z`).toUTCString();
-const sorted = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+const sorted = posts.filter((p) => p.date && !p.draft).sort((a, b) => b.date.localeCompare(a.date));
 
 const items = sorted
   .map(
@@ -22,6 +22,7 @@ const items = sorted
       <guid isPermaLink="true">${SITE}/blog/${p.slug}</guid>
       <pubDate>${rfc822(p.date)}</pubDate>
       <dc:creator>${esc(author.name)}</dc:creator>
+      ${(p.tags ?? []).map((t) => `<category>${esc(t)}</category>`).join("\n      ")}
       <description>${esc(p.description)}</description>
     </item>`
   )
