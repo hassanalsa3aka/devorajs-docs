@@ -45,9 +45,10 @@ export interface LiveDemo {
 }
 
 // The three example apps from the devora.js repo (marketing, dashboard,
-// admin), deployed by the maintainer. Only demos that answered with a
-// working page when checked are listed. The Netlify deployments didn't
-// respond from the checking machine, so they're left out until re-checked.
+// admin), deployed by the maintainer on Vercel and Netlify. The Vercel
+// deployments were checked on SHOWCASE_CHECKED; the Netlify ones are the
+// same apps, added by the maintainer, and did not respond from the machine
+// that ran the check (the page says so). Same screenshots: same apps.
 export const LIVE_DEMOS: LiveDemo[] = [
   {
     platform: "Vercel",
@@ -67,6 +68,27 @@ export const LIVE_DEMOS: LiveDemo[] = [
     platform: "Vercel",
     app: "Admin",
     url: "https://devora-js-admin.vercel.app",
+    image: "/showcase/demo-vercel-admin.webp",
+    shows: "auth: \"isolated\" — its own session cookie, separate from the other two",
+  },
+  {
+    platform: "Netlify",
+    app: "Marketing",
+    url: "https://devorajs.netlify.app",
+    image: "/showcase/demo-vercel-marketing.webp",
+    shows: "auth: \"none\" — no login, no session cookie; an ISR demo page",
+  },
+  {
+    platform: "Netlify",
+    app: "Dashboard",
+    url: "https://devora-dashboard.netlify.app",
+    image: "/showcase/demo-vercel-dashboard.webp",
+    shows: "Shared login, an island counter, a clientOnly() widget, a csr page",
+  },
+  {
+    platform: "Netlify",
+    app: "Admin",
+    url: "https://devora-admin.netlify.app",
     image: "/showcase/demo-vercel-admin.webp",
     shows: "auth: \"isolated\" — its own session cookie, separate from the other two",
   },
@@ -98,7 +120,7 @@ export function ShowcaseCard({ entry }: { entry: ShowcaseEntry }) {
 
 export function DemoCard({ demo }: { demo: LiveDemo }) {
   return (
-    <article className="sc-card">
+    <article className={`sc-card sc-demo sc-demo-${demo.app.toLowerCase()}`}>
       <a className="sc-shot" href={demo.url} target="_blank" rel="noopener noreferrer" tabIndex={-1} aria-hidden="true">
         <img src={demo.image} alt="" width={800} height={500} loading="lazy" decoding="async" />
       </a>
@@ -111,7 +133,7 @@ export function DemoCard({ demo }: { demo: LiveDemo }) {
         </h3>
         <p>{demo.shows}</p>
         <ul className="sc-tags" aria-label="Platform">
-          <li>{demo.platform}</li>
+          <li className={`sc-plat sc-plat-${demo.platform.toLowerCase()}`}>{demo.platform}</li>
         </ul>
       </div>
     </article>
@@ -156,4 +178,13 @@ export const SHOWCASE_CSS = `
   background: var(--devora-surface);
 }
 .sc-note { font-size: 0.8rem; color: var(--devora-fg-muted); }
+/* Live demos: one accent per app (auth mode), one chip colour per platform. */
+.sc-demo { --sc-accent: var(--devora-accent-from); border-top: 4px solid var(--sc-accent); }
+.sc-demo-marketing { --sc-accent: #10b981; }
+.sc-demo-dashboard { --sc-accent: #3b82f6; }
+.sc-demo-admin { --sc-accent: #f59e0b; }
+.sc-demo:hover { border-color: var(--sc-accent); }
+.devora-page .sc-tags li.sc-plat { border-color: transparent; color: #fff; }
+.devora-page .sc-tags li.sc-plat-vercel { background: #111; }
+.devora-page .sc-tags li.sc-plat-netlify { background: #0e7c86; }
 `;

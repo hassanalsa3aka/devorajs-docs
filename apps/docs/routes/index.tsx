@@ -117,12 +117,62 @@ export default function Home({ data }) {
         body { overflow-x: hidden; }
         .devora-page { max-width: 1180px; }
         .devora-page .home-prose { max-width: 46rem; margin-left: auto; margin-right: auto; }
+        .home-video-hero {
+          position: relative;
+          display: block;
+          overflow: hidden;
+          width: 100vw;
+          margin-left: calc(50% - 50vw);
+          margin-right: calc(50% - 50vw);
+          margin-top: -3rem;
+          margin-bottom: 0;
+          aspect-ratio: 21 / 9;
+          max-height: 280px;
+          background: #000;
+        }
+        .home-video-hero video {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          transition: transform 0.4s ease;
+        }
+        .home-video-hero:hover video { transform: scale(1.015); }
+        .home-video-hero-fade {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 65%;
+          background: linear-gradient(to bottom, transparent, var(--devora-bg));
+          pointer-events: none;
+        }
+        .home-video-hero-chip {
+          position: absolute;
+          right: 1rem;
+          top: 1rem;
+          z-index: 1;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          background: rgba(8, 8, 14, 0.5);
+          backdrop-filter: blur(6px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: #fff;
+          padding: 0.35rem 0.75rem;
+          border-radius: 999px;
+          font-size: 0.72rem;
+          font-weight: 600;
+        }
+        @media (max-width: 640px) {
+          .home-video-hero { aspect-ratio: 16 / 10; max-height: 260px; }
+        }
         .home-hero {
           position: relative;
           z-index: 2;
           overflow: hidden;
           max-width: 48rem;
-          margin: 0 auto 3rem;
+          margin: -5.5rem auto 3rem;
           padding: 3rem 2rem;
           border-radius: 20px;
           background: var(--devora-bg-elevated);
@@ -316,7 +366,6 @@ export default function Home({ data }) {
           color: var(--devora-fg-muted);
         }
         .home-maturity a { color: var(--devora-fg); text-decoration: underline; text-underline-offset: 2px; }
-        .home-demo-link { margin: 0.5rem 0 0; font-size: 0.85rem; }
         .home-config { max-width: 62rem; margin: 0 auto 1.5rem; }
         .devora-page .home-config pre { margin: 0; }
         .home-config .devora-card { overflow-x: auto; }
@@ -329,6 +378,7 @@ export default function Home({ data }) {
           color: var(--devora-fg-muted);
           font-size: 0.95rem;
           line-height: 1.65;
+          text-align: center;
         }
         .home-whatsnext strong { color: var(--devora-fg); }
         .home-section-title {
@@ -572,6 +622,17 @@ export default function Home({ data }) {
         .reveal { opacity: 1; }
         @supports (animation-timeline: view()) {
           @media (prefers-reduced-motion: no-preference) {
+            /* Section titles slide up without fading: they stay fully opaque,
+               so contrast is always measurable (and Lighthouse stays at 100). */
+            .reveal-slide {
+              animation: home-slide-in linear both;
+              animation-timeline: view();
+              animation-range: entry 0% cover 25%;
+            }
+            @keyframes home-slide-in {
+              from { transform: translateY(20px); }
+              to { transform: translateY(0); }
+            }
             .reveal {
               opacity: 0;
               animation: home-reveal-in linear both;
@@ -589,6 +650,15 @@ export default function Home({ data }) {
           .home-hero { padding: 2.25rem 1.25rem; }
         }
       ` }} />
+
+      <a href="#watch-demo" className="home-video-hero" aria-label="Watch the devora.js demo video (opens a player with sound)">
+        <video muted loop playsInline preload="none" poster="/video/devorajs-poster.webp">
+          <source data-src="/video/devorajs.mp4" type="video/mp4" />
+        </video>
+        <div className="home-video-hero-fade" aria-hidden="true" />
+        <span className="home-video-hero-chip">▶ Watch the demo</span>
+      </a>
+      <script src="/js/hero-video.js" />
 
       <section className="home-hero">
         <div className="home-blob home-blob-a" aria-hidden="true" />
@@ -631,9 +701,6 @@ export default function Home({ data }) {
           Early-stage and pre-1.0. Testers welcome:{" "}
           <a href="https://discord.gg/wYFYmFxdS8" target="_blank" rel="noopener noreferrer">join the Discord</a>.
         </p>
-        <p className="home-demo-link">
-          <a href="#watch-demo">Watch the 1-minute demo video</a>
-        </p>
       </section>
 
       <div id="watch-demo" className="video-lightbox">
@@ -648,11 +715,11 @@ export default function Home({ data }) {
       </div>
       <script src="/js/video-lightbox.js" />
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>How the pieces fit</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>How the pieces fit</h2>
       <p className="home-section-subtitle">
         Three apps, one shared backend, one login — and a database that is yours to choose.
       </p>
-      <ArchitectureDiagram />
+      <div className="reveal"><ArchitectureDiagram /></div>
       <div className="home-config reveal">
         <div className="devora-card">
           <pre>
@@ -660,7 +727,7 @@ export default function Home({ data }) {
           </pre>
         </div>
       </div>
-      <p className="home-prose">
+      <p className="home-prose reveal">
         That file is what <code>npm create devora@latest</code> writes. <code>devora dev</code> runs
         every app, <code>devora build</code> builds each one, and a function in{" "}
         <code>packages/backend</code> is imported by whichever app needs it. Security headers,
@@ -668,7 +735,7 @@ export default function Home({ data }) {
         the route file.
       </p>
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>How it compares</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>How it compares</h2>
       <p className="home-section-subtitle">
         Fair trade-offs, not a scoreboard — these are different tools solving overlapping problems.
       </p>
@@ -753,7 +820,7 @@ export default function Home({ data }) {
         </div>
       </div>
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>What you get</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>What you get</h2>
       <p className="home-section-subtitle">Six things the framework handles so your app code doesn't have to.</p>
 
       <div className="home-features">
@@ -770,7 +837,7 @@ export default function Home({ data }) {
         ))}
       </div>
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }} id="shared-backend">One shared backend</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }} id="shared-backend">One shared backend</h2>
       <p className="home-section-subtitle">Every app in the project calls the same functions — no API layer to write between them.</p>
       <div className="home-backend reveal">
         <div>
@@ -801,7 +868,7 @@ import { addNote } from "@devorajs/backend/notes";`}
         </div>
       </div>
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }} id="built-with">Built with Devora.js</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }} id="built-with">Built with Devora.js</h2>
       <p className="home-section-subtitle">Real products running on it today.</p>
       <div className="home-showcase">
         <div className="sc-grid">
@@ -821,9 +888,9 @@ import { addNote } from "@devorajs/backend/notes";`}
 
       <div className="home-demos reveal">
         <p>
-          <span className="home-demos-title">Live demos.</span> The {LIVE_DEMOS.length} example
+          <span className="home-demos-title">Live demos.</span> The {new Set(LIVE_DEMOS.map((d) => d.app)).size} example
           apps from the framework repo — marketing, dashboard and admin, one project with three
-          auth modes — deployed by the maintainer.
+          auth modes — deployed by the maintainer on Vercel and Netlify.
         </p>
         <a className="home-btn home-btn-primary" href="/examples#live-demos" style={{ "--pseudo-content": '""' }}>
           See examples and demos →
@@ -836,7 +903,7 @@ import { addNote } from "@devorajs/backend/notes";`}
         <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/ROADMAP.md">roadmap</a>.
       </p>
 
-      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
       <div className="home-next">
         <a className="home-next-link reveal" href="/getting-started">
           Getting started

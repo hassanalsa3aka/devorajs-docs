@@ -130,8 +130,11 @@ export function SiteFooter() {
         .site-footer-built { justify-self: center; text-align: center; }
         .site-footer-meta { justify-self: end; display: flex; gap: 1.25rem; }
         .site-footer-copy a { color: var(--devora-fg); }
-        /* Links inside a sentence are underlined, not told apart by color alone. */
-        .site-footer-copy a, .site-footer-built a { text-decoration: underline; text-underline-offset: 3px; }
+        /* Links inside a sentence: no underline; told apart from the text by a
+           brighter color and a heavier weight, underlined on hover/focus. */
+        .site-footer-copy a, .site-footer-built a { color: var(--devora-fg); font-weight: 600; text-decoration: none; }
+        .site-footer-copy a:hover, .site-footer-built a:hover,
+        .site-footer-copy a:focus-visible, .site-footer-built a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
         @media (max-width: 700px) {
           .site-footer-legal { grid-template-columns: 1fr; justify-items: start; }
           .site-footer-built { justify-self: start; text-align: left; }

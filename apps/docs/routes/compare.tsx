@@ -426,12 +426,35 @@ export default function Compare({ data }) {
         .devora-page .compare-list { padding-left: 1.2rem; line-height: 1.7; }
         .compare-list li { margin-bottom: 0.4rem; }
         .devora-page .compare-section h3 { margin-top: 2.25rem; }
-        .compare-choose { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
-        .compare-choose-card { min-width: 0; padding: 1.1rem 1.2rem; border: 1px solid var(--devora-border); border-radius: var(--devora-radius); background: var(--devora-card); }
-        .compare-choose-card.is-devora { border-color: var(--devora-accent-from); }
-        .devora-page .compare-choose-card h3 { margin: 0 0 0.6rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-        .devora-page .compare-choose-card p { margin: 0 0 0.6rem; font-size: 0.9rem; line-height: 1.6; }
-        .compare-choose-card p:last-child { margin-bottom: 0; }
+        .compare-choose { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1rem; }
+        @media (max-width: 1080px) { .compare-choose { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 560px) { .compare-choose { grid-template-columns: 1fr; } }
+        .compare-choose-card {
+          --cc: var(--devora-fg-subtle);
+          min-width: 0;
+          padding: 0.8rem 0.9rem 0.9rem;
+          border: 1px solid var(--devora-border);
+          border-top: 3px solid var(--cc);
+          border-radius: var(--devora-radius);
+          background: var(--devora-card);
+          display: flex;
+          flex-direction: column;
+          gap: 0.55rem;
+        }
+        .compare-choose-card.cc-next { --cc: #64748b; }
+        .compare-choose-card.cc-astro { --cc: #f97316; }
+        .compare-choose-card.cc-backend { --cc: #e11d48; }
+        .compare-choose-card.is-devora { --cc: var(--devora-accent-from); background: color-mix(in srgb, var(--devora-accent-from) 6%, var(--devora-card)); }
+        .devora-page .compare-choose-card h3 { margin: 0; font-size: 0.95rem; display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; }
+        .compare-choose-card h3 svg, .compare-choose-card h3 img { width: 18px; height: 18px; flex-shrink: 0; }
+        .cc-row { display: grid; grid-template-columns: 1.15rem minmax(0, 1fr); gap: 0.45rem; font-size: 0.82rem; line-height: 1.5; }
+        .devora-page .cc-row p { margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--devora-fg-muted); }
+        .cc-row strong { color: var(--devora-fg); }
+        .cc-mark { width: 1.15rem; height: 1.15rem; border-radius: 50%; display: grid; place-items: center; font-size: 0.7rem; font-weight: 800; line-height: 1; margin-top: 0.12rem; }
+        .cc-yes .cc-mark { background: color-mix(in srgb, #16a34a 18%, transparent); color: #15803d; }
+        .cc-no .cc-mark { background: color-mix(in srgb, #dc2626 14%, transparent); color: #b91c1c; }
+        :root[data-theme=dark] .cc-yes .cc-mark { color: #4ade80; } :root[data-theme=dark] .cc-no .cc-mark { color: #f87171; }
+        @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) .cc-yes .cc-mark { color: #4ade80; } :root:not([data-theme=light]) .cc-no .cc-mark { color: #f87171; } }
       ` }} />
 
       <section className="compare-hero">
@@ -645,25 +668,25 @@ export default function Compare({ data }) {
       <section className="compare-section" aria-labelledby="choosing">
         <h2 id="choosing">When to choose which</h2>
         <div className="compare-choose">
-          <article className="compare-choose-card">
+          <article className="compare-choose-card cc-next">
             <h3>{LOGO_NEXTJS} Next.js</h3>
-            <p><strong>Choose it if</strong> you want the largest ecosystem and the most answers online, or you have one app and want the most-used React framework.</p>
-            <p><strong>Not if</strong> you want one backend and one login shared by several separately deployed apps without wiring it yourself.</p>
+            <div className="cc-row cc-yes"><span className="cc-mark" aria-hidden="true">✓</span><p><strong>Choose it if</strong> you want the largest ecosystem, or one app on the most-used React framework.</p></div>
+            <div className="cc-row cc-no"><span className="cc-mark" aria-hidden="true">✕</span><p><strong>Not if</strong> several deployed apps should share one backend and one login without wiring it yourself.</p></div>
           </article>
-          <article className="compare-choose-card">
+          <article className="compare-choose-card cc-astro">
             <h3>{LOGO_ASTRO} Astro</h3>
-            <p><strong>Choose it if</strong> you are building a content-heavy site and want little client JavaScript by default.</p>
-            <p><strong>Not if</strong> you need a shared login and backend across several apps, or React-first data loading with actions.</p>
+            <div className="cc-row cc-yes"><span className="cc-mark" aria-hidden="true">✓</span><p><strong>Choose it if</strong> you build a content-heavy site with little client JavaScript by default.</p></div>
+            <div className="cc-row cc-no"><span className="cc-mark" aria-hidden="true">✕</span><p><strong>Not if</strong> you need a shared login and backend across several apps.</p></div>
           </article>
-          <article className="compare-choose-card">
-            <h3>{LOGO_NEST} NestJS or {LOGO_FASTIFY} Fastify</h3>
-            <p><strong>Choose it if</strong> you need a mature, full-featured backend today: dependency injection, validation, WebSockets, jobs.</p>
-            <p><strong>Not if</strong> you also need server-rendered React pages in the same project and want one tool for both.</p>
+          <article className="compare-choose-card cc-backend">
+            <h3>{LOGO_NEST} NestJS / {LOGO_FASTIFY} Fastify</h3>
+            <div className="cc-row cc-yes"><span className="cc-mark" aria-hidden="true">✓</span><p><strong>Choose it if</strong> you need a mature backend today: DI, validation, WebSockets, jobs.</p></div>
+            <div className="cc-row cc-no"><span className="cc-mark" aria-hidden="true">✕</span><p><strong>Not if</strong> you also want server-rendered React pages in the same project.</p></div>
           </article>
           <article className="compare-choose-card is-devora">
             <h3>{LOGO_DEVORA} Devora.js</h3>
-            <p><strong>Choose it if</strong> you are building several apps (marketing, dashboard, admin) that should share one backend and one login and deploy separately, and you accept a pre-1.0 framework with a small community.</p>
-            <p><strong>Not if</strong> you need the largest ecosystem, a long track record, or built-in WebSockets and background jobs right now.</p>
+            <div className="cc-row cc-yes"><span className="cc-mark" aria-hidden="true">✓</span><p><strong>Choose it if</strong> several apps should share one backend and one login and deploy separately, and a pre-1.0 framework is fine.</p></div>
+            <div className="cc-row cc-no"><span className="cc-mark" aria-hidden="true">✕</span><p><strong>Not if</strong> you need the largest ecosystem, a long track record, or built-in WebSockets and jobs.</p></div>
           </article>
         </div>
       </section>

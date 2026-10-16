@@ -287,8 +287,8 @@ export const COMPARE_MATRIX_CSS = `
 .cmx-filter-option .home-compare-logo { width: 14px; height: 14px; }
 
 .cmx-scroll {
-  overflow: auto;
-  max-height: min(80vh, 1000px);
+  overflow-x: auto;
+  overflow-y: visible;
   border: 1px solid var(--devora-border);
   border-radius: var(--devora-radius-lg);
   background: var(--devora-card);

@@ -11,7 +11,8 @@
 // The matrix cells for other frameworks were each checked against that
 // framework's own documentation on RENDER_MODES_CHECKED (see the sources).
 
-import { StatusChip, type Status } from "./compare-matrix.js";
+import { Matrix, type Framework, type MatrixGroup, type Status } from "./compare-matrix.js";
+import { LOGO_ASTRO, LOGO_DEVORA, LOGO_NEXTJS, LOGO_REACT_ROUTER, LOGO_SVELTE } from "./compare-table.js";
 
 export const RENDER_MODES_CHECKED = "October 16, 2026";
 
@@ -21,6 +22,14 @@ const MATURITY: Record<Maturity, { icon: string; text: string }> = {
   stable: { icon: "✓", text: "Stable" },
   limited: { icon: "!", text: "Limited" },
   unverified: { icon: "?", text: "Not verified on serverless" },
+};
+
+const ACCENT: Record<string, { c: string; strong: string }> = {
+  ssr: { c: "#3b82f6", strong: "#1d4ed8" },
+  ssg: { c: "#8b5cf6", strong: "#6d28d9" },
+  csr: { c: "#10b981", strong: "#047857" },
+  isr: { c: "#f59e0b", strong: "#b45309" },
+  streaming: { c: "#f43f5e", strong: "#be123c" },
 };
 
 const MODES: Array<{
@@ -75,9 +84,17 @@ const MODES: Array<{
 
 type Cell = { status: Status; note: string };
 
-const FRAMEWORKS = ["Next.js", "React Router", "SvelteKit", "Astro", "Devora.js"];
+const FW_KEYS = ["next", "rr", "svelte", "astro", "devora"] as const;
 
-// Rows: modes. Columns: FRAMEWORKS (same order).
+const FW_LIST: Framework[] = [
+  { key: "devora", label: "Devora.js", logo: LOGO_DEVORA, highlight: true },
+  { key: "next", label: "Next.js", logo: LOGO_NEXTJS },
+  { key: "rr", label: "React Router", logo: LOGO_REACT_ROUTER },
+  { key: "svelte", label: "SvelteKit", logo: LOGO_SVELTE },
+  { key: "astro", label: "Astro", logo: LOGO_ASTRO },
+];
+
+// Rows: modes. Cells follow FW_KEYS order.
 const MATRIX: Array<{ mode: string; cells: Cell[] }> = [
   {
     mode: "ssr",
@@ -131,6 +148,16 @@ const MATRIX: Array<{ mode: string; cells: Cell[] }> = [
   },
 ];
 
+const GROUPS: MatrixGroup[] = [
+  {
+    topic: "Render mode per route",
+    rows: MATRIX.map((row) => ({
+      label: <code>{row.mode}</code>,
+      cells: Object.fromEntries(FW_KEYS.map((k, i) => [k, { s: row.cells[i]!.status, note: row.cells[i]!.note }])),
+    })),
+  },
+];
+
 const SOURCES: Array<[string, string]> = [
   ["Next.js: Incremental Static Regeneration", "https://nextjs.org/docs/app/guides/incremental-static-regeneration"],
   ["Next.js: Streaming", "https://nextjs.org/docs/app/guides/streaming"],
@@ -144,38 +171,67 @@ const SOURCES: Array<[string, string]> = [
 ];
 
 export const RENDER_MODES_CSS = `
-  .devora-page .rm-cards { padding: 0; margin-left: 0; margin-right: 0; }
-  .rm-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.25rem 0 1.75rem; padding: 0; list-style: none; }
-  .rm-card { min-width: 0; padding: 1.1rem 1.15rem; border: 1px solid var(--devora-border); border-radius: var(--devora-radius); background: var(--devora-card); display: flex; flex-direction: column; gap: 0.6rem; }
-  .rm-card h3 { margin: 0; font-size: 1.05rem; }
-  .rm-card p { margin: 0; font-size: 0.9rem; line-height: 1.55; color: var(--devora-fg-muted); }
-  .rm-card pre { margin: 0; padding: 0.55rem 0.65rem; font-size: 0.78rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid var(--devora-border); border-radius: 8px; background: var(--devora-bg); }
-  .rm-chip { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; font-weight: 600; padding: 0.15rem 0.55rem; border-radius: 999px; border: 1px solid var(--devora-border); color: var(--devora-fg); }
-  .rm-chip-icon { font-weight: 700; }
+  .devora-page .rm-cards { padding: 0; margin: 1.25rem 0 1.75rem; list-style: none; }
+  .rm-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 1rem; }
+  .rm-card {
+    --rm: var(--devora-accent-from);
+    --rm-strong: var(--devora-accent-from);
+    min-width: 0;
+    padding: 1rem 1.05rem 1.05rem;
+    border: 1px solid var(--devora-border);
+    border-top: 4px solid var(--rm);
+    border-radius: var(--devora-radius);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--rm) 10%, var(--devora-card)), var(--devora-card) 8rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .rm-card:hover { transform: translateY(-2px); box-shadow: var(--devora-shadow); border-color: var(--rm); }
+  .rm-card-ssr { --rm: #3b82f6; --rm-strong: #1d4ed8; }
+  .rm-card-ssg { --rm: #8b5cf6; --rm-strong: #6d28d9; }
+  .rm-card-csr { --rm: #10b981; --rm-strong: #047857; }
+  .rm-card-isr { --rm: #f59e0b; --rm-strong: #b45309; }
+  .rm-card-streaming { --rm: #f43f5e; --rm-strong: #be123c; }
+  .rm-top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+  .rm-name { margin: 0; }
+  .devora-page .rm-name code {
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    color: var(--rm-strong);
+    background: color-mix(in srgb, var(--rm) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--rm) 40%, transparent);
+  }
+  :root[data-theme=dark] .rm-name code { color: var(--rm); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) .rm-name code { color: var(--rm); } }
+  .rm-card p { margin: 0; font-size: 0.88rem; line-height: 1.55; color: var(--devora-fg-muted); }
+  .rm-card p strong { color: var(--devora-fg); }
+  .rm-card pre { margin: 0; padding: 0.55rem 0.65rem; font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid #1f2937; border-left: 3px solid var(--rm); border-radius: 8px; background: #0d1117; color: #e6edf3; }
+  .devora-page .rm-card pre code { background: none; border: 0; padding: 0; color: #e6edf3; font-size: inherit; }
+  .rm-chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; font-weight: 700; padding: 0.12rem 0.55rem; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+  .rm-m-stable { color: #15803d; border-color: color-mix(in srgb, #16a34a 45%, transparent); background: color-mix(in srgb, #16a34a 10%, var(--devora-surface)); }
+  .rm-m-limited { color: #a16207; border-color: color-mix(in srgb, #ca8a04 50%, transparent); background: color-mix(in srgb, #ca8a04 10%, var(--devora-surface)); }
+  .rm-m-unverified { color: #1d4ed8; border-color: color-mix(in srgb, #2563eb 45%, transparent); background: color-mix(in srgb, #2563eb 8%, var(--devora-surface)); }
+  :root[data-theme=dark] .rm-m-stable { color: #4ade80; } :root[data-theme=dark] .rm-m-limited { color: #facc15; } :root[data-theme=dark] .rm-m-unverified { color: #93b8ff; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme=light]) .rm-m-stable { color: #4ade80; }
+    :root:not([data-theme=light]) .rm-m-limited { color: #facc15; }
+    :root:not([data-theme=light]) .rm-m-unverified { color: #93b8ff; }
+  }
   .rm-limits { margin-top: auto; font-size: 0.85rem; }
-  .rm-limits summary { cursor: pointer; font-weight: 600; }
-  .rm-limits summary:focus-visible { outline: 2px solid var(--devora-accent-from); outline-offset: 2px; border-radius: 4px; }
+  .rm-limits summary { cursor: pointer; font-weight: 600; color: var(--rm-strong); }
+  :root[data-theme=dark] .rm-limits summary { color: var(--rm); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) .rm-limits summary { color: var(--rm); } }
+  .rm-limits summary:focus-visible { outline: 2px solid var(--devora-ring); outline-offset: 2px; border-radius: 4px; }
   .rm-limits p { margin-top: 0.4rem; }
   .rm-honest { margin: 0 0 1.25rem; font-size: 0.95rem; line-height: 1.65; color: var(--devora-fg-muted); }
-  .rm-table-wrap { margin: 0 0 0.75rem; overflow-x: auto; }
-  .rm-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  .rm-table th, .rm-table td { text-align: left; vertical-align: top; padding: 0.6rem 0.65rem; border: 1px solid var(--devora-border); }
-  .rm-table thead th { background: var(--devora-bg-elevated); font-weight: 700; }
-  .rm-table .rm-us { background: color-mix(in srgb, var(--devora-accent-from) 7%, transparent); }
-    .rm-note { display: block; color: var(--devora-fg-muted); margin-top: 0.15rem; line-height: 1.45; }
   .rm-sources { font-size: 0.8rem; color: var(--devora-fg-muted); line-height: 1.7; }
   .rm-sources a { color: var(--devora-fg-muted); text-decoration: underline; text-underline-offset: 2px; }
-  @media (max-width: 1100px) {
-    .rm-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    .rm-table, .rm-table tbody, .rm-table tr, .rm-table th, .rm-table td { display: block; }
-    .rm-table tr { margin-bottom: 0.9rem; border: 1px solid var(--devora-border); border-radius: var(--devora-radius); overflow: hidden; }
-    .rm-table th, .rm-table td { border: 0; border-bottom: 1px solid var(--devora-border); }
-    .rm-table tr > :last-child { border-bottom: 0; }
-    .rm-table td::before { content: attr(data-label); display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--devora-fg-muted); margin-bottom: 0.15rem; }
-  }
 `;
 
-/** The cards and the matrix. `limitsHref(mode)` links each "Limits" to the long explanation. */
+/** The cards and the matrix. */
 export function RenderModesBlock({ headingId = "choose-render-mode", level = 2 }: { headingId?: string; level?: 2 | 3 }) {
   const H = level === 2 ? "h2" : "h3";
   const S = level === 2 ? "h3" : "h4";
@@ -184,19 +240,21 @@ export function RenderModesBlock({ headingId = "choose-render-mode", level = 2 }
       <H id={headingId}>Choose how each route renders</H>
       <p className="rm-honest">
         Every route says how it renders, in its own file. Choosing a mode per route is not unique
-        to Devora.js — the matrix below shows who else does it. The narrow claim here is only that
+        to Devora.js — the table below shows who else does it. The narrow claim here is only that
         the choice is one explicit line in the route file.
       </p>
       <ul className="rm-cards">
         {MODES.map((m) => {
           const lab = MATURITY[m.maturity];
           return (
-            <li className="rm-card" key={m.mode}>
-              <S><code>{m.mode}</code></S>
-              <span className="rm-chip"><span className="rm-chip-icon" aria-hidden="true">{lab.icon}</span>{lab.text}</span>
+            <li className={`rm-card rm-card-${m.mode}`} key={m.mode}>
+              <div className="rm-top">
+                <S className="rm-name"><code>{m.mode}</code></S>
+                <span className={`rm-chip rm-m-${m.maturity}`}><span aria-hidden="true">{lab.icon}</span>{lab.text}</span>
+              </div>
               <p>{m.does}</p>
               <p><strong>Use it for:</strong> {m.when}</p>
-              <pre><code>{m.setting}</code></pre>
+              <pre className="rm-pre"><code>{m.setting}</code></pre>
               <details className="rm-limits">
                 <summary>Limits</summary>
                 <p>{m.limit}</p>
@@ -208,37 +266,10 @@ export function RenderModesBlock({ headingId = "choose-render-mode", level = 2 }
       </ul>
 
       <S>Who else has it</S>
-      <div className="rm-table-wrap">
-        <table className="rm-table">
-          <caption className="rm-sources" style={{ textAlign: "left", captionSide: "bottom", paddingTop: "0.5rem" }}>
-            Checked against each framework's own documentation on {RENDER_MODES_CHECKED}; a cell says
-            "Not verified" where that page was not checked.
-          </caption>
-          <thead>
-            <tr>
-              <th scope="col">Mode</th>
-              {FRAMEWORKS.map((f) => (
-                <th scope="col" key={f} className={f === "Devora.js" ? "rm-us" : undefined}>{f}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {MATRIX.map((row) => (
-              <tr key={row.mode}>
-                <th scope="row"><code>{row.mode}</code></th>
-                {row.cells.map((c, i) => (
-                  <td key={FRAMEWORKS[i]} data-label={FRAMEWORKS[i]} className={FRAMEWORKS[i] === "Devora.js" ? "rm-us" : undefined}>
-                    <StatusChip status={c.status} />
-                    <span className="rm-note">{c.note}</span>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Matrix id="cmx-render-modes" title="Render modes: Devora.js compared with full-stack frameworks" frameworks={FW_LIST} groups={GROUPS} />
       <p className="rm-sources">
-        Sources:{" "}
+        Checked against each framework's own documentation on {RENDER_MODES_CHECKED}; a cell says
+        "Not verified" where that page was not checked. Sources:{" "}
         {SOURCES.map(([label, href], i) => (
           <span key={href}>
             <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
