@@ -92,3 +92,17 @@
   .devora-nav a[href^="https://github.com"] { right: calc(var(--devora-gutter) + 5rem); }
   .devora-nav a[href="#search-overlay"] { right: calc(var(--devora-gutter) + 7.5rem); }
 }
+
+/* Six text links (Home, Docs, Examples, Blog, Compare, Performance) have to fit one row on a
+   phone, so the header stays as tall as it was with five. Tighter side padding from 460px down
+   (the height of each link is unchanged) and a slightly smaller size on the narrowest phones. */
+@media (max-width: 460px) {
+  .devora-nav a:not([href="#search-overlay"], [href="#theme"], [href^="https://github.com"], [href^="https://discord.gg"]) {
+    padding: 0.4rem 0.22rem;
+  }
+}
+@media (max-width: 380px) {
+  .devora-nav a:not([href="#search-overlay"], [href="#theme"], [href^="https://github.com"], [href^="https://discord.gg"]) {
+    font-size: 0.78rem;
+  }
+}

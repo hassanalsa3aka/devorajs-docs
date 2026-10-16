@@ -8,6 +8,7 @@ import type { NavLink } from "@devorajs/core";
 // links home. Search, GitHub, Discord and Theme are styled as icon buttons
 // by href in site-footer.tsx.
 export const DOCS_NAV: NavLink[] = [
+  { label: "Home", href: "/" },
   { label: "Docs", href: "/getting-started" },
   { label: "Examples", href: "/examples" },
   { label: "Blog", href: "/blog" },
