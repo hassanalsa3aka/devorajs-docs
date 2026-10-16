@@ -20,6 +20,7 @@ const DOCS_GROUPS = [
       { id: "backend", label: "Backend", href: "/backend" },
       { id: "backend-capabilities", label: "Backend capabilities", href: "/backend-capabilities" },
       { id: "live-updates", label: "Live updates", href: "/live-updates" },
+      { id: "background-jobs", label: "Background jobs", href: "/background-jobs" },
       { id: "repo-splitting", label: "Repo-splitting", href: "/repo-splitting" },
     ],
   },
