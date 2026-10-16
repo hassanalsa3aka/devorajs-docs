@@ -1,7 +1,7 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout, Tag } from "../docs-layout.js";
+import { DocsLayout, Tag, Callout } from "../docs-layout.js";
 import { pageMeta } from "../seo.js";
 
 export const renderMode = "ssg";
@@ -23,6 +23,11 @@ export default function GettingStarted() {
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="getting-started">
       <h1>Getting started</h1>
+      <Callout kind="info" title="React versions">
+        Devora.js supports React 18.3 and React 19 (peer range <code>^18.3.0 || ^19.0.0</code>); new
+        projects start on React 18. The{" "}
+        <a href="/roadmap#findings">roadmap</a> records this as finding U11 (fixed in 0.3.2).
+      </Callout>
       <p>
         The fastest way to a working project is the <code>create-devora</code> installer. It works
         from an empty directory — you don't need a devora.config.ts or any framework files first.
@@ -36,7 +41,7 @@ export default function GettingStarted() {
         Yarn and pnpm work the same way: <code>yarn create devora</code> or{" "}
         <code>pnpm create devora</code> (<code>npx create-devora@latest</code> does too). You need
         Node 20 or newer. New projects depend on <code>@devorajs/core</code> and{" "}
-        <code>@devorajs/cli</code> <code>^0.3.5</code> and start on React 18 (React 19 also works).
+        <code>@devorajs/cli</code> <code>^0.3.5</code> and start on React 18.
       </p>
       <p>
         On a recent npm (11), the install can print a warning that esbuild's postinstall script is
