@@ -31,6 +31,7 @@ interface Release {
   points: string[];
   anchor?: string;
   anchorLabel?: string;
+  post?: string;
 }
 
 // Every block comes from CHANGELOG.md and the git tags (v0.3.2, v0.3.4 and v0.3.5
@@ -47,6 +48,7 @@ const RELEASES: Release[] = [
       "Packages: @devorajs/core 0.3.5, @devorajs/cli 0.3.5, create-devora 0.3.3; the adapters are unchanged.",
     ],
     anchor: "035--2026-10-16",
+    post: "/blog/devora-0-3-5",
   },
   {
     version: "0.3.4",
@@ -58,6 +60,7 @@ const RELEASES: Release[] = [
       "A documented live-updates pattern with a runnable example; publish scripts refuse to publish an empty dist/.",
     ],
     anchor: "034--2026-10-16",
+    post: "/blog/devora-0-3-4",
   },
   {
     version: "0.3.3",
@@ -213,6 +216,7 @@ export default function Roadmap() {
               ) : null}
               {r.anchor ? (
                 <p>
+                  {r.post ? <><a href={r.post}>Release post</a> · </> : null}
                   <a href={`${CHANGELOG}#${r.anchor}`}>CHANGELOG: {r.anchorLabel ?? r.version}</a>
                 </p>
               ) : null}

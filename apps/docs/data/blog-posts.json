@@ -30,6 +30,33 @@
       "tags": [
         "Guide"
       ]
+    },
+    {
+      "slug": "devora-0-3-5",
+      "title": "Devora.js 0.3.5: less work per request, and what it did and did not change",
+      "date": "2026-10-16",
+      "description": "Five profiled changes to devora start, one clearer message for a missing session store, and the measured effect: where Devora.js is ahead, level, and still behind.",
+      "tags": [
+        "Release"
+      ]
+    },
+    {
+      "slug": "devora-0-3-4",
+      "title": "Devora.js 0.3.4: catch-all routes and a faster static path",
+      "date": "2026-10-16",
+      "description": "Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, sitemap URLs from getStaticParams(), and the version number that skipped 0.3.3.",
+      "tags": [
+        "Release"
+      ]
+    },
+    {
+      "slug": "first-multi-app-project",
+      "title": "Your first multi-app project in 15 minutes",
+      "date": "2026-10-16",
+      "description": "Scaffold a Devora.js project, run it, build and serve the build, then add a second app that shares one function and one login with the first. Every command was run.",
+      "tags": [
+        "Guide"
+      ]
     }
   ],
   "tags": [

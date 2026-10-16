@@ -8,8 +8,10 @@ import release from "./data/release.json";
  */
 export const RELEASE_VERSION: string = release.version;
 export const RELEASE_DATE: string = release.date;
-/** The CHANGELOG entry (or, when one exists and is approved, the release post) for the latest release. */
-export const RELEASE_URL = `https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md#${release.version.replace(/\./g, "")}--${release.date}`;
+/** The release post when release.json names one, otherwise the CHANGELOG entry for the latest release. */
+export const RELEASE_URL: string = release.post
+  ? release.post
+  : `https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md#${release.version.replace(/\./g, "")}--${release.date}`;
 
 /** Kept for the pages that already call it; now the documented release, not whatever is installed. */
 export function getCoreVersion(): string {

@@ -119,7 +119,7 @@ sitemap.xml lists        /docs/guide/setup and /docs/intro`}</Code>
       <Note title="What was not verified">
         <ul>
           <li>No live Vercel or Netlify deployment of 0.3.4. The generated functions were run outside the monorepo only.</li>
-          <li>The 0.3.4 benchmark figures are from one machine; the later 0.3.5 post has the newer numbers and their spread.</li>
+          <li>The 0.3.4 benchmark figures are from one machine; <a href="/blog/devora-0-3-5">the 0.3.5 post</a> has the newer numbers and their spread.</li>
         </ul>
       </Note>
     </BlogPost>

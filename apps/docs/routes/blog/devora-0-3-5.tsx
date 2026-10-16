@@ -138,7 +138,11 @@ export default function Post() {
 
       <Note title="What was not verified">
         <ul>
-          <li>No live deployment of 0.3.5 on Vercel or Netlify. The generated functions were run outside the monorepo only.</li>
+          <li>
+            The only live deployment of 0.3.5 checked for this post is this documentation site on Vercel. The
+            multi-app demos on Vercel and Netlify were not checked on 0.3.5, and the Netlify demos could not be
+            reached from the test machine.
+          </li>
           <li>One machine, with the load tool on it, and tiny pages. Run the harness on your own hardware before relying on a number.</li>
           <li>The 0.3.4 and 0.3.5 runs were made on the same day on the same machine, not under controlled conditions.</li>
         </ul>

@@ -5,8 +5,35 @@
     <link>https://devorajs-docs-docs.vercel.app/blog</link>
     <description>Release notes and design write-ups from the Devora.js project.</description>
     <language>en</language>
-    <lastBuildDate>Wed, 14 Oct 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 16 Oct 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://devorajs-docs-docs.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Devora.js 0.3.5: less work per request, and what it did and did not change</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/devora-0-3-5</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/devora-0-3-5</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Release</category>
+      <description>Five profiled changes to devora start, one clearer message for a missing session store, and the measured effect: where Devora.js is ahead, level, and still behind.</description>
+    </item>
+    <item>
+      <title>Devora.js 0.3.4: catch-all routes and a faster static path</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/devora-0-3-4</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/devora-0-3-4</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Release</category>
+      <description>Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, sitemap URLs from getStaticParams(), and the version number that skipped 0.3.3.</description>
+    </item>
+    <item>
+      <title>Your first multi-app project in 15 minutes</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/first-multi-app-project</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/first-multi-app-project</guid>
+      <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Guide</category>
+      <description>Scaffold a Devora.js project, run it, build and serve the build, then add a second app that shares one function and one login with the first. Every command was run.</description>
+    </item>
     <item>
       <title>Devora.js 0.3.2: what changed and what to do</title>
       <link>https://devorajs-docs-docs.vercel.app/blog/devora-0-3-2</link>
