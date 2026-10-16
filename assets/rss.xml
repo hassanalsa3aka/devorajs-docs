@@ -13,6 +13,7 @@
       <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/devora-0-3-2</guid>
       <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Release</category>
       <description>Request access in loaders, actions that return data, error pages, a head API, cookie and proxy settings, CORS, and a fixed Vercel runtime — plus the changes an existing app has to act on.</description>
     </item>
     <item>
@@ -21,6 +22,7 @@
       <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/why-multi-app</guid>
       <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
       <description>Most products are more than one app. What Devora.js does about that, what it costs, and where a monorepo tool or one big app is still the better fit.</description>
     </item>
     <item>
@@ -29,6 +31,7 @@
       <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/deploying-multi-app-to-vercel</guid>
       <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Guide</category>
       <description>Each app in a Devora.js project is its own Vercel project. The settings, the session store, the api/ folder trap, and the repo-root alternative.</description>
     </item>
   </channel>
