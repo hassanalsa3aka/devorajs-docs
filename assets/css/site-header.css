@@ -106,3 +106,46 @@
     font-size: 0.78rem;
   }
 }
+
+/* ===== Phone and tablet header (up to 860px), with menu-toggle.js =====
+   One 60px row: logo, then Search, Theme and a Menu (burger) button. The text links and GitHub/Discord
+   move into a panel under the logo that the burger opens. Without the script (no "js-menu" class on
+   <html>) none of this applies and the wrapped link row above stays. */
+.devora-nav a[href="#menu"] { display: none; }
+@media (max-width: 860px) {
+  html.js-menu .devora-header-inner { position: relative; flex-wrap: wrap; row-gap: 0; align-content: flex-start; min-height: 60px; }
+  html.js-menu .devora-brand { min-height: 44px; }
+  html.js-menu .devora-nav {
+    order: 3; width: 100%; margin: 0; display: flex; flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 0.15rem;
+    max-height: 0; overflow: hidden; visibility: hidden;
+  }
+  html.js-menu .devora-header[data-menu-open] .devora-nav {
+    max-height: calc(100vh - 72px); overflow-y: auto; visibility: visible; padding: 0.5rem 0 0.9rem;
+    border-top: 1px solid var(--devora-border);
+  }
+  /* Search, Theme and Menu stay on the logo's row, always visible */
+  html.js-menu .devora-nav a:is([href="#search-overlay"], [href="#theme"], [href="#menu"]) {
+    position: absolute; top: 14px; margin: 0; padding: 0; width: 2rem; height: 2rem; gap: 0;
+    display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;
+    font-size: 0; line-height: 0; visibility: visible;
+  }
+  html.js-menu .devora-nav a[href="#menu"] { right: var(--devora-gutter); display: inline-flex; border: 1px solid var(--devora-border); color: var(--devora-fg-muted); }
+  html.js-menu .devora-nav a[href="#theme"] { right: calc(var(--devora-gutter) + 2.5rem); }
+  html.js-menu .devora-nav a[href="#search-overlay"] { right: calc(var(--devora-gutter) + 5rem); }
+  html.js-menu .devora-nav a[href="#menu"]::before {
+    content: ""; width: 16px; height: 16px; background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M4%207h16M4%2012h16M4%2017h16%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M4%207h16M4%2012h16M4%2017h16%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+  }
+  html.js-menu .devora-nav a[href="#menu"][aria-expanded="true"]::before {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M6%206l12%2012M18%206L6%2018%27%2F%3E%3C%2Fsvg%3E"); mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%3E%3Cpath%20d%3D%27M6%206l12%2012M18%206L6%2018%27%2F%3E%3C%2Fsvg%3E");
+  }
+  html.js-menu .devora-nav a[href="#menu"]:hover { border-color: var(--devora-accent-from); color: var(--devora-fg); }
+  /* The links in the panel: full-width rows with a comfortable tap height */
+  html.js-menu .devora-nav a:not([href="#search-overlay"], [href="#theme"], [href="#menu"]) {
+    position: static; display: flex; align-items: center; width: auto; height: auto; min-height: 48px; padding: 0.7rem 0.75rem;
+    border: 0; border-radius: 8px; font-size: 1rem; line-height: 1.3; gap: 0.7rem; justify-content: flex-start;
+    color: var(--devora-fg-muted);
+  }
+  html.js-menu .devora-nav a:not([href="#search-overlay"], [href="#theme"], [href="#menu"]):hover { color: var(--devora-fg); background: var(--devora-hover); }
+  html.js-menu .devora-nav a:is([href^="https://github.com"], [href^="https://discord.gg"])::before { width: 18px; height: 18px; }
+}

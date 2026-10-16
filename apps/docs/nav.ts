@@ -18,4 +18,6 @@ export const DOCS_NAV: NavLink[] = [
   { label: "GitHub", href: "https://github.com/hassanalsa3aka/devora.js" },
   { label: "Discord", href: "https://discord.gg/wYFYmFxdS8" },
   { label: "Theme", href: "#theme" },
+  // The phone/tablet burger (assets/css/site-header.css, assets/js/menu-toggle.js); hidden on wide screens and without the script.
+  { label: "Menu", href: "#menu" },
 ];

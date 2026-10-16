@@ -29,6 +29,8 @@ export function pageMeta(path, { title, description, fullTitle = undefined, type
       // code reloads in `devora dev`, app.config.ts only at boot.
       links: [{ rel: "canonical", href: url }, { rel: "stylesheet", href: "/css/site-header.css" }],
       meta: [{ name: "twitter:card", content: "summary_large_image" }],
+      // Phone and tablet menus (header burger, docs menu). Classic and tiny, so the class it sets is there before paint.
+      scripts: [{ src: "/js/menu-toggle.js", type: "classic" }],
     },
     og: {
       title: fullTitle ?? title,
