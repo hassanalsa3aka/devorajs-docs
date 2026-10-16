@@ -5,6 +5,9 @@
 # Devora.js documentation
 
 **The documentation site for [Devora.js](https://github.com/hassanalsa3aka/devora.js), built with Devora.js itself.**
+
+Devora.js is a React framework for projects with more than one app: one shared backend, one login, each app deployed on its own. This site is built with it.
+
 Live at **[devorajs-docs-docs.vercel.app](https://devorajs-docs-docs.vercel.app)**.
 
 <p>

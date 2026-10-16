@@ -327,8 +327,8 @@ export function SiteFooter() {
             </span>
           </a>
           <p className="site-footer-tagline">
-            A Vite-based React framework for projects with more than one app: one shared backend,
-            one login, each app deployed on its own.
+            A React framework for projects with more than one app: one shared backend, one login,
+            each app deployed on its own.
           </p>
           <div className="site-footer-social">
             {SOCIAL.map((s) => (

@@ -23,7 +23,7 @@ export function meta() {
     title: "Devora.js — one project, several apps",
     fullTitle: "Devora.js — one project, several apps, one backend and one login",
     description:
-      "A Vite-based React framework for projects with more than one app: a marketing site, a product app and an admin panel share one backend and one login, and each deploys on its own.",
+      "A React framework for projects with more than one app: one shared backend, one login, each app deployed on its own.",
   });
 }
 
@@ -82,7 +82,7 @@ const FEATURES = [
   },
   {
     title: "Islands, not full hydration",
-    body: "Opt a single component into client hydration while the rest of the page stays static HTML — the real fix for React's hydration cost.",
+    body: "Hydrate only the components that need interactivity; the rest of the page stays static HTML, so less JavaScript is sent and less hydration work is done.",
     icon: (
       <>
         <circle cx="12" cy="12" r="8" />
@@ -677,7 +677,7 @@ export default function Home({ data }) {
               <span className="home-eyebrow-sep" aria-hidden="true">·</span>
             </>
           ) : null}
-          <span className="home-eyebrow-tag">Vite-based · security-first</span>
+          <span className="home-eyebrow-tag">Multi-app · security-first</span>
         </div>
 
         <h1 className="home-title">
@@ -998,7 +998,7 @@ import { addNote } from "@devorajs/backend/notes";`}
             "@type": "SoftwareSourceCode",
             name: "Devora.js",
             description:
-              "A lightweight, Vite-based, security-first web framework with native multi-app support — one project, multiple sites, sharing a core, deployable independently.",
+              "A React framework for projects with more than one app: one shared backend, one login, each app deployed on its own.",
             url: `${SITE_URL}/`,
             image: OG_IMAGE,
             codeRepository: "https://github.com/hassanalsa3aka/devora.js",

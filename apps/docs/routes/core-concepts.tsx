@@ -37,6 +37,14 @@ export default function CoreConcepts() {
         <code>devora build</code>), and each is served from its own domain.
       </p>
 
+      <h2>What Vite does</h2>
+      <p>
+        Devora.js currently uses Vite for the dev server (one per app, which also loads and reloads
+        your server modules) and for the client build. Routing, the render modes, sessions, the
+        shared backend and the production server (<code>devora start</code>, which runs without a
+        Vite dev server) are Devora.js's own code.
+      </p>
+
       <h2>Auth: shared, isolated, or none</h2>
       <p>Auth is a per-app setting, not a single project-wide switch. Three modes:</p>
       <div className="devora-card" style={{ borderTopColor: "#3b82f6" }}>
