@@ -1,0 +1,86 @@
+[
+ {
+  "n": 1,
+  "title": "SSR request handler (blocks nearly everything else)",
+  "status": "done",
+  "anchor": "1-ssr-request-handler-blocks-nearly-everything-else---done"
+ },
+ {
+  "n": 2,
+  "title": "Request context (`ctx.requireAuth()` / `ctx.session`)",
+  "status": "done",
+  "anchor": "2-request-context-ctxrequireauth--ctxsession---done"
+ },
+ {
+  "n": 3,
+  "title": "Islands / partial hydration",
+  "status": "done, in both dev and production",
+  "anchor": "3-islands--partial-hydration---done-in-both-dev-and-production"
+ },
+ {
+  "n": 4,
+  "title": "Adapters: real build output, not just config",
+  "status": "done, including real live Vercel and Netlify deployments",
+  "anchor": "4-adapters-real-build-output-not-just-config---done-including-real-live-vercel-and-netlify-deployments"
+ },
+ {
+  "n": 5,
+  "title": "CSP/HSTS enforcement",
+  "status": "done",
+  "anchor": "5-csphsts-enforcement---done"
+ },
+ {
+  "n": 6,
+  "title": "DB client",
+  "status": "checked; a real issue was found, and a verified fix is now documented as a guide",
+  "anchor": "6-db-client---checked-a-real-issue-was-found-and-a-verified-fix-is-now-documented-as-a-guide"
+ },
+ {
+  "n": 7,
+  "title": "SEO primitives",
+  "status": "done",
+  "anchor": "7-seo-primitives---done"
+ },
+ {
+  "n": 8,
+  "title": "`devora` CLI bin",
+  "status": "done",
+  "anchor": "8-devora-cli-bin---done"
+ },
+ {
+  "n": 9,
+  "title": "`clientOnly()` verification",
+  "status": "done",
+  "anchor": "9-clientonly-verification---done"
+ },
+ {
+  "n": 10,
+  "title": "Redirects, login/logout, CSRF, `Secure` cookie",
+  "status": "done",
+  "anchor": "10-redirects-loginlogout-csrf-secure-cookie---done"
+ },
+ {
+  "n": 11,
+  "title": "`entry-server.tsx` de-duplication",
+  "status": "done (pure refactor, prerequisite for #10/#12)",
+  "anchor": "11-entry-servertsx-de-duplication---done-pure-refactor-prerequisite-for-1012"
+ },
+ {
+  "n": 12,
+  "title": "Render modes: `ssg`, `csr`, `isr` real; `streaming` explicitly deferred to v2",
+  "status": "done",
+  "anchor": "12-render-modes-ssg-csr-isr-real-streaming-explicitly-deferred-to-v2---done"
+ },
+ {
+  "n": 13,
+  "title": "Multi-app-aware Vercel/Netlify",
+  "status": "done, including a real authenticated deploy on both platforms",
+  "anchor": "13-multi-app-aware-vercelnetlify---done-including-a-real-authenticated-deploy-on-both-platforms"
+ },
+ {
+  "n": 14,
+  "title": "Three more environments tried for real — Docker, a bare VPS (nginx/Caddy), CI",
+  "status": "done",
+  "anchor": "14-three-more-environments-tried-for-real--docker-a-bare-vps-nginxcaddy-ci---done"
+ }
+]

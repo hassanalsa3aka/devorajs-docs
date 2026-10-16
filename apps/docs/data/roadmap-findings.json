@@ -1,0 +1,602 @@
+[
+ {
+  "id": "P1",
+  "finding": "Published package was behind the docs (core 0.1.2 lacked defineModule/apiRoute)",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "create-devora pins ^0.3.0 (CHANGELOG 0.3.0); core 0.3.0 to 0.3.4 are on npm. The suggested CI check that fails a docs deploy when versions differ does not exist.",
+  "described": "pre #1"
+ },
+ {
+  "id": "P2",
+  "finding": "apiRoute() was a no-op; uncaught errors leaked HTML to API clients",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "packages/core/src/httpError.ts + apiRoute.ts wrapper; real-server tests devServer/prodServer.integration (JSON 500, message hidden in production); CHANGELOG 0.3.0",
+  "described": "pre #2"
+ },
+ {
+  "id": "P3",
+  "finding": "Dev server localhost-only; no --host, no LAN URL",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "devora dev --host, packages/cli/src/server/devNetwork.ts; CHANGELOG 0.3.0",
+  "described": "pre #3"
+ },
+ {
+  "id": "P4",
+  "finding": "No route listing on dev boot",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "CHANGELOG 0.3.0 (boot output includes each app's route table); packages/cli/src/terminal/bootSummary.ts",
+  "described": "pre #4"
+ },
+ {
+  "id": "P5",
+  "finding": "Hand-rolled Bearer tokens never expire, cannot be revoked",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Superseded by the unified session auth: opaque IDs in a SessionStore, active/idle/dead states, ctx.revokeSession(); CHANGELOG 0.3.0 (breaking)",
+  "described": "pre #5"
+ },
+ {
+  "id": "P6",
+  "finding": "Unmatched /api/** returned HTML",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "isApiPath() in packages/core/src/apiRoute.ts; prodServer.integration test 'unmatched /api/** paths are a JSON 404'",
+  "described": "pre #6"
+ },
+ {
+  "id": "P7",
+  "finding": "Cookie-only auth, no Bearer support",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "One lookup for cookie and Authorization: Bearer; CHANGELOG 0.3.0",
+  "described": "pre #7"
+ },
+ {
+  "id": "P8",
+  "finding": "Action return values discarded; loaders had no query string",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "actionData / fail() / 303, ctx.url (CHANGELOG 0.3.2, Request access and Actions return data)",
+  "described": "pre #8"
+ },
+ {
+  "id": "P9",
+  "finding": "No <head> customization hook",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Head API: defineApp({ head }) and meta().head (CHANGELOG 0.3.2)",
+  "described": "pre #9"
+ },
+ {
+  "id": "P10",
+  "finding": "No backend 'batteries' (logging, CORS, rate limiting, validation, uploads, jobs, realtime, email, test utilities)",
+  "status": "Partly fixed",
+  "version": "0.3.2 / 0.3.4",
+  "evidence": "CORS (0.3.2), multipart uploads (0.3.2), realtime pattern (0.3.4, docs/guides/REALTIME.md) and the /backend-capabilities docs page. Pagination helpers, background jobs, email, test utilities: not built, no plan.",
+  "described": "pre #10"
+ },
+ {
+  "id": "P11",
+  "finding": "Default dev port collisions",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Ports 10000 + index, devPort, fall-forward with a log line; CHANGELOG 0.3.0; devNetwork.ts",
+  "described": "pre #11"
+ },
+ {
+  "id": "P12",
+  "finding": "create-devora all-or-nothing, no frontend- or backend-only mode",
+  "status": "Fixed",
+  "version": "0.3.1",
+  "evidence": "--scope=fullstack|frontend|backend; CHANGELOG 0.3.1",
+  "described": "pre #12"
+ },
+ {
+  "id": "P13",
+  "finding": "Dev LAN exposure needs an explicit, opt-in posture and a warning",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "--host opt-in only; one-line warning when bound beyond loopback; CHANGELOG 0.3.0",
+  "described": "pre #13"
+ },
+ {
+  "id": "P14",
+  "finding": "'Testing on a physical device' (adb reverse) is undocumented",
+  "status": "Open",
+  "version": "",
+  "evidence": "No 'adb reverse' text exists in this repo or the docs site (searched both).",
+  "described": "pre #14"
+ },
+ {
+  "id": "C1",
+  "finding": "No route listing on dev boot",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Same as P4",
+  "described": "r3 confirmed 1"
+ },
+ {
+  "id": "C2",
+  "finding": "Dev server localhost-only",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Same as P3, P13",
+  "described": "r3 confirmed 2"
+ },
+ {
+  "id": "C3",
+  "finding": "No native Bearer auth",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Same as P7",
+  "described": "r3 confirmed 3"
+ },
+ {
+  "id": "C4",
+  "finding": "apiRoute() leaked HTML errors",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "Same as P2",
+  "described": "r3 confirmed 4"
+ },
+ {
+  "id": "C5",
+  "finding": "An isolated app's session could be replayed with a shared app's cookie",
+  "status": "Fixed",
+  "version": "0.2.0",
+  "evidence": "CHANGELOG 2026-09-16: cookies are cryptographically bound to their own cookie name",
+  "described": "r3 confirmed 5"
+ },
+ {
+  "id": "C6",
+  "finding": "CSRF skipped for Bearer, enforced for cookies",
+  "status": "Fixed",
+  "version": "0.3.0",
+  "evidence": "CHANGELOG 0.3.0: verifyCsrf() skipped for Bearer-authenticated requests",
+  "described": "r3 confirmed 6"
+ },
+ {
+  "id": "B1",
+  "finding": "No head hook; framework injected body{display:flex} and favicon unasked",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Head API; stylesheet and favicon only on pages rendering PageShell/AppHeader (CHANGELOG 0.3.2 Behavior changes)",
+  "described": "r3 broken 1"
+ },
+ {
+  "id": "B2",
+  "finding": "Loaders had no query string, headers or client IP",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "ctx.url, ctx.headers, ctx.ip, ctx.method, ctx.request (CHANGELOG 0.3.2)",
+  "described": "r3 broken 2"
+ },
+ {
+  "id": "B3",
+  "finding": "Actions could only redirect",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "actionData and fail() (CHANGELOG 0.3.2)",
+  "described": "r3 broken 3"
+ },
+ {
+  "id": "B4",
+  "finding": "island() found only in route files; islands are separate React roots",
+  "status": "Partly fixed",
+  "version": "0.3.2",
+  "evidence": "Islands found in every imported module and checked with the parser (CHANGELOG 0.3.2). Islands still have no shared React context; the documented workaround is a shared store or browser events.",
+  "described": "r3 broken 4"
+ },
+ {
+  "id": "B5",
+  "finding": "API responses fully buffered: no SSE, no WebSockets, one Set-Cookie",
+  "status": "Open",
+  "version": "",
+  "evidence": "No text/event-stream or WebSocket code in packages/ (searched). WebSockets: documented pattern with a separate server (0.3.4, docs/guides/REALTIME.md). A handler still sets headers as a plain object, so one Set-Cookie.",
+  "described": "r3 broken 5"
+ },
+ {
+  "id": "U1",
+  "finding": "Cookie Secure flag hardcoded to production; plain-HTTP logins fail",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "sessions.cookie.secure: true | 'auto' | false, trustProxy (CHANGELOG 0.3.2)",
+  "described": "r3 unconfirmed 1"
+ },
+ {
+  "id": "U2",
+  "finding": "Errors thrown in page actions became generic 500s; redirect after POST was 302",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "HttpError keeps its status, error.tsx, 303 (CHANGELOG 0.3.2 Behavior changes)",
+  "described": "r3 unconfirmed 2"
+ },
+ {
+  "id": "U3",
+  "finding": "Page actions could not receive file uploads",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Multipart uploads as File objects, maxBodyBytes (CHANGELOG 0.3.2)",
+  "described": "r3 unconfirmed 3"
+ },
+ {
+  "id": "U4",
+  "finding": "apiRoute() catches errors itself, so a wrapper outside it cannot see the original error",
+  "status": "Open",
+  "version": "",
+  "evidence": "packages/core/src/apiRoute.ts still returns apiErrorResponse(err) from inside the wrapper. A wrapper inside apiRoute() sees the error; outside it sees a JSON response. By design, not re-decided.",
+  "described": "r3 unconfirmed 4"
+ },
+ {
+  "id": "U5",
+  "finding": "devora build executed every server file, even request-time-only ones",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "'devora build only imports ssg/isr routes' (CHANGELOG 0.3.2 Behavior changes)",
+  "described": "r3 unconfirmed 5"
+ },
+ {
+  "id": "U6",
+  "finding": "Type definitions broke tsc --noEmit in consuming apps (CsrfField returned unknown)",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "CsrfField returns ReactElement (packages/core/src/csrf.ts:51; CHANGELOG 0.3.2 Types); CI typechecks fresh scaffolds (scripts/typecheck-fresh-scaffold.mjs)",
+  "described": "r3 unconfirmed 6"
+ },
+ {
+  "id": "U7",
+  "finding": "devora start ignored PORT/HOST",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "CHANGELOG 0.3.2: devora start reads PORT and HOST",
+  "described": "r3 unconfirmed 7"
+ },
+ {
+  "id": "U8",
+  "finding": "--adapter accepted any value silently",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "CHANGELOG 0.3.2 Behavior changes; CLI test 'rejects an unknown adapter before building anything'",
+  "described": "r3 unconfirmed 8"
+ },
+ {
+  "id": "U9",
+  "finding": "The CLI bundles its own copy of core",
+  "status": "Open",
+  "version": "",
+  "evidence": "By design: packages/cli/build.mjs inlines @devorajs/core. A core fix reaches dev/start only with a CLI release; the upgrade steps say to upgrade both together.",
+  "described": "r3 unconfirmed 9"
+ },
+ {
+  "id": "U10",
+  "finding": "Dev server silently moved to another port",
+  "status": "Partly fixed",
+  "version": "0.3.0",
+  "evidence": "Falls forward with a log line (CHANGELOG 0.3.0); no strict option for an explicit devPort.",
+  "described": "r3 unconfirmed 10"
+ },
+ {
+  "id": "U11",
+  "finding": "React-18-only peer range, no engines field",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "peer ^18.3.0 || ^19.0.0; engines node >=20 (CHANGELOG 0.3.2)",
+  "described": "r3 unconfirmed 11"
+ },
+ {
+  "id": "U12",
+  "finding": "Error messages pointed to ROADMAP.md",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "CHANGELOG 0.3.2: error messages link the docs",
+  "described": "r3 unconfirmed 12"
+ },
+ {
+  "id": "U13",
+  "finding": "No official session store",
+  "status": "Open",
+  "version": "",
+  "evidence": "No store package ships; patterns in packages/backend/AUTH.md and the docs site /deployment page.",
+  "described": "r3 unconfirmed 13"
+ },
+ {
+  "id": "U14",
+  "finding": "No built-in health-check route",
+  "status": "Open",
+  "version": "",
+  "evidence": "A backend-only app answers GET / with a JSON status (CHANGELOG 0.3.2); no dedicated /_devora/health route.",
+  "described": "r3 unconfirmed 14"
+ },
+ {
+  "id": "V1",
+  "finding": "Adapter hardcoded the discontinued nodejs20.x runtime",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "CHANGELOG 0.3.2: vercel.runtime, else running Node major, else engines.node, else nodejs24.x",
+  "described": "r3 V1"
+ },
+ {
+  "id": "V2",
+  "finding": "apps/<name>/api collides with Vercel's reserved api/ folder",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "apiDir (new apps use endpoints/); preflight warns about a top-level api/ (CHANGELOG 0.3.2)",
+  "described": "r3 V2"
+ },
+ {
+  "id": "V3",
+  "finding": "Scaffolded vercel.json not workspace-aware; no --out",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "devora build --out <dir> with --adapter=vercel --app=<name> (CHANGELOG 0.3.2)",
+  "described": "r3 V3"
+ },
+ {
+  "id": "V4",
+  "finding": "No documented build hook for codegen on a clean checkout",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "defineApp({ prebuild: [...] }) (CHANGELOG 0.3.2)",
+  "described": "r3 V4"
+ },
+ {
+  "id": "V5",
+  "finding": "Misleading adapter log line 'NOT deployed ... see ROADMAP.md #4'",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Log line replaced (CHANGELOG 0.3.2); the string no longer exists in adapters/ or packages/ (searched)",
+  "described": "r3 V5"
+ },
+ {
+  "id": "V6",
+  "finding": "Single 17 MB function per app",
+  "status": "Open",
+  "version": "",
+  "evidence": "Still one function per app; size and cold start under an ORM were never measured.",
+  "described": "r3 V6"
+ },
+ {
+  "id": "V7",
+  "finding": "Suggested preflight check before a Vercel build",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Preflight checks: runtime, api/ at the Vercel root, session secret per auth mode, --out location (CHANGELOG 0.3.2)",
+  "described": "r3 V7"
+ },
+ {
+  "id": "V8",
+  "finding": "ESM bundle broke CommonJS dependencies at first request (pg)",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "createRequire banner in both esbuild passes of both adapters (CHANGELOG 0.3.2; adapters/adapter-vercel/src/bundleForDeploy.ts; runtime.test.ts)",
+  "described": "r3 V8"
+ },
+ {
+  "id": "K1",
+  "finding": "No SameSite / noindex / per-app session lifetimes",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "cookie.sameSite, security.noindex, activeSeconds/idleSeconds (CHANGELOG 0.3.2)",
+  "described": "r3 K1"
+ },
+ {
+  "id": "K2",
+  "finding": "island() discovery silent outside route files",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Same as B4; unsupported island() calls fail the build with file and line",
+  "described": "r3 K2"
+ },
+ {
+  "id": "K3",
+  "finding": "Route-imported CSS not linked in SSR/SSG HTML",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "docs/guides/PAGES.md 'CSS imported by a route'; build writes dist/server/route-css-manifest.json",
+  "described": "r3 K3"
+ },
+ {
+  "id": "K4",
+  "finding": "No built-in CORS helper",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "defineApp({ cors }) (CHANGELOG 0.3.2); packages/core/src/cors.ts",
+  "described": "r3 K4"
+ },
+ {
+  "id": "K5",
+  "finding": "Monorepo .env convention undocumented",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": ".env files loaded by dev, build, start, deploy (CHANGELOG 0.3.2)",
+  "described": "r3 K5"
+ },
+ {
+  "id": "K6",
+  "finding": "API-only apps pre-render /",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "A backend-only build prints no 'pre-rendered' line (run during this audit on a fresh backend scaffold)",
+  "described": "r3 K6"
+ },
+ {
+  "id": "K7",
+  "finding": "Questions Khepra asked the team",
+  "status": "N/A",
+  "version": "",
+  "evidence": "Questions, not defects; answered by the 0.3.2 settings above.",
+  "described": "r3 K7"
+ },
+ {
+  "id": "Y1",
+  "finding": "Dependency bundling for native addons / ORM engines on serverless",
+  "status": "Unconfirmed",
+  "version": "",
+  "evidence": "Never confirmed by a failing deploy; no test bundles a native addon.",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y2",
+  "finding": "Backend code duplicated per app in the production bundle",
+  "status": "Open",
+  "version": "",
+  "evidence": "Not measured; each app is built separately.",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y3",
+  "finding": "No automatic .env loading",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Same as K5",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y4",
+  "finding": "Fresh project did not typecheck (loose types)",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "Same as U6; scaffolds ship typescript, @types/* and a typecheck script (CHANGELOG create-devora 0.3.1 entry)",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y5",
+  "finding": "devora add api generated unneeded page-app files",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "devora add --kind=pages|api (CHANGELOG 0.3.2)",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y6",
+  "finding": "Transient 'invalid hook call' on first dev load (Vite re-optimization)",
+  "status": "Unconfirmed",
+  "version": "",
+  "evidence": "Not reproduced in this audit; no documented note in the docs.",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y7",
+  "finding": "CSRF cookie set on JSON responses to Bearer-only clients",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "csrf: false per app (no CSRF cookie issued; CHANGELOG 0.3.2)",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "Y8",
+  "finding": "Docs contradicted each other on streaming maturity",
+  "status": "Partly fixed",
+  "version": "0.3.2",
+  "evidence": "Current docs say streaming shipped; CLAUDE.md line 173 and BUILD-LOG items still carry the old 'deferred' wording with a later note (see the audit)",
+  "described": "r3 YallaDo"
+ },
+ {
+  "id": "L1",
+  "finding": "Shared login did not carry across subdomains",
+  "status": "Fixed",
+  "version": "0.3.2",
+  "evidence": "shared.sessions.cookie.domain (CHANGELOG 0.3.2)",
+  "described": "r3 known limitation"
+ },
+ {
+  "id": "O1",
+  "finding": "devora --version printed 0.1.0",
+  "status": "Fixed",
+  "version": "0.3.1",
+  "evidence": "CHANGELOG 0.3.1",
+  "described": "r3 also open"
+ },
+ {
+  "id": "O2",
+  "finding": "Docs examples with bare devora commands",
+  "status": "Unconfirmed",
+  "version": "",
+  "evidence": "No bare 'devora <command>' line found by search in the site routes; pages were not read one by one.",
+  "described": "r3 also open"
+ },
+ {
+  "id": "O3",
+  "finding": "deployment page session-store step",
+  "status": "Fixed",
+  "version": "",
+  "evidence": "Section id='session-store' exists in the docs site deployment route",
+  "described": "r3 also open"
+ },
+ {
+  "id": "O4",
+  "finding": "Scaffold names the project backend @devorajs/backend (collides with a future real @devorajs/* package)",
+  "status": "Open",
+  "version": "",
+  "evidence": "packages/scaffold/src/scaffoldAppFiles.ts:153 writes '@devorajs/backend' into new projects.",
+  "described": "r3 also open"
+ },
+ {
+  "id": "O5",
+  "finding": "signSession / verifySession still exported (deprecated)",
+  "status": "Open",
+  "version": "",
+  "evidence": "packages/core/src/session.ts:177 and :184, marked @deprecated, not removed.",
+  "described": "r3 also open"
+ },
+ {
+  "id": "N1",
+  "finding": "A live Vercel or Netlify deployment of the current release is not verified",
+  "status": "Open",
+  "version": "",
+  "evidence": "Generated functions were run outside the monorepo; live deployments exist only for releases before 0.3.2 (docs/guides/DEPLOYING.md, VERIFICATION.md). Still 0.3.4 unverified live.",
+  "described": "VERIFICATION not verified"
+ },
+ {
+  "id": "N2",
+  "finding": "Container platforms (Cloud Run, App Runner/Fargate, Azure Container Apps, Oracle)",
+  "status": "Open",
+  "version": "",
+  "evidence": "Docker image run locally only.",
+  "described": "VERIFICATION not verified"
+ },
+ {
+  "id": "N3",
+  "finding": "isr regeneration on Vercel/Netlify",
+  "status": "Open",
+  "version": "",
+  "evidence": "Fully verified under adapter-node; not exercised on a serverless filesystem.",
+  "described": "VERIFICATION not verified"
+ },
+ {
+  "id": "N4",
+  "finding": "deploy/devora.service (systemd) against a real host",
+  "status": "Open",
+  "version": "",
+  "evidence": "Template only.",
+  "described": "VERIFICATION not verified"
+ },
+ {
+  "id": "N5",
+  "finding": "A DB client under sustained production load",
+  "status": "Open",
+  "version": "",
+  "evidence": "A real Drizzle + better-sqlite3 client was verified in dev and reverted; no load test.",
+  "described": "VERIFICATION not verified"
+ },
+ {
+  "id": "X1",
+  "finding": "A dynamic route without getStaticParams() cannot use ssg/isr",
+  "status": "Open",
+  "version": "",
+  "evidence": "By design: the build fails with a clear error (docs/history/VERIFICATION.md Known unsupported).",
+  "described": "VERIFICATION known unsupported"
+ },
+ {
+  "id": "X2",
+  "finding": "isr disk cache unverified under real serverless conditions",
+  "status": "Open",
+  "version": "",
+  "evidence": "Same as N3.",
+  "described": "VERIFICATION known unsupported"
+ }
+]

@@ -3,6 +3,8 @@ import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout } from "../docs-layout.js";
 import { JsonLd, pageMeta, SITE_URL } from "../seo.js";
+import items from "../data/roadmap-items.json";
+import findings from "../data/roadmap-findings.json";
 
 export const renderMode = "ssg";
 
@@ -18,6 +20,7 @@ export async function loader() {
   return {};
 }
 
+const BUILD_LOG = "https://github.com/hassanalsa3aka/devora.js/blob/main/docs/history/BUILD-LOG.md";
 const CHANGELOG = "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md";
 
 interface Release {
@@ -127,7 +130,30 @@ const CSS = `
   .devora-page .rm-col h3 { margin: 0 0 0.5rem; font-size: 1rem; }
   .devora-page .rm-col ul { margin: 0; padding-left: 1.1rem; }
   .rm-col li { font-size: 0.88rem; line-height: 1.55; margin-bottom: 0.4rem; color: var(--devora-fg-muted); }
+
+  .rm-ol { padding-left: 1.2rem; } .rm-ol li { margin-bottom: 0.5rem; line-height: 1.6; }
+  .rm-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin: 1rem 0 2rem; }
+  .rm-board .rm-col { --c: var(--devora-fg-subtle); }
+  .rm-b-done { --c: #16a34a; } .rm-b-prog { --c: #ca8a04; } .rm-b-gap { --c: #dc2626; } .rm-b-plan { --c: #2563eb; } .rm-b-out { --c: #64748b; } .rm-b-goal { --c: #8b5cf6; }
+  .rm-tablewrap { overflow-x: auto; border: 1px solid var(--devora-border); border-radius: var(--devora-radius); margin: 1rem 0 2rem; }
+  .rm-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 640px; }
+  .rm-table th, .rm-table td { text-align: left; padding: 0.55rem 0.7rem; border-bottom: 1px solid var(--devora-border); vertical-align: top; line-height: 1.5; }
+  .rm-table th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--devora-fg-muted); background: var(--devora-card); }
+  .rm-table td { color: var(--devora-fg-muted); } .rm-table td:first-child { color: var(--devora-fg); font-weight: 600; white-space: nowrap; }
+  .rm-st { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid var(--devora-border); white-space: nowrap; }
+  .rm-st-Fixed { color: #15803d; } .rm-st-Partly { color: #a16207; } .rm-st-Open { color: #b91c1c; } .rm-st-Unconfirmed { color: #6d28d9; } .rm-st-NA { color: #475569; }
+  :root[data-theme=dark] .rm-st-Fixed { color: #4ade80; } :root[data-theme=dark] .rm-st-Partly { color: #facc15; } :root[data-theme=dark] .rm-st-Open { color: #f87171; } :root[data-theme=dark] .rm-st-Unconfirmed { color: #c4b5fd; } :root[data-theme=dark] .rm-st-NA { color: #94a3b8; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme=light]) .rm-st-Fixed { color: #4ade80; } :root:not([data-theme=light]) .rm-st-Partly { color: #facc15; } :root:not([data-theme=light]) .rm-st-Open { color: #f87171; } :root:not([data-theme=light]) .rm-st-Unconfirmed { color: #c4b5fd; } :root:not([data-theme=light]) .rm-st-NA { color: #94a3b8; } }
+  .rm-counts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+  .devora-page .rm-live { padding-left: 1.1rem; } .rm-live li { margin-bottom: 0.5rem; line-height: 1.6; }
 `;
+
+const stClass = (st: string) => "rm-st rm-st-" + (st === "Partly fixed" ? "Partly" : st === "N/A" ? "NA" : st);
+const counts = (findings as { status: string }[]).reduce<Record<string, number>>((m, f) => {
+  m[f.status] = (m[f.status] ?? 0) + 1;
+  return m;
+}, {});
+const plain = (t: string) => t.replace(/`/g, "");
 
 export default function Roadmap() {
   return (
@@ -180,23 +206,14 @@ export default function Roadmap() {
             <h3 id="rm-now">Now</h3>
             <ul>
               <li>Outside testers: <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/TESTING.md">the 15-minute guide</a>; what they hit shapes the next releases.</li>
-              <li>Ship the clear "no session store configured" message (CHANGELOG, Unreleased).</li>
-              <li>Verify 0.3.4 on a live Vercel and Netlify deployment.</li>
-            </ul>
-          </section>
-          <section className="rm-col rm-col-next" aria-labelledby="rm-next">
-            <h3 id="rm-next">Next</h3>
-            <ul>
-              <li><code>isr</code> regeneration on a serverless filesystem: verify it, or document the supported setup.</li>
-              <li>Several <code>Set-Cookie</code> headers and streamed responses (server-sent events) from API routes.</li>
-              <li>Move the <code>esbuild</code> override out of <code>package.json</code>'s <code>"pnpm"</code> field.</li>
+              <li>Ship the clear "no session store configured" message and the package README links.</li>
+              <li>Verify 0.3.4 on a live Vercel and Netlify deployment (finding N1).</li>
             </ul>
           </section>
           <section className="rm-col rm-col-later" aria-labelledby="rm-later">
             <h3 id="rm-later">Later</h3>
             <ul>
               <li>A third-party security audit and signed release provenance, once the API surface settles.</li>
-              <li>Desktop and native mobile apps: <strong>planned goals, not started, no dates.</strong> Business logic, backend client, validation and design tokens would be shared; the UI would be platform-specific.</li>
             </ul>
           </section>
           <section className="rm-col rm-col-not" aria-labelledby="rm-not">
@@ -207,6 +224,166 @@ export default function Roadmap() {
               <li>A custom RSC-style server/client serialization protocol.</li>
             </ul>
           </section>
+        </div>
+
+
+        <h2 id="next">Next: open findings, proposed order</h2>
+        <p>
+          A proposal for the maintainer to confirm or change, ranked by impact. Nothing here has a
+          version or a date. Y1, Y6 and O2 stay Unconfirmed and are not ranked.
+        </p>
+        <div className="rm-tablewrap" tabIndex={0}>
+          <table className="rm-table">
+            <thead><tr><th>Order</th><th>Finding</th><th>Why it ranks here</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>N1: 0.3.4 not verified on a live deployment</td><td>Every deploy claim depends on it</td></tr>
+              <tr><td>2</td><td>B5: several Set-Cookie headers and SSE from API routes</td><td>A real capability gap testers hit</td></tr>
+              <tr><td>3</td><td>O4: the scaffold writes @devorajs/backend into new projects</td><td>The name could collide with a future real package; harder to change later</td></tr>
+              <tr><td>4</td><td>U13, U14: an official session-store pattern or package; a built-in health route</td><td>Every production app needs both</td></tr>
+              <tr><td>5</td><td>P14: adb reverse docs for testing on a physical device</td><td>Small, docs only</td></tr>
+              <tr><td>6</td><td>U4: apiRoute() catches errors itself, so an outer wrapper cannot see them</td><td>Surprising for logging and monitoring wrappers</td></tr>
+              <tr><td>7</td><td>O5: signSession and verifySession still exported (deprecated)</td><td>A removal is a breaking change</td></tr>
+              <tr><td>8</td><td>V6, Y2: one large function per app; backend duplicated per app</td><td>Never measured; measure first</td></tr>
+              <tr><td>9</td><td>N3, X2: isr regeneration on a serverless filesystem</td><td>Verified only under adapter-node</td></tr>
+              <tr><td>10</td><td>N2, N4, N5: container platforms, systemd unit, DB client under load</td><td>Need real hosts or load tests</td></tr>
+              <tr><td>11</td><td>U9, X1: the CLI bundles core; dynamic ssg/isr needs getStaticParams()</td><td>By design; documented, not defects</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="vision">Vision (not started, no dates)</h2>
+        <p>
+          A desktop app and a native mobile app. If they happen, business logic, the backend client,
+          validation and design tokens would be shared and the UI would be platform-specific. React
+          was chosen partly to keep that door open.
+        </p>
+
+        <h2 id="ideas">Ideas (open, not promised)</h2>
+        <p>Nothing here is planned, scheduled or numbered.</p>
+        <ul>
+          <li><em>Example:</em> an idea goes here as one line, with no version and no date.</li>
+        </ul>
+
+        <h2 id="performance">Performance program</h2>
+        <p>
+          The aim is to close the gaps and publish measured results, including where Devora.js is
+          behind. Numbers come from the <a href="/performance">benchmark harness</a> and are never
+          edited by hand.
+        </p>
+
+        <h2 id="success">Definition of success</h2>
+        <p>
+          From <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/docs/design/architecture-v1.md">architecture-v1 §14</a>:
+          v1 is "done" when a solo or small team can build a real project with a marketing site, an
+          app and an admin panel sharing auth and a core, deploy each independently, get good SEO
+          out of the box, and not hit a single <code>window is not defined</code> crash from a client
+          library, all without reading framework internals to understand why something cached or
+          didn't. Five things must all be true at once:
+        </p>
+        <ol className="rm-ol">
+          <li>Routes actually render (SSR, SSG, CSR, streaming, ISR per <code>renderMode</code>). SSR and SSG/CSR/ISR were done in v1; streaming was deferred from v1 and shipped in v2.</li>
+          <li>Auth and session context is real, shared by default, isolable per app. Done.</li>
+          <li>Client-only libraries (three.js, fabric.js) never crash on the server. Done; <code>clientOnly()</code> is verified with a real negative control.</li>
+          <li>Each app deploys independently to at least one real target. Done: adapter-node, Vercel and Netlify were deployed live by the maintainer with releases before 0.3.2, by git integration and by <code>devora deploy</code>. 0.3.4 is not yet verified on a live deployment by this project.</li>
+          <li>SEO primitives work: OG tags and a per-app opt-in <code>sitemap.xml</code>, both verified.</li>
+        </ol>
+
+        <h2 id="status">Status board</h2>
+        <div className="rm-board">
+          <section className="rm-col rm-b-done"><h3>Done: built and verified</h3><ul>
+            <li>SSR, SSG, CSR, ISR and streaming rendering</li>
+            <li>Sessions, CSRF, per-app auth modes (shared, isolated, none)</li>
+            <li>Security headers (CSP, HSTS, X-Frame-Options) on by default</li>
+            <li>Islands and partial hydration, in dev and production</li>
+            <li>SEO primitives: OG tags, opt-in <code>sitemap.xml</code></li>
+            <li>Dynamic routes with <code>getStaticParams()</code>; catch-all routes (<code>[...slug]</code>, <code>[[...slug]]</code>) since 0.3.4</li>
+            <li>v2 backend: modules, API routes, middleware, backend-only apps, repo-splitting</li>
+            <li>0.3.2: request access, action results, error pages, head API, uploads, cookie and proxy settings, CORS, <code>.env</code> loading, <code>@devorajs/adapter-node</code></li>
+            <li>0.3.4: catch-all routes, the static file cache, content types, sitemap URLs, the live-updates pattern</li>
+            <li><code>clientOnly()</code>; the <code>devora</code> CLI under npm, Yarn and pnpm</li>
+            <li>adapter-node, adapter-vercel, adapter-netlify: build output verified in isolation</li>
+            <li>Live Vercel and Netlify deployment (all three apps) with releases before 0.3.2</li>
+            <li><code>devora deploy</code>: a real authenticated deploy on both platforms before 0.3.2</li>
+            <li>Docker, self-hosted VPS (nginx and Caddy; systemd unit template untested), GitHub Actions CI</li>
+          </ul></section>
+          <section className="rm-col rm-b-prog"><h3>In progress / partial</h3><ul>
+            <li>0.3.4 on a live Vercel or Netlify deployment: not yet verified by this project</li>
+            <li><code>isr</code> on Vercel and Netlify: the initial build serves correctly; ongoing regeneration on a non-persistent serverless filesystem is unverified</li>
+            <li>Domain auto-binding for a <code>devora deploy</code>-managed app: not built, deliberately scoped out</li>
+          </ul></section>
+          <section className="rm-col rm-b-gap"><h3>Known gaps, not scheduled</h3><ul>
+            <li>Several <code>Set-Cookie</code> headers and streamed (SSE) responses from API routes</li>
+            <li>Moving the <code>esbuild</code> override out of <code>package.json</code>'s <code>"pnpm"</code> field (pnpm 11 ignores it)</li>
+          </ul></section>
+          <section className="rm-col rm-b-plan"><h3>Planned</h3><ul>
+            <li>A formal third-party security audit and signed release provenance, once the API surface stabilizes</li>
+          </ul></section>
+          <section className="rm-col rm-b-out"><h3>Deliberately not planned</h3><ul>
+            <li>A built-in ORM, auth provider or file storage</li>
+            <li>A real-time sync engine</li>
+            <li>A custom RSC-style serialization protocol</li>
+          </ul></section>
+          <section className="rm-col rm-b-goal"><h3>Planned goals, not started</h3><ul>
+            <li>Desktop and native mobile apps. Nothing exists and there are no dates. React was chosen partly to keep that door open.</li>
+          </ul></section>
+        </div>
+
+        <h2 id="items">The 14 work items</h2>
+        <p>Each is described in the <a href={BUILD_LOG}>build log</a> as it was when it landed.</p>
+        <div className="rm-tablewrap" tabIndex={0}>
+          <table className="rm-table">
+            <thead><tr><th>#</th><th>Item</th><th>Status</th><th>Section</th></tr></thead>
+            <tbody>
+              {items.map((i) => (
+                <tr key={i.n}>
+                  <td>{i.n}</td>
+                  <td>{plain(i.title)}</td>
+                  <td>{plain(i.status)}</td>
+                  <td><a href={`${BUILD_LOG}#${i.anchor}`}>Build log #{i.n}</a></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="live">Live deployment history</h2>
+        <ul className="rm-live">
+          <li><strong>Vercel, git integration:</strong> all three demo apps live with releases before 0.3.2. Two bugs only a live deploy found were fixed: <code>Cannot find package 'react'</code> and <code>jsxDEV is not a function</code> (<code>NODE_ENV</code> unset in the build step).</li>
+          <li><strong>Netlify, git integration:</strong> all three demo apps live, before 0.3.2. Found live and fixed: <code>Could not resolve entry module "index.html"</code> (a build-output-only <code>netlify.toml</code>), then <code>package.json</code> and <code>node_modules</code> in <code>included_files</code> (2026-09-16).</li>
+          <li><strong><code>devora deploy</code>:</strong> a real authenticated deploy on both platforms, before 0.3.2. Domain auto-binding not built.</li>
+          <li><strong>Docker:</strong> real build, run and compose; login, CSRF and tampered-cookie regression inside the container; all three apps concurrently. Container platforms (Cloud Run, App Runner, Azure Container Apps) not verified.</li>
+          <li><strong>VPS:</strong> <code>devora generate:proxy</code> verified against a real local nginx and <code>caddy validate</code>. The systemd unit template is untested on a host.</li>
+          <li><strong>CI:</strong> builds every app under npm, Yarn and pnpm, both adapter targets, and typechecks fresh scaffolds.</li>
+          <li><strong>0.3.4 live:</strong> not yet verified on a live deployment by this project. Generated functions were run outside the monorepo only.</li>
+        </ul>
+
+        <h2 id="findings">Findings</h2>
+        <p>
+          {findings.length} findings from the pre-v3 hotfix list, hotfix round 3 and VERIFICATION.md.
+          Fixed means a release plus a file, test or changelog line that proves it; Unconfirmed means
+          never reproduced or checked, and is not guessed.
+        </p>
+        <div className="rm-counts">
+          {Object.entries(counts).map(([k, v]) => (
+            <span key={k} className={stClass(k)}>{k}: {v}</span>
+          ))}
+        </div>
+        <div className="rm-tablewrap" tabIndex={0}>
+          <table className="rm-table">
+            <thead><tr><th>ID</th><th>Finding</th><th>Status</th><th>Version</th><th>Evidence</th><th>Described in</th></tr></thead>
+            <tbody>
+              {(findings as { id: string; finding: string; status: string; version: string; evidence: string; described: string }[]).map((f) => (
+                <tr key={f.id}>
+                  <td>{f.id}</td>
+                  <td>{f.finding}</td>
+                  <td><span className={stClass(f.status)}>{f.status}</span></td>
+                  <td>{f.version || "-"}</td>
+                  <td>{f.evidence}</td>
+                  <td>{f.described}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <Callout kind="info" title="Where the dates come from">
