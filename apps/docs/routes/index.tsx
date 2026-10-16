@@ -648,7 +648,7 @@ export default function Home({ data }) {
       </div>
       <script src="/js/video-lightbox.js" />
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }}>How the pieces fit</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>How the pieces fit</h2>
       <p className="home-section-subtitle">
         Three apps, one shared backend, one login — and a database that is yours to choose.
       </p>
@@ -668,7 +668,7 @@ export default function Home({ data }) {
         the route file.
       </p>
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }}>How it compares</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>How it compares</h2>
       <p className="home-section-subtitle">
         Fair trade-offs, not a scoreboard — these are different tools solving overlapping problems.
       </p>
@@ -753,7 +753,7 @@ export default function Home({ data }) {
         </div>
       </div>
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }}>What you get</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>What you get</h2>
       <p className="home-section-subtitle">Six things the framework handles so your app code doesn't have to.</p>
 
       <div className="home-features">
@@ -770,7 +770,7 @@ export default function Home({ data }) {
         ))}
       </div>
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }} id="shared-backend">One shared backend</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }} id="shared-backend">One shared backend</h2>
       <p className="home-section-subtitle">Every app in the project calls the same functions — no API layer to write between them.</p>
       <div className="home-backend reveal">
         <div>
@@ -801,7 +801,7 @@ import { addNote } from "@devorajs/backend/notes";`}
         </div>
       </div>
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }} id="built-with">Built with Devora.js</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }} id="built-with">Built with Devora.js</h2>
       <p className="home-section-subtitle">Real products running on it today.</p>
       <div className="home-showcase">
         <div className="sc-grid">
@@ -836,7 +836,7 @@ import { addNote } from "@devorajs/backend/notes";`}
         <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/ROADMAP.md">roadmap</a>.
       </p>
 
-      <h2 className="home-section-title reveal" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
+      <h2 className="home-section-title" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
       <div className="home-next">
         <a className="home-next-link reveal" href="/getting-started">
           Getting started
