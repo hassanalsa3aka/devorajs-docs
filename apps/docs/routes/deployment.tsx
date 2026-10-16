@@ -76,7 +76,7 @@ export default function Deployment() {
           outside the framework's monorepo (real pages, login, CSRF, a CommonJS dependency),{" "}
           <code>devora start</code> and the Docker image were run locally, and the maintainer has
           deployed earlier versions (0.3.1 and before) to both Vercel and Netlify. A live deployment
-          of 0.3.4 on either platform has not been verified. Container platforms (Cloud Run, App
+          of 0.3.5 on either platform has not been verified. Container platforms (Cloud Run, App
           Runner, Container Apps) haven't been tested.
         </p>
       </Callout>

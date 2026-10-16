@@ -25,7 +25,7 @@ export default function PagesFormsErrors() {
       <h1>Pages, forms and errors</h1>
       <p>
         What a file under <code>apps/&lt;name&gt;/routes/</code> can do, as of{" "}
-        <code>@devorajs/core</code> 0.3.2. Sessions and cookies are on{" "}
+        <code>@devorajs/core</code> 0.3.5 (a tag such as 0.3.2 marks the release a feature arrived in). Sessions and cookies are on{" "}
         <a href="/security">Security model</a>; API routes on <a href="/backend">Backend</a>.
       </p>
 
@@ -201,7 +201,7 @@ export default function ErrorPage({ status, message }: ErrorPageProps) {
         <li>Scripts are external <code>src</code> only: the default CSP blocks inline scripts.</li>
         <li>Fonts or styles from another origin need your <code>security.csp</code> to allow that origin.</li>
       </ul>
-      <Callout kind="warning" title="The framework's own stylesheet is opt-in (0.3.2)">
+      <Callout kind="warning" title="The framework's own stylesheet is opt-in (since 0.3.2)">
         <p>
           The theme CSS and the default Devora favicon are only added to pages that render{" "}
           <code>PageShell</code>/<code>AppHeader</code>. CSR pages get them by default, because the

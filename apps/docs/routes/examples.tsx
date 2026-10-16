@@ -11,7 +11,7 @@ export function meta() {
   return pageMeta("/examples", {
     title: "Examples and live demos",
     description:
-      "Four runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates (WebSockets) — and the example apps deployed by the maintainer.",
+      "Five runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates (WebSockets), background jobs — and the example apps deployed by the maintainer.",
     image: "/og/examples.png",
   });
 }
@@ -64,6 +64,17 @@ const EXAMPLES = [
     apps: ["app · shared", "realtime/ · plain Node (Socket.IO)"],
     tutorial: "/live-updates",
     tutorialLabel: "The Live updates (WebSockets) guide",
+  },
+  {
+    slug: "background-jobs",
+    accent: "#ec4899",
+    strong: "#be185d",
+    icon: <><circle cx="12" cy="12" r="8.5" /><path d="M12 7v5l3 2" /></>,
+    title: "Background jobs: a queue with a worker, and a schedule",
+    shows: "Three ways to run work outside a request: BullMQ with Redis and a worker, a SQLite queue with a worker, and node-cron in the server. The Redis part of its check skips when Redis is not installed; the rest always runs.",
+    apps: ["api · shared, backend-only", "workers/ · plain Node"],
+    tutorial: "/background-jobs",
+    tutorialLabel: "The Background jobs guide",
   },
 ];
 
@@ -194,8 +205,7 @@ npm ci && npm run dev`}
           <code>apps/</code> on GitHub
         </a>
         . The Vercel deployments were checked {SHOWCASE_CHECKED}. The Netlify deployments are the
-        same apps and were added by the maintainer; they did not respond when the automated check
-        last ran, so open them to see their current state.
+        same apps, checked by the maintainer.
       </p>
       {platforms.map((platform) => (
         <section key={platform} aria-labelledby={`demos-${platform}`}>

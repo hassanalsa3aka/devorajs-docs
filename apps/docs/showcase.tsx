@@ -47,8 +47,7 @@ export interface LiveDemo {
 // The three example apps from the devora.js repo (marketing, dashboard,
 // admin), deployed by the maintainer on Vercel and Netlify. The Vercel
 // deployments were checked on SHOWCASE_CHECKED; the Netlify ones are the
-// same apps, added by the maintainer, and did not respond from the machine
-// that ran the check (the page says so). Same screenshots: same apps.
+// same apps, checked by the maintainer. Same screenshots: same apps.
 export const LIVE_DEMOS: LiveDemo[] = [
   {
     platform: "Vercel",

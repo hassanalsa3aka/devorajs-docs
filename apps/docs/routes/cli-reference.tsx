@@ -27,7 +27,7 @@ export default function CliReference() {
         Every command below runs as <code>devora &lt;command&gt;</code> — via <code>pnpm exec</code>,{" "}
         <code>npm exec</code>/<code>npx</code>, or <code>yarn</code>, whichever your project uses
         (or a <code>package.json</code> script). This page describes <code>@devorajs/cli</code>{" "}
-        0.3.4; <code>npx devora --version</code> prints yours.
+        0.3.5; <code>npx devora --version</code> prints yours.
       </p>
       <p>
         <code>dev</code>, <code>build</code>, <code>start</code> and <code>deploy</code> load the
@@ -87,7 +87,7 @@ export default function CliReference() {
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`         ▄█
-    ▄▄▄▄▄██  ▄     devora.js 0.3.4
+    ▄▄▄▄▄██  ▄     devora.js 0.3.5
   ▄█▀▀▀▀▀██  ▀█▄   dev · 3 apps · ready in 312 ms
   ██     ██   ▄█▀
    ▀███████  █▀

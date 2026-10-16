@@ -80,7 +80,7 @@ export default function ApiReference() {
   appName?: string;   // shown as a badge in the header — omit for e.g. marketing
   nav?: NavLink[];     // this app's own link set (see apps/*/nav.ts)
   footer?: ReactNode;  // renders inside the shared <footer>, above "Built with devora.js"
-  footerLinks?: NavLink[]; // plain links in the footer's bottom row (0.3.2)
+  footerLinks?: NavLink[]; // plain links in the footer's bottom row (since 0.3.2)
   children: ReactNode;
 }): JSX.Element`}
         </pre>
@@ -176,7 +176,7 @@ export default function ApiReference() {
           <thead><tr><th>Member</th><th>Signature</th><th>Does</th></tr></thead>
           <tbody>
             <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route. A <code>[...slug]</code> catch-all is in here too, its segments joined with <code>/</code> (<code>"a/b"</code>)</td></tr>
-            <tr><td><code>catchAll</code></td><td><code>Record&lt;string, string[]&gt;</code></td><td>The segments a <code>[...slug]</code> or <code>[[...slug]]</code> matched, as arrays (<code>ctx.catchAll.slug</code>); empty for a route with none (0.3.4)</td></tr>
+            <tr><td><code>catchAll</code></td><td><code>Record&lt;string, string[]&gt;</code></td><td>The segments a <code>[...slug]</code> or <code>[[...slug]]</code> matched, as arrays (<code>ctx.catchAll.slug</code>); empty for a route with none (since 0.3.4)</td></tr>
             <tr><td><code>url</code></td><td><code>URL</code></td><td>The request URL, query string included (<code>ctx.url.searchParams.get("q")</code>); scheme and host follow <code>trustProxy</code></td></tr>
             <tr><td><code>headers</code></td><td><code>Headers</code></td><td>Request headers (empty at build time for <code>ssg</code>)</td></tr>
             <tr><td><code>method</code></td><td><code>string</code></td><td>The HTTP method</td></tr>

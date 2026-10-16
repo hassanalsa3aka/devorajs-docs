@@ -36,7 +36,7 @@ export default function MultiAppTutorial() {
         a JSON API for a mobile client. Both the dashboard and the API read and write the same
         notes through one shared backend function, and one login works in both. Every command and
         file below was run as written on a fresh project with the published{" "}
-        <code>@devorajs/core</code> and <code>@devorajs/cli</code> 0.3.2 (Node 24, npm, macOS),
+        <code>@devorajs/core</code> and <code>@devorajs/cli</code> (the version it was last run on was 0.3.2, with Node 24, npm and macOS; it has not been re-run for 0.3.5),
         in <code>devora dev</code> and in a production build.
       </p>
 

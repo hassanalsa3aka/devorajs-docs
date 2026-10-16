@@ -86,7 +86,7 @@ const RENDERING_GROUPS: MatrixGroup[] = [
       {
         label: <>Catch-all routes (<code>[...slug]</code>)</>,
         cells: {
-          devora: { s: "built", note: <>Pages and API routes; <code>ctx.catchAll.slug</code> is the array (0.3.4)</> },
+          devora: { s: "built", note: <>Pages and API routes; <code>ctx.catchAll.slug</code> is the array (since 0.3.4)</> },
           next: { s: "built" },
           rr: { s: "built", note: <>Splat routes: <code>"*"</code>; the rest is <code>params["*"]</code></> },
           svelte: { s: "built", note: <>Rest parameters, <code>[...path]</code></> },

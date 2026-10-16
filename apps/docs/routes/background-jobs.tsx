@@ -140,7 +140,7 @@ export default function BackgroundJobs() {
         </p>
 
         <h2>What was verified, and what was not</h2>
-        <Callout kind="info" title="Checked on 0.3.4, one local Node server">
+        <Callout kind="info" title="Tested with 0.3.4, one local Node server">
           <ul>
             <li>
               Enqueueing without a login answers 401; with a Bearer token it answers 202 and an id.

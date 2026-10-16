@@ -9,15 +9,35 @@ export const renderMode = "ssg";
 
 export function meta() {
   return pageMeta("/upgrading", {
-    title: "Upgrading to 0.3.4",
+    title: "Upgrading to 0.3.5",
     description:
-      "Every behavior change from Devora.js 0.3.2 to 0.3.4 (and 0.3.1 to 0.3.2) and what an existing app has to do about it, plus the upgrade steps.",
+      "Every behavior change from Devora.js 0.3.4 to 0.3.5 (and 0.3.2 to 0.3.4, 0.3.1 to 0.3.2) and what an existing app has to do about it, plus the upgrade steps.",
   });
 }
 
 export async function loader() {
   return {};
 }
+
+// From the 0.3.5 section of devora.js/CHANGELOG.md ("Behavior changes").
+const CHANGES_035: { change: ReactNode; todo: ReactNode }[] = [
+  {
+    change: <>A missing session store, or (in production) a missing <code>DEVORA_SESSION_SECRET</code>, stops <code>devora start</code> with <strong>one clear line and exit status 1</strong> instead of a stack trace. It refused to start before and still does.</>,
+    todo: <>Nothing to do. Add <code>sessions: {"{ store: \"memory\" }"}</code> under <code>shared</code> in <code>devora.config.ts</code> (one long-running server) or a store backed by your database, and set the secret.</>,
+  },
+  {
+    change: <><code>ctx.url</code> and <code>ctx.headers</code> are built the first time a handler reads them. Reading them is unchanged (the same <code>URL</code> and <code>Headers</code> objects every time). They are now getters, so assigning to them throws in strict mode.</>,
+    todo: <>Nothing to do unless your code assigns <code>ctx.url</code> or <code>ctx.headers</code>; the types never marked them read-only and nothing in the framework assigns them.</>,
+  },
+  {
+    change: <>A rebuilt island or client-route manifest is picked up within a second, instead of on the next request.</>,
+    todo: <>Nothing to do, as built static files already work this way.</>,
+  },
+  {
+    change: <>The header's brand link has the accessible name <code>devora.js home</code> (it was <code>Home</code>, which did not contain its visible text).</>,
+    todo: <>A test that selects it by <code>aria-label="Home"</code> needs the new name.</>,
+  },
+];
 
 // From the 0.3.4 section of devora.js/CHANGELOG.md ("Behavior changes").
 // 0.3.3 was prepared but never published; its changes are in 0.3.4.
@@ -129,19 +149,21 @@ export default function Upgrading() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="upgrading">
-      <h1>Upgrading to 0.3.4</h1>
+      <h1>Upgrading to 0.3.5</h1>
       <p>
-        0.3.4 adds catch-all routes (<code>[...slug]</code>), a faster static-file path, and a
-        documented pattern for live updates (WebSockets). 0.3.3 was prepared but never published, so its
-        changes are part of 0.3.4. If you are on 0.3.1 or older, the 0.3.2 changes are listed
-        below too, since 0.3.2 was a large release.
+        0.3.5 makes <code>devora start</code> do less work per request (about a fifth to a third more
+        requests per second on pages and API routes, measured on one machine), gives a missing
+        session store or secret one clear message, and adds guides for live updates (WebSockets) and
+        background jobs. Nothing in a typical app needs a change. If you are on 0.3.3 or older: 0.3.3
+        was prepared but never published, so its changes are in 0.3.4, and the 0.3.4 and 0.3.2
+        changes are listed below too.
       </p>
 
       <h2 id="steps">Steps</h2>
       <ol>
         <li>
           Upgrade <code>@devorajs/core</code> and <code>@devorajs/cli</code> together, in the root{" "}
-          <code>package.json</code> and every app's: <code>"^0.3.4"</code>. API routes run on the
+          <code>package.json</code> and every app's: <code>"^0.3.5"</code>. API routes run on the
           CLI's bundled copy of core and pages on the app's installed one, so mixing versions gives
           one project two behaviors.
         </li>
@@ -161,6 +183,21 @@ export default function Upgrading() {
         there, and <code>ctx.catchAll.slug</code> (or <code>req.catchAll.slug</code> in an API
         route) is the <code>string[]</code>.
       </p>
+
+      <h2 id="changes-035">From 0.3.4 to 0.3.5</h2>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>What changed</th><th>What to do</th></tr></thead>
+          <tbody>
+            {CHANGES_035.map((c, i) => (
+              <tr key={i}>
+                <td>{c.change}</td>
+                <td>{c.todo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <h2 id="changes-034">From 0.3.2 to 0.3.4</h2>
       <div className="docs-table-wrap">

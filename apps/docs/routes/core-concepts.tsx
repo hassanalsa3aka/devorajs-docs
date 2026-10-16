@@ -168,7 +168,7 @@ import { updateSettings } from "@devorajs/backend/settings";
         same URLs are an error naming both. Segments are decoded once; an empty segment, <code>.</code>,{" "}
         <code>..</code> or an encoded slash never matches. It works for page routes and API
         routes, and for <code>ssg</code>/<code>isr</code> through <code>getStaticParams()</code>{" "}
-        returning <code>{"{ slug: string[] }"}</code> entries (0.3.4).
+        returning <code>{"{ slug: string[] }"}</code> entries (since 0.3.4).
       </p>
       <p>
         Next to <code>routes/</code>, an app can have an <code>error.tsx</code> (its 404 and error

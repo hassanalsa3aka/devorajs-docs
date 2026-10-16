@@ -396,7 +396,7 @@ export const handler = apiRoute((req, ctx) => {
           configuration) produced signatures indistinguishable from the shared app's own cookie —
           a valid session from one app could be replayed verbatim against the other. The cookie
           name is now bound into the signed input itself, so isolation holds even when two apps'
-          secrets collide. (0.3.0 keeps this guarantee in the new session model: the app's scope is
+          secrets collide. (Since 0.3.0 this guarantee holds in the new session model: the app's scope is
           part of the HMAC that derives each session's store key — see{" "}
           <a href="#sessions">Sessions</a>.)
         </li>

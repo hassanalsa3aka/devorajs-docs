@@ -191,7 +191,7 @@ export default function LiveUpdates() {
           <code>@devorajs/adapter-node</code>, is a public export that returns the{" "}
           <code>http.Server</code>. A small script can call it and handle the WebSocket{" "}
           <code>upgrade</code> itself, on the same port as the HTTP API. This ran on a local Node
-          server with 0.3.4: a bad token answered 401, a good one connected and echoed a message, and
+          server (tested with 0.3.4): a bad token answered 401, a good one connected and echoed a message, and
           the API and its security headers were unchanged. Not run on Vercel or Netlify (it cannot work
           there: a function cannot hold a connection).
         </p>
