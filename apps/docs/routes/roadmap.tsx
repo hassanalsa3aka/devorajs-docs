@@ -220,7 +220,7 @@ export default function Roadmap() {
             <h3 id="rm-not">Not planned</h3>
             <ul>
               <li>A built-in ORM, auth provider or file storage (bring your own).</li>
-              <li>A real-time sync engine (use a realtime server: <a href="/live-updates">Live updates</a>).</li>
+              <li>A real-time sync engine (use a realtime server: <a href="/live-updates">Live updates (WebSockets)</a>).</li>
               <li>A custom RSC-style server/client serialization protocol.</li>
             </ul>
           </section>

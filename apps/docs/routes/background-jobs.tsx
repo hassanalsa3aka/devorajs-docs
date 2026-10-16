@@ -165,7 +165,7 @@ export default function BackgroundJobs() {
         </Callout>
 
         <p>
-          For pushing a result to the browser when a job finishes, see <a href="/live-updates">Live updates</a>.
+          For pushing a result to the browser when a job finishes, see <a href="/live-updates">Live updates (WebSockets)</a>.
         </p>
       </DocsLayout>
     </PageShell>

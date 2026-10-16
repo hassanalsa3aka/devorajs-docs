@@ -11,7 +11,7 @@ export function meta() {
   return pageMeta("/examples", {
     title: "Examples and live demos",
     description:
-      "Four runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates — and the example apps deployed by the maintainer.",
+      "Four runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates (WebSockets) — and the example apps deployed by the maintainer.",
     image: "/og/examples.png",
   });
 }
@@ -59,11 +59,11 @@ const EXAMPLES = [
     accent: "#f59e0b",
     strong: "#b45309",
     icon: <><path d="M3 12h4l2-6 4 12 2-6h6" /></>,
-    title: "Live updates with a separate realtime server",
+    title: "Live updates (WebSockets) with a separate realtime server",
     shows: "A dashboard that updates without a reload: a login-protected token route, a small Socket.IO server with one room per user, a publish call from the app, a polling fallback, and the CSP setting that lets the browser connect.",
     apps: ["app · shared", "realtime/ · plain Node (Socket.IO)"],
     tutorial: "/live-updates",
-    tutorialLabel: "The Live updates guide",
+    tutorialLabel: "The Live updates (WebSockets) guide",
   },
 ];
 

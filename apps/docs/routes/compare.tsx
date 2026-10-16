@@ -290,7 +290,7 @@ const BYO_GROUPS: MatrixGroup[] = [
               <>
                 A separate realtime server (Socket.IO) works; <code>ws</code> works through a small wrapper
                 around <code>createNodeServer</code>; server-sent events from an API route do not work yet:{" "}
-                <a href="/live-updates">Live updates</a>
+                <a href="/live-updates">Live updates (WebSockets)</a>
               </>
             ),
           },
@@ -597,8 +597,8 @@ export default function Compare({ data }) {
           <strong>Honest note:</strong> NestJS and Fastify are more complete "batteries included"
           backend frameworks today. Devora.js's backend is closer to Express's minimalism, with a
           JSON error contract, method checks and CORS that Express doesn't give you by default. For
-          live updates and background jobs it documents tested patterns, not built-ins:{" "}
-          <a href="/live-updates">Live updates</a>, <a href="/background-jobs">Background jobs</a>.
+          WebSockets and background jobs it documents tested patterns, not built-ins:{" "}
+          <a href="/live-updates">Live updates (WebSockets)</a>, <a href="/background-jobs">Background jobs</a>.
         </p>
       </section>
 
@@ -657,7 +657,7 @@ export default function Compare({ data }) {
           </li>
           <li>
             No built-in validation or rate limiting. WebSockets and background jobs are not built in
-            either, but both have tested setups: <a href="/live-updates">Live updates</a> and{" "}
+            either, but both have tested setups: <a href="/live-updates">Live updates (WebSockets)</a> and{" "}
             <a href="/background-jobs">Background jobs</a>. Server-sent events from an API route do not
             work yet.
           </li>

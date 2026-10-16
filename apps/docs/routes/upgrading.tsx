@@ -132,7 +132,7 @@ export default function Upgrading() {
       <h1>Upgrading to 0.3.4</h1>
       <p>
         0.3.4 adds catch-all routes (<code>[...slug]</code>), a faster static-file path, and a
-        documented pattern for live updates. 0.3.3 was prepared but never published, so its
+        documented pattern for live updates (WebSockets). 0.3.3 was prepared but never published, so its
         changes are part of 0.3.4. If you are on 0.3.1 or older, the 0.3.2 changes are listed
         below too, since 0.3.2 was a large release.
       </p>

@@ -3,14 +3,15 @@ import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Callout } from "../docs-layout.js";
 import { pageMeta } from "../seo.js";
+import snippets from "../data/jobs-snippets.json";
 
 export const renderMode = "ssg";
 
 export function meta() {
   return pageMeta("/live-updates", {
-    title: "Live updates",
+    title: "Live updates (WebSockets)",
     description:
-      "Devora.js has no built-in WebSockets. Poll, or run a small separate realtime server: the token flow, the CSP setting and a runnable example.",
+      "WebSockets in Devora.js: a separate Socket.IO server, ws attached through a wrapper script, polling, and why server-sent events are not supported yet. The token flow, the CSP setting and a runnable example.",
     image: "/og/live-updates.png",
   });
 }
@@ -81,11 +82,16 @@ export default function LiveUpdates() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="live-updates">
-        <h1>Live updates</h1>
+        <h1>Live updates (WebSockets)</h1>
         <p className="devora-lead">
-          Devora.js has no built-in WebSockets or server-sent events. An API route returns one whole
-          response, and Vercel and Netlify functions cannot hold a connection open. Two things
-          work: poll, or run a small separate realtime server next to your app.
+          Devora.js has no built-in WebSockets, and server-sent events from an API route do not work
+          yet. An API route returns one whole response, and Vercel and Netlify functions cannot hold
+          a connection open. Three things work: poll, run a small separate realtime server next to
+          your app, or attach <code>ws</code> to the app's own server with a wrapper script.
+        </p>
+        <p>
+          This page covers WebSockets (Socket.IO and <code>ws</code>), polling, and why server-sent
+          events are not supported yet.
         </p>
 
         <h2>Polling or a realtime server?</h2>
@@ -176,6 +182,51 @@ export default function LiveUpdates() {
           Without it the console shows{" "}
           <code>Connecting to 'http://…/socket.io/…' violates the following Content Security Policy directive: "default-src 'self'"</code>{" "}
           and, with the fallback in place, the page keeps working by polling.
+        </p>
+
+        <h2>Or: ws on the app's own port</h2>
+        <p>
+          <code>devora start</code> does not expose the HTTP server it creates, and has no hook. But
+          the function it calls, <code>createNodeServer</code> from{" "}
+          <code>@devorajs/adapter-node</code>, is a public export that returns the{" "}
+          <code>http.Server</code>. A small script can call it and handle the WebSocket{" "}
+          <code>upgrade</code> itself, on the same port as the HTTP API. This ran on a local Node
+          server with 0.3.4: a bad token answered 401, a good one connected and echoed a message, and
+          the API and its security headers were unchanged. Not run on Vercel or Netlify (it cannot work
+          there: a function cannot hold a connection).
+        </p>
+        <div className="devora-card">
+          <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>{snippets.wsWrapper}</pre>
+        </div>
+        <ul>
+          <li>
+            Install <code>ws</code> and <code>@devorajs/adapter-node</code>, build the app, then run the
+            script instead of <code>devora start</code> (it sets <code>NODE_ENV=production</code> itself,
+            as <code>start</code> does).
+          </li>
+          <li>
+            The script repeats what <code>start</code> does: it loads the project and app config and passes
+            the same options. If <code>start</code> gains options, the script needs them too.
+          </li>
+          <li>
+            The upgrade request does not go through the app's routes. This script checks the session by
+            calling the app's own <code>GET /api/me</code> over loopback with the token; do the same
+            check, or the connection is open to anyone.
+          </li>
+          <li>
+            A server hook (an <code>onServer(server)</code> option) would remove the wrapper. It is
+            planned, not built.
+          </li>
+        </ul>
+
+        <h2>Server-sent events do not work yet</h2>
+        <p>
+          An API route can set <code>Content-Type: text/event-stream</code>, but the handler returns
+          its whole body as a string, and the server sends it in one piece when the handler finishes.
+          Tested: three events produced half a second apart arrived together after 1.5 seconds and the
+          connection closed, so a browser <code>EventSource</code> would reconnect over and over.
+          Returning a stream, an async iterable or a Node <code>Readable</code> as the body answers
+          500. Use polling or a realtime server until a route can return a stream.
         </p>
 
         <h2>Deploying it</h2>
