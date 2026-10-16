@@ -70,13 +70,14 @@ export default function Deployment() {
         devora.js convention: a marketing site, dashboard, and admin panel are three independently
         deployable things, each repeating the same steps below.
       </p>
-      <Callout kind="info" title="What's verified for 0.3.2">
+      <Callout kind="info" title="What's verified">
         <p>
-          For 0.3.2, the Vercel and Netlify functions <code>devora build --adapter</code> generates
-          were run outside the framework's monorepo (real pages, login, CSRF, a CommonJS
-          dependency), <code>devora start</code> and the Docker image were run locally, and the
-          maintainer has deployed 0.3.2 apps to both Vercel and Netlify. Container platforms
-          (Cloud Run, App Runner, Container Apps) haven't been tested.
+          The Vercel and Netlify functions <code>devora build --adapter</code> generates were run
+          outside the framework's monorepo (real pages, login, CSRF, a CommonJS dependency),{" "}
+          <code>devora start</code> and the Docker image were run locally, and the maintainer has
+          deployed earlier versions (0.3.1 and before) to both Vercel and Netlify. A live deployment
+          of 0.3.4 on either platform has not been verified. Container platforms (Cloud Run, App
+          Runner, Container Apps) haven't been tested.
         </p>
       </Callout>
 
@@ -440,6 +441,36 @@ npx devora generate:proxy --target=nginx   # or --target=caddy
         <code>devora start</code> running across reboots/crashes, a systemd unit template is
         available as a starting point to adapt to your own host, rather than a drop-in guarantee.
       </p>
+
+      <h2 id="static-files">Static files and pre-rendered pages in <code>devora start</code></h2>
+      <p>
+        <code>devora start</code> (and a generated function, for the requests that reach it) serves
+        built assets, public files and <code>ssg</code> pages from memory:
+      </p>
+      <ul>
+        <li>
+          <strong>Limits:</strong> 64 MB in total for held files and their compressed copies, 2 MB
+          per file. A larger file is streamed from disk with its real <code>Content-Length</code>
+          and is never held in memory; once the 64 MB is used, further files are streamed too.
+        </li>
+        <li>
+          <strong>Freshness:</strong> a held file is checked against the disk at most once a
+          second, so a rebuild into a running server shows up within a second. Changed route code
+          (<code>dist/server</code>) still needs a restart.
+        </li>
+        <li>
+          <strong>Headers:</strong> a strong <code>ETag</code> and <code>If-None-Match</code> →
+          304; <code>HEAD</code>; brotli or gzip for text types when the client sends{" "}
+          <code>Accept-Encoding</code> (made once per file); one year and <code>immutable</code>{" "}
+          for hashed <code>/assets/</code>, one hour for public files, and{" "}
+          <code>max-age=0, must-revalidate</code> for pre-rendered HTML.
+        </li>
+        <li>
+          <strong>Methods:</strong> anything other than GET and HEAD to a file or a pre-rendered
+          page is a 405.
+        </li>
+      </ul>
+      <p><code>isr</code> pages aren't held this way; they are re-rendered when stale and written back to disk.</p>
       </DocsLayout>
     </PageShell>
   );

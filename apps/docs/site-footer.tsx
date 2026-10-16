@@ -19,7 +19,7 @@ const FOOTER_COLUMNS = [
       { label: "Blog", href: "/blog" },
       { label: "Compare", href: "/compare" },
       { label: "Performance", href: "/performance" },
-      { label: "Upgrading to 0.3.2", href: "/upgrading" },
+      { label: "Upgrading to 0.3.4", href: "/upgrading" },
       { label: "Changelog", href: "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md" },
       { label: "npm packages", href: "https://www.npmjs.com/package/@devorajs/core" },
     ],

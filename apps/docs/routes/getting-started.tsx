@@ -36,7 +36,7 @@ export default function GettingStarted() {
         Yarn and pnpm work the same way: <code>yarn create devora</code> or{" "}
         <code>pnpm create devora</code> (<code>npx create-devora@latest</code> does too). You need
         Node 20 or newer. New projects depend on <code>@devorajs/core</code> and{" "}
-        <code>@devorajs/cli</code> <code>^0.3.2</code> and start on React 18 (React 19 also works).
+        <code>@devorajs/cli</code> <code>^0.3.4</code> and start on React 18 (React 19 also works).
       </p>
 
       <h2>What it asks</h2>

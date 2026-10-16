@@ -155,7 +155,20 @@ import { updateSettings } from "@devorajs/backend/settings";
         <code>routes/users/new.tsx</code> beats <code>routes/users/[id].tsx</code> for{" "}
         <code>/users/new</code>). <code>ssr</code>/<code>csr</code> support dynamic routes with no
         extra work — a live request already carries its own params. A <code>[param]</code> matches
-        exactly one path segment; there are no catch-all (<code>[...slug]</code>) routes.
+        exactly one path segment.
+      </p>
+      <p>
+        A catch-all — <code>routes/docs/[...slug].tsx</code> — matches one or more segments:{" "}
+        <code>/docs/a</code>, <code>/docs/a/b/c</code> (not <code>/docs</code>; use{" "}
+        <code>[[...slug]]</code> for that). <code>ctx.params.slug</code> is the segments joined
+        with <code>/</code> (<code>"a/b/c"</code>, still a string, so code written for{" "}
+        <code>[id]</code> compiles unchanged) and <code>ctx.catchAll.slug</code> is the array (
+        <code>["a", "b", "c"]</code>). Precedence is static, then <code>[param]</code>, then{" "}
+        <code>[...slug]</code>; a catch-all must be the last segment, and two files that match the
+        same URLs are an error naming both. Segments are decoded once; an empty segment, <code>.</code>,{" "}
+        <code>..</code> or an encoded slash never matches. It works for page routes and API
+        routes, and for <code>ssg</code>/<code>isr</code> through <code>getStaticParams()</code>{" "}
+        returning <code>{"{ slug: string[] }"}</code> entries (0.3.4).
       </p>
       <p>
         Next to <code>routes/</code>, an app can have an <code>error.tsx</code> (its 404 and error

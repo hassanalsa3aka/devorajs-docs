@@ -175,7 +175,8 @@ export default function ApiReference() {
           <table>
           <thead><tr><th>Member</th><th>Signature</th><th>Does</th></tr></thead>
           <tbody>
-            <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route</td></tr>
+            <tr><td><code>params</code></td><td><code>Record&lt;string, string&gt;</code></td><td>Values from any <code>[param]</code> segments in the matched route. A <code>[...slug]</code> catch-all is in here too, its segments joined with <code>/</code> (<code>"a/b"</code>)</td></tr>
+            <tr><td><code>catchAll</code></td><td><code>Record&lt;string, string[]&gt;</code></td><td>The segments a <code>[...slug]</code> or <code>[[...slug]]</code> matched, as arrays (<code>ctx.catchAll.slug</code>); empty for a route with none (0.3.4)</td></tr>
             <tr><td><code>url</code></td><td><code>URL</code></td><td>The request URL, query string included (<code>ctx.url.searchParams.get("q")</code>); scheme and host follow <code>trustProxy</code></td></tr>
             <tr><td><code>headers</code></td><td><code>Headers</code></td><td>Request headers (empty at build time for <code>ssg</code>)</td></tr>
             <tr><td><code>method</code></td><td><code>string</code></td><td>The HTTP method</td></tr>
@@ -298,7 +299,7 @@ export const handler = apiRoute((req) => {
           <table>
           <thead><tr><th>Type</th><th>Shape</th></tr></thead>
           <tbody>
-            <tr><td><code>ApiRequest</code></td><td><code>{`{ method, url, headers, params, body: Buffer }`}</code> — body is raw bytes, not pre-parsed, so a webhook can verify an HMAC against the exact bytes first</td></tr>
+            <tr><td><code>ApiRequest</code></td><td><code>{`{ method, url, headers, params, catchAll, body: Buffer }`}</code> — <code>params</code> are strings, with a catch-all joined by <code>/</code>; <code>catchAll</code> has the arrays. body is raw bytes, not pre-parsed, so a webhook can verify an HMAC against the exact bytes first</td></tr>
             <tr><td><code>ApiResponse</code></td><td><code>{`{ status, headers?, body? }`}</code></td></tr>
           </tbody>
         </table>

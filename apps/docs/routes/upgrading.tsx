@@ -9,15 +9,48 @@ export const renderMode = "ssg";
 
 export function meta() {
   return pageMeta("/upgrading", {
-    title: "Upgrading to 0.3.2",
+    title: "Upgrading to 0.3.4",
     description:
-      "Every behavior change in Devora.js 0.3.2 and what an existing app has to do about it, plus the upgrade steps.",
+      "Every behavior change from Devora.js 0.3.2 to 0.3.4 (and 0.3.1 to 0.3.2) and what an existing app has to do about it, plus the upgrade steps.",
   });
 }
 
 export async function loader() {
   return {};
 }
+
+// From the 0.3.4 section of devora.js/CHANGELOG.md ("Behavior changes").
+// 0.3.3 was prepared but never published; its changes are in 0.3.4.
+const CHANGES_034: { change: ReactNode; todo: ReactNode }[] = [
+  {
+    change: <>A file named <code>[...name].tsx</code> or <code>[[...name]].tsx</code> is now a <strong>catch-all route</strong>. Before, it was a single <code>[param]</code> whose name started with dots.</>,
+    todo: <>If you have such a file, rename it, or expect it to match more URLs (<code>/docs/a/b/c</code>, not only <code>/docs/a</code>). Nothing else needs to change: <code>ctx.params</code> values are still strings.</>,
+  },
+  {
+    change: <>A URL path containing a dot no longer ends at the static-file lookup. If no public file exists at that path, it goes on to route matching (so <code>/docs/v1.2/intro</code> can reach a catch-all).</>,
+    todo: <>Nothing to do. A real file under the public folder still wins.</>,
+  },
+  {
+    change: <><code>getStaticParams()</code> values are percent-encoded in the output path: a value with a space or non-ASCII characters is written under its encoded path, which is what <code>url.pathname</code> holds.</>,
+    todo: <>Nothing to do unless you read <code>dist/static</code> by hand.</>,
+  },
+  {
+    change: <><code>sitemap.xml</code> now lists the URLs of dynamic routes that export <code>getStaticParams()</code>.</>,
+    todo: <>Nothing to do; check the file if you post-process it. A dynamic route without <code>getStaticParams()</code> is still left out.</>,
+  },
+  {
+    change: <><code>devora start</code> answers any method other than GET and HEAD to a public file, a built asset or a pre-rendered (<code>ssg</code>) page with <strong>405</strong> and <code>Allow: GET, HEAD</code>. It used to return the file.</>,
+    todo: <>A form that posts to a pre-rendered page never ran an action there; post to an <code>ssr</code> route instead.</>,
+  },
+  {
+    change: <>Pre-rendered pages are sent with <code>Cache-Control: public, max-age=0, must-revalidate</code> and an <code>ETag</code> (a repeat visit gets a 304). Pages and files are held in memory — 64 MB in total, 2 MB per file, larger ones streamed — and re-checked against the disk once a second.</>,
+    todo: <>Nothing to do. A rebuild into a running server shows up within a second; changed route code still needs a restart. See <a href="/deployment#static-files">Deployment</a>.</>,
+  },
+  {
+    change: <>With <code>sitemap</code> off, a hand-written <code>public/sitemap.xml</code> is served. It used to 404 in production.</>,
+    todo: <>Nothing to do. Turn <code>sitemap</code> on if you want the generated one (it takes precedence).</>,
+  },
+];
 
 // From the 0.3.2 section of devora.js/CHANGELOG.md ("Behavior changes"),
 // plus one change found upgrading this site (the theme variable).
@@ -96,40 +129,61 @@ export default function Upgrading() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="upgrading">
-      <h1>Upgrading to 0.3.2</h1>
+      <h1>Upgrading to 0.3.4</h1>
       <p>
-        0.3.2 is a large release for a patch number: request access in loaders, actions that
-        return data, error pages, a <code>&lt;head&gt;</code> API, uploads, cookie and proxy
-        settings, CORS, <code>.env</code> loading and a fixed Vercel runtime. Most of it is new
-        options; the list below is what can change how an existing app behaves.
+        0.3.4 adds catch-all routes (<code>[...slug]</code>), a faster static-file path, and a
+        documented pattern for live updates. 0.3.3 was prepared but never published, so its
+        changes are part of 0.3.4. If you are on 0.3.1 or older, the 0.3.2 changes are listed
+        below too, since 0.3.2 was a large release.
       </p>
 
       <h2 id="steps">Steps</h2>
       <ol>
         <li>
           Upgrade <code>@devorajs/core</code> and <code>@devorajs/cli</code> together, in the root{" "}
-          <code>package.json</code> and every app's: <code>"^0.3.2"</code>. API routes run on the
-          CLI's bundled copy of core and pages on the app's installed one, so mixing 0.3.1 and
-          0.3.2 gives one project two behaviors.
+          <code>package.json</code> and every app's: <code>"^0.3.4"</code>. API routes run on the
+          CLI's bundled copy of core and pages on the app's installed one, so mixing versions gives
+          one project two behaviors.
         </li>
         <li>
-          If you import an adapter directly, use <code>@devorajs/adapter-node</code> 0.2.1 or{" "}
-          <code>@devorajs/adapter-vercel</code>/<code>adapter-netlify</code> 0.2.3. adapter-node
-          0.2.0 and the 0.2.2 adapters were published without their build output and are
-          deprecated. (<code>devora</code> bundles the adapters, so most projects don't depend on
-          them at all.)
+          If you import an adapter directly, use <code>@devorajs/adapter-node</code> 0.2.1,{" "}
+          <code>@devorajs/adapter-vercel</code> 0.2.3 or <code>@devorajs/adapter-netlify</code>{" "}
+          0.2.4 (<code>devora</code> bundles the adapters, so most projects don't depend on them at
+          all). Earlier adapter-node 0.2.0 and the 0.2.2 adapters were published without their
+          build output and are deprecated.
         </li>
         <li>Install, then run <code>npm run typecheck</code>, <code>npm run dev</code> and <code>npm run build</code>.</li>
-        <li>Go through the table below and change what applies to your app.</li>
-        <li>
-          Before deploying to Vercel, check the preflight output of{" "}
-          <code>devora build --adapter=vercel</code> (runtime, a top-level <code>api/</code>{" "}
-          folder, session secret and store), and see <a href="/deployment">Deployment</a>.
-        </li>
+        <li>Go through the tables below and change what applies to your app.</li>
       </ol>
-      <p>React 19 and Vite 6 are now allowed (<code>^18.3.0 || ^19.0.0</code>, <code>^5.4.0 || ^6.0.0</code>); nothing requires you to move.</p>
+      <p>
+        TypeScript: <code>ctx.params</code> keeps its type (<code>Record&lt;string, string&gt;</code>),
+        so existing code compiles unchanged. A catch-all's segments are joined with <code>/</code>{" "}
+        there, and <code>ctx.catchAll.slug</code> (or <code>req.catchAll.slug</code> in an API
+        route) is the <code>string[]</code>.
+      </p>
 
-      <h2 id="changes">Behavior changes and what to do</h2>
+      <h2 id="changes-034">From 0.3.2 to 0.3.4</h2>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>What changed</th><th>What to do</th></tr></thead>
+          <tbody>
+            {CHANGES_034.map((c, i) => (
+              <tr key={i}>
+                <td>{c.change}</td>
+                <td>{c.todo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="changes">From 0.3.1 to 0.3.2</h2>
+      <p>
+        0.3.2 was a large release for a patch number: request access in loaders, actions that
+        return data, error pages, a <code>&lt;head&gt;</code> API, uploads, cookie and proxy
+        settings, CORS, <code>.env</code> loading and a fixed Vercel runtime. Most of it is new
+        options; this is what can change how an existing app behaves.
+      </p>
       <div className="docs-table-wrap">
         <table>
           <thead><tr><th>What changed</th><th>What to do</th></tr></thead>
@@ -143,6 +197,11 @@ export default function Upgrading() {
           </tbody>
         </table>
       </div>
+      <p>
+        Before deploying to Vercel, check the preflight output of{" "}
+        <code>devora build --adapter=vercel</code> (runtime, a top-level <code>api/</code> folder,
+        session secret and store), and see <a href="/deployment">Deployment</a>.
+      </p>
 
       <Callout kind="tip" title="Worth adopting while you're here">
         <p>
