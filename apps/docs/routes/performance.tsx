@@ -98,9 +98,10 @@ export default function Performance() {
           page is part of why a framework is fast on it.
         </li>
         <li>
-          Across three full runs on this machine Devora.js measured roughly 71,000–82,000 requests/s
-          on the pre-rendered page, against roughly 35,000–39,000 for Astro, SvelteKit and React
-          Router. Treat that as "about twice", not a precise ratio.
+          Three full runs of the published 0.3.4 packages measured roughly 71,000–82,000 requests/s
+          on the pre-rendered page. After the performance work in the repository's changelog (not
+          yet released) one full run measured about 101,500, against roughly 36,000–38,500 for Astro, SvelteKit and React
+          Router. Treat that as "more than twice", not a precise ratio.
         </li>
       </ul>
 
