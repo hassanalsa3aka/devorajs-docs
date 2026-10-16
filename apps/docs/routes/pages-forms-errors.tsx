@@ -26,7 +26,7 @@ export default function PagesFormsErrors() {
       <p>
         What a file under <code>apps/&lt;name&gt;/routes/</code> can do, as of{" "}
         <code>@devorajs/core</code> 0.3.2. Sessions and cookies are on{" "}
-        <a href="/security">Security</a>; API routes on <a href="/backend">Backend</a>.
+        <a href="/security">Security model</a>; API routes on <a href="/backend">Backend</a>.
       </p>
 
       <h2 id="request">The request: <code>ctx.url</code>, <code>ctx.headers</code>, <code>ctx.ip</code></h2>

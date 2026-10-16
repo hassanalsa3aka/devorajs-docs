@@ -31,7 +31,7 @@ const DOCS_GROUPS = [
       { id: "api-reference", label: "API reference", href: "/api-reference" },
       { id: "cli-reference", label: "CLI reference", href: "/cli-reference" },
       { id: "deployment", label: "Deployment", href: "/deployment" },
-      { id: "security", label: "Security", href: "/security" },
+      { id: "security", label: "Security model", href: "/security" },
       { id: "roadmap", label: "Roadmap", href: "/roadmap" },
       { id: "upgrading", label: "Upgrading to 0.3.4", href: "/upgrading" },
     ],

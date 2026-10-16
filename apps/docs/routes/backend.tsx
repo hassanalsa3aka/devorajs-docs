@@ -210,7 +210,7 @@ export const handler = withMiddleware(rawHandler, logging, requireAuthMw);`}
       <p>
         For worked examples of the middleware people reach for first — validation, logging, CORS,
         rate limiting, and file uploads — see{" "}
-        <a href="/backend-capabilities">Adding common backend capabilities</a>.
+        <a href="/backend-capabilities">Backend capabilities</a>.
       </p>
 
       <h2>Backend-only apps</h2>
@@ -228,7 +228,7 @@ export const handler = withMiddleware(rawHandler, logging, requireAuthMw);`}
         <code>{`{ "app": "api", "status": "ok", "api": "/api" }`}</code>) for API clients, a small
         HTML page for a browser. For clients that authenticate with <code>Authorization: Bearer</code>{" "}
         and keep no cookies, <code>csrf: false</code> in <code>app.config.ts</code> stops the CSRF
-        cookie from being issued at all (see <a href="/security">Security</a>).
+        cookie from being issued at all (see <a href="/security">Security model</a>).
       </p>
 
       <h2>Static params for dynamic routes</h2>

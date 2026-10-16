@@ -8,7 +8,7 @@ export const renderMode = "ssg";
 
 export function meta() {
   return pageMeta("/backend-capabilities", {
-    title: "Adding common backend capabilities",
+    title: "Backend capabilities",
     description:
       "Recommended patterns for validation, logging, CORS, rate limiting, and file uploads in a Devora.js project — built from plain middleware and libraries you choose.",
   });
@@ -26,7 +26,7 @@ export default function BackendCapabilities() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="backend-capabilities">
-      <h1>Adding common backend capabilities</h1>
+      <h1>Backend capabilities</h1>
       <p>
         Devora.js deliberately ships no built-in validation library, logger, or rate limiter —
         the same "bring your own" line it draws for databases and auth providers. (Since 0.3.2 it

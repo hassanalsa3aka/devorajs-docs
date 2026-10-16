@@ -110,7 +110,7 @@ export default function ApiReference() {
           <thead><tr><th>Field</th><th>Type</th><th>Does</th></tr></thead>
           <tbody>
             <tr><td><code>defaultRenderMode</code></td><td><code>RenderMode</code></td><td>Applies to any route in this app with no <code>renderMode</code> export of its own</td></tr>
-            <tr><td><code>security.csp</code></td><td><code>string</code></td><td>Overrides the default Content-Security-Policy for this app — see <a href="/security">Security</a></td></tr>
+            <tr><td><code>security.csp</code></td><td><code>string</code></td><td>Overrides the default Content-Security-Policy for this app — see <a href="/security">Security model</a></td></tr>
             <tr><td><code>security.hsts</code></td><td><code>boolean</code></td><td>Toggles the HSTS header</td></tr>
             <tr><td><code>security.frameOptions</code></td><td><code>"DENY" | "SAMEORIGIN"</code></td><td>Overrides <code>X-Frame-Options</code></td></tr>
             <tr><td><code>security.noindex</code></td><td><code>boolean</code></td><td>Sends <code>X-Robots-Tag: noindex</code> on every response (an admin panel, an internal tool)</td></tr>
@@ -139,7 +139,7 @@ export default function ApiReference() {
         live (a module path or <code>"memory"</code>), how long they last, and the cookie's{" "}
         <code>{`{ secure?: true | "auto" | false, sameSite?: "lax" | "strict" | "none", domain? }`}</code>;
         a store is required in production for any app with login, see{" "}
-        <a href="/security#sessions">Security</a>. <code>AuthMode</code> is{" "}
+        <a href="/security#sessions">Security model</a>. <code>AuthMode</code> is{" "}
         <Tag color="blue">shared</Tag> <Tag color="purple">isolated</Tag>{" "}
         <Tag color="gray">none</Tag> — see <a href="/core-concepts">Core concepts</a>.{" "}
         <code>RenderMode</code> is <code>"ssr" | "ssg" | "csr" | "isr" | "streaming"</code> — see{" "}
@@ -315,7 +315,7 @@ export const handler = apiRoute((req) => {
         <code>key</code> is an HMAC of the session ID, never the ID itself.{" "}
         <code>createMemorySessionStore()</code> returns the in-process store <code>"memory"</code>{" "}
         uses — handy in tests. <code>getSessionState(record)</code> returns{" "}
-        <code>"active" | "idle" | "dead"</code>. See <a href="/security#sessions">Security</a>{" "}
+        <code>"active" | "idle" | "dead"</code>. See <a href="/security#sessions">Security model</a>{" "}
         for a working SQLite-backed store.
       </p>
       <p>

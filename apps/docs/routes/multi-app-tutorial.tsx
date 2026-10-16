@@ -226,7 +226,7 @@ curl -s http://localhost:10002/api/notes
           In dev every app is on <code>localhost</code>, so the browser sends one session cookie to
           all of them. On separate subdomains in production, set{" "}
           <code>shared.sessions.cookie.domain</code> to your domain so the cookie reaches every app
-          (see <a href="/security#cookies">Security</a>). Bearer tokens aren't affected.
+          (see <a href="/security#cookies">Security model</a>). Bearer tokens aren't affected.
         </p>
       </Callout>
 
@@ -251,7 +251,7 @@ DEVORA_SESSION_SECRET=$(openssl rand -base64 32) npm start`}</Code>
       <ul>
         <li>
           Replace <code>notes.json</code> with your database, and <code>"memory"</code> with a{" "}
-          session store backed by it (<a href="/security#sessions">Security → Sessions</a>).
+          session store backed by it (<a href="/security#sessions">Security model → Sessions</a>).
           Serverless functions can't write files, and each instance would have its own memory.
         </li>
         <li>

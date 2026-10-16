@@ -431,7 +431,7 @@ npx devora generate:proxy --target=nginx   # or --target=caddy
         HTTP. For a mixed setup set <code>shared.sessions.cookie.secure: "auto"</code> in{" "}
         <code>devora.config.ts</code> and <code>trustProxy: true</code> in each app (the generated
         configs send <code>X-Forwarded-Proto</code>); <code>false</code> is for a deliberately
-        plain-HTTP deployment. See <a href="/security">Security</a>.
+        plain-HTTP deployment. See <a href="/security">Security model</a>.
       </p>
       <p>
         The generated nginx config listens on plain HTTP only — issuing a real TLS certificate
