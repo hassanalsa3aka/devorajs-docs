@@ -720,6 +720,44 @@ export default function Home({ data }) {
         Three apps, one shared backend, one login — and a database that is yours to choose.
       </p>
       <div className="reveal"><ArchitectureDiagram /></div>
+
+      <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>Why it exists</h2>
+      <p className="home-section-subtitle">Caching and data flow you can read in the route file, not infer.</p>
+      <div className="home-compare reveal">
+        <div className="home-compare-card home-compare-implicit">
+          <span className="home-compare-label">The implicit way (Next.js App Router defaults)</span>
+          <ul>
+            <li>Caching is layered and inferred: fetch, route segment and router caches interact by default</li>
+            <li>
+              The server/client boundary is wherever a <code>"use client"</code> directive lands,
+              and it pulls in the whole subtree
+            </li>
+            <li>Revalidation timing comes from defaults you have to look up</li>
+          </ul>
+        </div>
+        <div className="home-compare-card home-compare-explicit">
+          <span className="home-compare-label">The Devora.js way</span>
+          <ul>
+            <li>
+              <code>renderMode</code> written per route: <code>ssr</code>/<code>ssg</code>/
+              <code>csr</code>/<code>isr</code>/<code>streaming</code>
+            </li>
+            <li>
+              <code>loader</code> and <code>action</code> exported explicitly for data and mutations
+            </li>
+            <li>
+              <code>revalidate: {"{"} seconds {"}"}</code> written in the route file itself
+            </li>
+          </ul>
+        </div>
+      </div>
+      <p className="home-prose">Security follows the same philosophy: a default, not a plugin.</p>
+      <p className="home-prose" style={{ fontSize: "0.85rem" }}>
+        To be fair to Next.js: version 16 can move the same way. With{" "}
+        <code>cacheComponents: true</code> caching is opt-in through <code>"use cache"</code> and
+        data fetching is dynamic by default; its docs say both become the default in the next major
+        release. The left card describes the App Router without that flag.
+      </p>
       <div className="home-config reveal">
         <div className="devora-card">
           <pre>
