@@ -1,4 +1,5 @@
 import { JsonLd, docsPageJsonLd } from "./seo.js";
+import { RELEASE_VERSION } from "./version.js";
 
 const DOCS_GROUPS = [
   {
@@ -33,7 +34,7 @@ const DOCS_GROUPS = [
       { id: "deployment", label: "Deployment", href: "/deployment" },
       { id: "security", label: "Security model", href: "/security" },
       { id: "roadmap", label: "Roadmap", href: "/roadmap" },
-      { id: "upgrading", label: "Upgrading to 0.3.4", href: "/upgrading" },
+      { id: "upgrading", label: `Upgrading to ${RELEASE_VERSION}`, href: "/upgrading" },
     ],
   },
 ];

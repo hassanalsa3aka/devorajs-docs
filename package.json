@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "devora dev",
-    "prebuild": "node scripts/check-guide-names.mjs && node scripts/build-rss.mjs",
+    "prebuild": "node scripts/check-guide-names.mjs && node scripts/check-versions.mjs && node scripts/build-rss.mjs",
     "build": "devora build",
     "postbuild": "bash scripts/build-docs.sh",
     "start": "devora start"
@@ -14,8 +14,8 @@
     "apps/*"
   ],
   "dependencies": {
-    "@devorajs/core": "^0.3.4",
-    "@devorajs/cli": "^0.3.4"
+    "@devorajs/core": "^0.3.5",
+    "@devorajs/cli": "^0.3.5"
   },
   "devDependencies": {
     "pagefind": "^1.5.2"

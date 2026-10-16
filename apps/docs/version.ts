@@ -1,27 +1,17 @@
-import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import release from "./data/release.json";
 
 /**
- * The installed @devorajs/core version, read from its package.json at
- * render time (pages are ssg, so at build time) — the site never hard-codes
- * the version it documents. null if it can't be resolved.
+ * The version this site documents: apps/docs/data/release.json, the one place it is written. The home
+ * badge, the JSON-LD, the footer, the sidebar label and the "latest release" chip all read it.
+ * scripts/check-versions.mjs fails the build when the installed @devorajs/core, the package.json ranges
+ * or a page's text disagree with it.
  */
-export function getCoreVersion(): string | null {
-  try {
-    const require = createRequire(import.meta.url);
-    let dir = dirname(require.resolve("@devorajs/core"));
-    for (let i = 0; i < 5; i++) {
-      try {
-        const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf-8"));
-        if (pkg.name === "@devorajs/core") return pkg.version;
-      } catch {
-        // keep walking up
-      }
-      dir = dirname(dir);
-    }
-  } catch {
-    // package not resolvable; fall through
-  }
-  return null;
+export const RELEASE_VERSION: string = release.version;
+export const RELEASE_DATE: string = release.date;
+/** The CHANGELOG entry (or, when one exists and is approved, the release post) for the latest release. */
+export const RELEASE_URL = `https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md#${release.version.replace(/\./g, "")}--${release.date}`;
+
+/** Kept for the pages that already call it; now the documented release, not whatever is installed. */
+export function getCoreVersion(): string {
+  return RELEASE_VERSION;
 }

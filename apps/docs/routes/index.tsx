@@ -11,7 +11,7 @@ import {
   LOGO_TURBOREPO,
 } from "../compare-table.js";
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
-import { getCoreVersion } from "../version.js";
+import { getCoreVersion, RELEASE_URL } from "../version.js";
 import { SHOWCASE, SHOWCASE_CHECKED, SHOWCASE_CSS, ShowcaseCard, LIVE_DEMOS } from "../showcase.js";
 import { BENCHMARK_CSS, BenchmarkWidget } from "../benchmark-widget.js";
 import { ARCH_CSS, ArchitectureDiagram } from "../architecture-diagram.js";
@@ -206,6 +206,11 @@ export default function Home({ data }) {
           padding: 0.35rem 0.85rem;
           margin: 0 0 1.25rem;
         }
+        .home-eyebrow { flex-wrap: wrap; justify-content: center; row-gap: 0.1rem; border-radius: 1.1rem; }
+        .home-eyebrow a.home-latest, .home-eyebrow-tag { white-space: nowrap; }
+        @media (max-width: 520px) { .home-eyebrow-sep { display: none; } }
+        .home-eyebrow a.home-latest { color: var(--devora-fg); text-decoration: none; }
+        .home-eyebrow a.home-latest:hover { text-decoration: underline; }
         .home-eyebrow-dot {
           width: 6px;
           height: 6px;
@@ -666,7 +671,13 @@ export default function Home({ data }) {
 
         <div className="home-eyebrow">
           <span className="home-eyebrow-dot" aria-hidden="true" />
-          {version ? `v${version} · ` : ""}Vite-based · security-first
+          {version ? (
+            <>
+              <a className="home-latest" href={RELEASE_URL}>Latest release: {version}</a>
+              <span className="home-eyebrow-sep" aria-hidden="true">·</span>
+            </>
+          ) : null}
+          <span className="home-eyebrow-tag">Vite-based · security-first</span>
         </div>
 
         <h1 className="home-title">

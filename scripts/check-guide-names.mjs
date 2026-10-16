@@ -9,8 +9,9 @@ import { readFileSync, existsSync } from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
+const release = JSON.parse(readFileSync(path.join(root, "apps/docs/data/release.json"), "utf-8"));
 const layout = readFileSync(path.join(root, "apps/docs/docs-layout.tsx"), "utf-8");
-const items = [...layout.matchAll(/\{\s*id:\s*"([^"]+)",\s*label:\s*"([^"]+)",\s*href:\s*"([^"]+)"\s*\}/g)].map((m) => ({ id: m[1], label: m[2], href: m[3] }));
+const items = [...layout.matchAll(/\{\s*id:\s*"([^"]+)",\s*label:\s*[`"]([^`"]+)[`"],\s*href:\s*"([^"]+)"\s*\}/g)].map((m) => ({ id: m[1], label: m[2].replace("${RELEASE_VERSION}", release.version), href: m[3] }));
 if (items.length === 0) throw new Error("no sidebar items found in docs-layout.tsx; the check needs updating");
 
 let failed = 0;

@@ -1,4 +1,5 @@
 import { SITE_THEME_CSS } from "./site-theme.js";
+import { RELEASE_VERSION } from "./version.js";
 
 const EXTERNAL = { target: "_blank", rel: "noopener noreferrer" } as const;
 
@@ -20,7 +21,7 @@ const FOOTER_COLUMNS = [
       { label: "Compare", href: "/compare" },
       { label: "Performance", href: "/performance" },
       { label: "Roadmap", href: "/roadmap" },
-      { label: "Upgrading to 0.3.4", href: "/upgrading" },
+      { label: `Upgrading to ${RELEASE_VERSION}`, href: "/upgrading" },
       { label: "Changelog", href: "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md" },
       { label: "npm packages", href: "https://www.npmjs.com/package/@devorajs/core" },
     ],
