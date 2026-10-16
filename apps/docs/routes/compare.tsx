@@ -284,7 +284,16 @@ const BYO_GROUPS: MatrixGroup[] = [
       {
         label: "WebSockets",
         cells: {
-          devora: { s: "no", note: <>Use a separate realtime server: <a href="/live-updates">Live updates</a></> },
+          devora: {
+            s: "library",
+            note: (
+              <>
+                A separate realtime server (Socket.IO) works; <code>ws</code> works through a small wrapper
+                around <code>createNodeServer</code>; server-sent events from an API route do not work yet:{" "}
+                <a href="/live-updates">Live updates</a>
+              </>
+            ),
+          },
           express: { s: "library" },
           fastify: { s: "library", note: <>Official plugin (<code>@fastify/websocket</code>)</> },
           nest: { s: "built", note: <>Gateways in <code>@nestjs/websockets</code> (socket.io or ws)</> },
@@ -293,7 +302,15 @@ const BYO_GROUPS: MatrixGroup[] = [
       {
         label: "Background jobs",
         cells: {
-          devora: { s: "no" },
+          devora: {
+            s: "library",
+            note: (
+              <>
+                BullMQ with Redis and a worker, a SQLite queue with a worker, and node-cron were tested on one Node
+                server; not verified on Vercel or Netlify: <a href="/background-jobs">Background jobs</a>
+              </>
+            ),
+          },
           express: { s: "library" },
           fastify: { s: "library" },
           nest: { s: "library", note: <>Official modules (<code>@nestjs/bullmq</code>, needs Redis; <code>@nestjs/schedule</code>)</> },
@@ -511,7 +528,7 @@ export default function Compare({ data }) {
               you need a mature, full-featured backend today — dependency injection, validation,
               WebSockets, jobs: <strong>NestJS</strong> or <strong>Fastify</strong>;
             </li>
-            <li>you need WebSockets built in, background jobs, or a long track record right now.</li>
+            <li>you need WebSockets or background jobs built in, or a long track record right now.</li>
           </ul>
         </section>
       </div>
@@ -580,8 +597,8 @@ export default function Compare({ data }) {
           <strong>Honest note:</strong> NestJS and Fastify are more complete "batteries included"
           backend frameworks today. Devora.js's backend is closer to Express's minimalism, with a
           JSON error contract, method checks and CORS that Express doesn't give you by default. For
-          live updates it documents a pattern, not a built-in:{" "}
-          <a href="/live-updates">Live updates</a>.
+          live updates and background jobs it documents tested patterns, not built-ins:{" "}
+          <a href="/live-updates">Live updates</a>, <a href="/background-jobs">Background jobs</a>.
         </p>
       </section>
 
@@ -639,8 +656,10 @@ export default function Compare({ data }) {
             events.
           </li>
           <li>
-            No built-in WebSockets, background jobs, validation or rate limiting. For live updates
-            run a separate realtime server: <a href="/live-updates">Live updates</a>.
+            No built-in validation or rate limiting. WebSockets and background jobs are not built in
+            either, but both have tested setups: <a href="/live-updates">Live updates</a> and{" "}
+            <a href="/background-jobs">Background jobs</a>. Server-sent events from an API route do not
+            work yet.
           </li>
           <li>
             <code>streaming</code> is GET-only, and on Netlify it arrives as one buffered response.

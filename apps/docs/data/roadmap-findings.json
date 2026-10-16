@@ -76,7 +76,7 @@
   "finding": "No backend 'batteries' (logging, CORS, rate limiting, validation, uploads, jobs, realtime, email, test utilities)",
   "status": "Partly fixed",
   "version": "0.3.2 / 0.3.4",
-  "evidence": "CORS (0.3.2), multipart uploads (0.3.2), realtime pattern (0.3.4, docs/guides/REALTIME.md) and the /backend-capabilities docs page. Pagination helpers, background jobs, email, test utilities: not built, no plan.",
+  "evidence": "CORS (0.3.2), multipart uploads (0.3.2), realtime pattern (0.3.4, docs/guides/REALTIME.md), background jobs (three tested patterns, docs/guides/BACKGROUND-JOBS.md) and the /backend-capabilities docs page. Pagination helpers, background jobs, email, test utilities: not built, no plan.",
   "described": "pre #10"
  },
  {
@@ -193,7 +193,7 @@
  },
  {
   "id": "B5",
-  "finding": "API responses fully buffered: no SSE, no WebSockets, one Set-Cookie",
+  "finding": "API responses fully buffered: no SSE from an API route, one Set-Cookie (WebSockets: a separate realtime server and ws through a wrapper both work)",
   "status": "Open",
   "version": "",
   "evidence": "No text/event-stream or WebSocket code in packages/ (searched). WebSockets: documented pattern with a separate server (0.3.4, docs/guides/REALTIME.md). A handler still sets headers as a plain object, so one Set-Cookie.",
