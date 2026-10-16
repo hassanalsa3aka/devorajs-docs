@@ -29,12 +29,33 @@ export interface Metric {
 }
 
 export const METRICS: Metric[] = [
-  { id: "build", tab: "Build time", title: "Cold production build", better: "lower", value: (f) => f.build.coldMs.median, format: ms, note: "npm run build with build output and caches deleted" },
-  { id: "ssr", tab: "SSR page", title: "Requests/second, SSR page", better: "higher", value: (f) => f.load.items.rps.median, format: rps, note: "A page rendered per request: 100 items from a loader and one interactive counter" },
+  { id: "ssr", tab: "Server-rendered page", title: "Requests/second, server-rendered page", better: "higher", value: (f) => f.load.items.rps.median, format: rps, note: "A page rendered per request: 100 items from a loader and one interactive counter. The scenario closest to a real application" },
+  { id: "static", tab: "Pre-rendered page", title: "Requests/second, pre-rendered page", better: "higher", value: (f) => f.load.static.rps.median, format: rps, note: "A tiny page with no data, built ahead of time. Each framework sends its own output (sizes under \"Response size\"), so this mostly measures the HTTP layer" },
   { id: "form", tab: "Form POST", title: "Requests/second, form POST", better: "higher", value: (f) => f.load.form.rps.median, format: rps, note: "A valid form submission answered with a 303 redirect" },
+  { id: "build", tab: "Build time", title: "Cold production build", better: "lower", value: (f) => f.build.coldMs.median, format: ms, note: "npm run build with build output and caches deleted" },
   { id: "memory", tab: "Memory", title: "Idle server memory", better: "lower", value: (f) => f.idleMemoryMb.median, format: (n) => `${Math.round(n)} MB`, note: "Resident memory 2 s after start" },
   { id: "js", tab: "JavaScript", title: "JavaScript sent to the browser, SSR page", better: "lower", value: (f) => f.browser["/items"].jsGzip, format: kb, note: "Every script the page loads, gzip" },
 ];
+
+/** Where Devora.js stands on each tab, as one sentence generated from the data. */
+function standing() {
+  const devora = FWS.find((f) => f.key === "devora")!;
+  const ahead: string[] = [];
+  const behind: string[] = [];
+  for (const m of METRICS) {
+    const shown = (f: Fw) => m.format(m.value(f));
+    const better = FWS.filter(
+      (f) => shown(f) !== shown(devora) && (m.better === "lower" ? m.value(f) < m.value(devora) : m.value(f) > m.value(devora))
+    );
+    if (better.length === 0) ahead.push(m.tab.toLowerCase().replace('javascript', 'JavaScript'));
+    else {
+      const leader = [...better].sort((a, b) => (m.better === "lower" ? m.value(a) - m.value(b) : m.value(b) - m.value(a)))[0]!;
+      behind.push(`${m.tab.toLowerCase().replace('javascript', 'JavaScript')} (${leader.name})`);
+    }
+  }
+  const join = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}` : xs[0] ?? "nothing");
+  return `In this run Devora.js was first on ${join(ahead)}, and behind on ${join(behind)}.`;
+}
 
 function Bars({ metric }: { metric: Metric }) {
   const rows = FWS.map((f) => ({ f, v: metric.value(f) })).sort((a, b) => (metric.better === "lower" ? a.v - b.v : b.v - a.v));
@@ -69,6 +90,46 @@ function Bars({ metric }: { metric: Metric }) {
   );
 }
 
+function WireSizes() {
+  const rows = FWS.filter((f) => (f as any).wire);
+  if (rows.length === 0) return null;
+  const cell = (p: { bodyBytes: number; contentEncoding: string | null }) =>
+    `${p.bodyBytes.toLocaleString("en-US")} B${p.contentEncoding ? ` (${p.contentEncoding})` : ""}`;
+  return (
+    <details className="bw-wire">
+      <summary>Response size and encoding</summary>
+      <p className="bw-note">
+        What each framework actually sent for one request after the run, read as raw bytes. The
+        load tool sends no <code>Accept-Encoding</code>, so nothing was compressed during the timed
+        runs; the browser column adds what a browser sends.
+      </p>
+      <table className="bw-table bw-wire-table">
+        <thead>
+          <tr>
+            <th scope="col">Framework</th>
+            <th scope="col">Pre-rendered page</th>
+            <th scope="col">Server-rendered page</th>
+            <th scope="col">Same, with browser Accept-Encoding</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((f) => {
+            const w = (f as any).wire;
+            return (
+              <tr key={f.key}>
+                <th scope="row">{f.name}</th>
+                <td>{cell(w.static.loadTool)}</td>
+                <td>{cell(w.items.loadTool)}</td>
+                <td>{cell(w.static.browser)} / {cell(w.items.browser)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </details>
+  );
+}
+
 export function BenchmarkWidget({ id = "bench", compact = false, footer }: { id?: string; compact?: boolean; footer?: ReactNode }) {
   const m = bench.machine;
   const c = bench.config;
@@ -95,6 +156,7 @@ export function BenchmarkWidget({ id = "bench", compact = false, footer }: { id?
           aria-label={metric.tab}
         />
       ))}
+      <p className="bw-summary">{standing()}</p>
       <div className="bw-tabs" aria-hidden="true">
         {METRICS.map((metric) => (
           <label key={metric.id} htmlFor={`${id}-${metric.id}`}>
@@ -114,10 +176,11 @@ export function BenchmarkWidget({ id = "bench", compact = false, footer }: { id?
           </div>
         ))}
       </div>
+      {!compact ? <WireSizes /> : null}
       <p className="bw-footnote">
         {m.cpu}, {m.cores} cores, {m.memoryGb} GB, {m.os.split(" (")[0]}, Node {m.node.replace(/^v/, "")}.{" "}
         {c.connections} connections, median of {c.loadRuns} runs (builds: {c.buildRuns}), {BENCH_DATE}. Client and
-        server on one machine. <a href={REPRODUCE_URL}>Reproduce</a>
+        server on one machine, tiny pages. <a href={REPRODUCE_URL}>Reproduce</a>
         {footer}
       </p>
     </section>
@@ -136,6 +199,14 @@ export const BENCHMARK_CSS = `
 }
 .devora-page .bw-heading { margin: 0 0 0.85rem; padding: 0; font-size: 1.05rem; }
 .devora-page .bw-heading::before { content: none; }
+.devora-page .bw-summary { margin: 0 0 0.9rem; font-size: 0.9rem; line-height: 1.55; color: var(--devora-fg); }
+.bw-wire { margin-top: 0.9rem; font-size: 0.85rem; }
+.bw-wire summary { cursor: pointer; font-weight: 600; }
+.bw-wire summary:focus-visible { outline: 2px solid var(--devora-ring); outline-offset: 2px; border-radius: 4px; }
+.bw-wire-table td { display: table-cell; }
+.bw-wire-table th { width: auto; }
+.bw-wire-table thead th { font-size: 0.75rem; color: var(--devora-fg-muted); white-space: normal; }
+@media (max-width: 560px) { .bw-wire { overflow-x: auto; } .bw-wire-table tr { display: table-row; } .bw-wire-table th { display: table-cell; } }
 .bw-radio { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
 .bw-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
 .bw-tabs label {

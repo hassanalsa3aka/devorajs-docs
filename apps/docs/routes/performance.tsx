@@ -91,6 +91,17 @@ export default function Performance() {
           by default; those are included in its numbers.
         </li>
         <li>One machine, client and server together. Run it on your own hardware before relying on it.</li>
+        <li>
+          The load tool sends no <code>Accept-Encoding</code>, so no framework compressed during the
+          timed runs; the pages differ in size because each framework emits different HTML (see
+          "Response size and encoding" in the panel). The pre-rendered page is tiny, and a smaller
+          page is part of why a framework is fast on it.
+        </li>
+        <li>
+          Across three full runs on this machine Devora.js measured roughly 71,000–82,000 requests/s
+          on the pre-rendered page, against roughly 35,000–39,000 for Astro, SvelteKit and React
+          Router. Treat that as "about twice", not a precise ratio.
+        </li>
       </ul>
 
       <h2 id="behind">Where Devora.js is behind</h2>

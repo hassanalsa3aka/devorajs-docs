@@ -10,7 +10,7 @@ export function meta() {
   return pageMeta("/examples", {
     title: "Examples and live demos",
     description:
-      "Three runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site — and the example apps deployed by the maintainer.",
+      "Four runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates — and the example apps deployed by the maintainer.",
     image: "/og/examples.png",
   });
 }
@@ -43,6 +43,14 @@ const EXAMPLES = [
     title: "Content site with ssg and islands",
     shows: "Pre-rendered pages, a dynamic route with getStaticParams(), one interactive island, route CSS and a sitemap.",
     apps: ["blog · auth none"],
+  },
+  {
+    slug: "realtime",
+    title: "Live updates with a separate realtime server",
+    shows: "A dashboard that updates without a reload: a login-protected token route, a small Socket.IO server with one room per user, a publish call from the app, a polling fallback, and the CSP setting that lets the browser connect.",
+    apps: ["app · shared", "realtime/ · plain Node (Socket.IO)"],
+    tutorial: "/live-updates",
+    tutorialLabel: "The Live updates guide",
   },
 ];
 
@@ -110,7 +118,7 @@ npm ci && npm run dev`}
             </pre>
             <p className="ex-links">
               <a href={`${REPO}/${ex.slug}`}>Code and README ↗</a>
-              {ex.tutorial ? <a href={ex.tutorial}>Step-by-step tutorial</a> : null}
+              {ex.tutorial ? <a href={ex.tutorial}>{ex.tutorialLabel ?? "Step-by-step tutorial"}</a> : null}
             </p>
           </article>
         ))}
@@ -123,7 +131,8 @@ npm ci && npm run dev`}
         <a href="https://github.com/hassanalsa3aka/devora.js/tree/main/apps">
           <code>apps/</code> on GitHub
         </a>
-        . Checked {SHOWCASE_CHECKED}.
+        . Checked {SHOWCASE_CHECKED}. The Netlify deployments of the same apps are not listed:
+        they did not respond when last checked.
       </p>
       {platforms.map((platform) => (
         <section key={platform} aria-labelledby={`demos-${platform}`}>
