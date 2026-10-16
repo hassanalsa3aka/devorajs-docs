@@ -937,8 +937,8 @@ import { addNote } from "@devorajs/backend/notes";`}
 
       <p className="home-whatsnext reveal">
         <strong>What's next.</strong> Desktop and native mobile apps are planned goals, not started,
-        and there are no dates. See the{" "}
-        <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/ROADMAP.md">roadmap</a>.
+        and there are no dates. See the <a href="/roadmap">roadmap</a>
+        {" "}(also as <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/ROADMAP.md">ROADMAP.md</a> on GitHub).
       </p>
 
       <h2 className="home-section-title reveal-slide" style={{ "--pseudo-content": '""' }}>Where to go next</h2>
