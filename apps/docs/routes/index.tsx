@@ -651,7 +651,7 @@ export default function Home({ data }) {
         }
       ` }} />
 
-      <a href="#watch-demo" className="home-video-hero" aria-label="Watch the devora.js demo video (opens a player with sound)">
+      <a href="#watch-demo" className="home-video-hero" aria-label="Watch the demo: the devora.js video (opens a player with sound)">
         <video muted loop playsInline preload="none" poster="/video/devorajs-poster.webp">
           <source data-src="/video/devorajs.mp4" type="video/mp4" />
         </video>
