@@ -114,25 +114,34 @@ export function DocsLayout({ active, children }) {
           font-weight: 600;
         }
         .docs-content { min-width: 0; }
-        @media (max-width: 760px) {
-          .docs-layout { grid-template-columns: 1fr; gap: 1.5rem; }
-          .docs-sidebar {
-            position: static;
-            max-height: none;
-            overflow: visible;
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 0.4rem;
+        .docs-layout .docs-menu-btn { display: none; }
+        @media (max-width: 900px) {
+          .docs-layout { grid-template-columns: 1fr; gap: 1.25rem; }
+          /* Without the menu script: the whole grouped list, stacked. */
+          .docs-sidebar { position: static; max-height: none; overflow: visible; padding: 0; gap: 1rem; }
+          .docs-sidebar-link { display: flex; align-items: center; min-height: 44px; padding: 0.55rem 0.75rem; }
+          /* With it: one "Docs menu" button that opens the list. */
+          html.js-menu .docs-layout .docs-menu-btn {
+            display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+            width: 100%; min-height: 48px; padding: 0.6rem 0.9rem;
+            border: 1px solid var(--devora-border); border-radius: var(--devora-radius);
+            background: var(--devora-card); color: var(--devora-fg);
+            font: inherit; font-size: 0.95rem; font-weight: 600; text-align: left; cursor: pointer;
           }
-          .docs-sidebar-group { flex-direction: row; flex-wrap: wrap; gap: 0.4rem; }
-          .docs-sidebar-label { display: none; }
-          .docs-sidebar-link {
-            border: 1px solid var(--devora-border);
-            border-left: 1px solid var(--devora-border);
-            border-radius: 999px;
-            padding: 0.3rem 0.7rem;
+          html.js-menu .docs-layout .docs-menu-btn:hover { border-color: var(--devora-accent-from); }
+          .docs-menu-btn-current { color: var(--devora-fg-muted); font-weight: 500; font-size: 0.9rem; margin-left: auto; text-align: right; }
+          .docs-menu-btn::after {
+            content: ""; width: 16px; height: 16px; flex-shrink: 0; margin-left: 0.4rem;
+            background-color: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%209l6%206%206-6%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27%23000%27%20stroke-width%3D%272.5%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%209l6%206%206-6%27%2F%3E%3C%2Fsvg%3E") center / contain no-repeat;
+            transition: transform 0.15s;
           }
-          .docs-sidebar-link.active { border-color: var(--devora-accent-from); }
+          .docs-menu-btn[aria-expanded="true"]::after { transform: rotate(180deg); }
+          html.js-menu .docs-sidebar { display: none; }
+          html.js-menu .docs-layout[data-docs-open] .docs-sidebar {
+            display: flex; padding: 0.25rem 0 0.5rem;
+            border: 1px solid var(--devora-border); border-radius: var(--devora-radius); padding: 0.75rem;
+            background: var(--devora-card);
+          }
         }
 
         /* Eyebrow — colored category label above each page's h1 */
@@ -254,7 +263,11 @@ export function DocsLayout({ active, children }) {
            wrap box scrolls instead. */
         .docs-content :is(p, li, h2, h3, h4) code { overflow-wrap: anywhere; }
       ` }} />
-      <nav className="docs-sidebar" aria-label="Docs">
+      <button type="button" className="docs-menu-btn" aria-expanded="false" aria-controls="docs-sidebar">
+        <span>Docs menu</span>
+        <span className="docs-menu-btn-current">{activeItem ? activeItem.label : ""}</span>
+      </button>
+      <nav className="docs-sidebar" id="docs-sidebar" aria-label="Docs">
         {DOCS_GROUPS.map((group) => (
           <div className="docs-sidebar-group" key={group.label}>
             <div className="docs-sidebar-label">
