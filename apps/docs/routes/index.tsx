@@ -369,7 +369,7 @@ export default function Home({ data }) {
         .home-config { max-width: 62rem; margin: 0 auto 1.5rem; }
         .devora-page .home-config pre { margin: 0; }
         .home-config .devora-card { overflow-x: auto; }
-        .home-whatsnext {
+        .devora-page .home-whatsnext {
           max-width: 46rem;
           margin: 0 auto 2.5rem;
           padding: 1rem 1.25rem;
