@@ -148,7 +148,23 @@ export function SiteFooter() {
           .site-footer-brand { grid-column: 1 / -1; max-width: none; }
         }
         @media (max-width: 560px) {
-          .site-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+          /* Two balanced columns: Docs and Source on the left, the longer Project list on the right. */
+          .site-footer {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-areas: "brand brand" "docs project" "source project" "legal legal";
+            gap: 1.75rem 1.25rem;
+          }
+          .site-footer-brand { grid-area: brand; }
+          .site-footer-col[aria-label="Docs"] { grid-area: docs; }
+          .site-footer-col[aria-label="Project"] { grid-area: project; }
+          .site-footer-col[aria-label="Source"] { grid-area: source; }
+          .site-footer-legal { grid-area: legal; }
+          .site-footer-col a { display: inline-block; padding: 0.2rem 0; }
+          .site-footer-col ul { gap: 0.35rem; }
+          .site-footer-legal { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; align-items: center; }
+          .site-footer-built { text-align: left; }
+          .site-footer-meta { flex-wrap: wrap; gap: 0.25rem 1.25rem; }
+          .site-footer-meta a, .site-footer-legal a { display: inline-block; padding: 0.3rem 0; }
         }
 
         /* Consent banner — created by assets/js/analytics.js, only when GA

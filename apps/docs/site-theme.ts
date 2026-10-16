@@ -61,9 +61,9 @@ export const SITE_THEME_CSS = `
   :root[data-theme=light] {${LIGHT}}
   :root[data-theme=dark] {${DARK}}
 
-  /* 0.3.2 caps the header and footer at 1120px (--devora-wide-width); this
-     site's header and footer have always spanned the full window. */
-  .devora-header-inner, .devora-footer-inner { max-width: none; }
+  /* The framework caps the header and footer at 1120px (--devora-wide-width). This site uses 1280px, so the
+     logo and nav line up with the widest pages and do not drift to the screen edges on a 1920px or 2560px display. */
+  .devora-header-inner, .devora-footer-inner { max-width: 1280px; }
 
   .devora-page h2 {
     position: relative;
@@ -97,5 +97,15 @@ export const SITE_THEME_CSS = `
     border: 0;
     border-radius: 0;
     box-shadow: none;
+  }
+
+  /* Phones: nothing under 12px (tags, table headers, code in tables, small notes). */
+  @media (max-width: 640px) {
+    .devora-page .tag, .docs-sidebar-label { font-size: 0.75rem; }
+    .devora-page table th, .devora-page thead th { font-size: 0.75rem; }
+    .devora-page td code, .devora-page th code, .devora-page li code, .devora-page small, .devora-page small code { font-size: 0.8125rem; }
+    .devora-page small { font-size: 0.75rem; }
+    .devora-page code { font-size: max(0.78rem, 0.875em); }
+    .devora-page .cc-mark { font-size: 0.75rem; }
   }
 `;
