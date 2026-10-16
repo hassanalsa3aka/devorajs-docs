@@ -4,7 +4,7 @@
   "finding": "Published package was behind the docs (core 0.1.2 lacked defineModule/apiRoute)",
   "status": "Fixed",
   "version": "0.3.0",
-  "evidence": "create-devora pins ^0.3.0 (CHANGELOG 0.3.0); core 0.3.0 to 0.3.4 are on npm. The suggested CI check that fails a docs deploy when versions differ does not exist.",
+  "evidence": "create-devora pins ^0.3.0 (CHANGELOG 0.3.0); core 0.3.0 to 0.3.5 are on npm. The suggested CI check that fails a docs deploy when versions differ does not exist.",
   "described": "pre #1"
  },
  {
@@ -490,9 +490,9 @@
  {
   "id": "Y8",
   "finding": "Docs contradicted each other on streaming maturity",
-  "status": "Partly fixed",
-  "version": "0.3.2",
-  "evidence": "Current docs say streaming shipped; CLAUDE.md line 173 and BUILD-LOG items still carry the old 'deferred' wording with a later note (see the audit)",
+  "status": "Fixed",
+  "version": "0.3.5",
+  "evidence": "Every current document says streaming shipped in v2 (GET-only; buffered on Netlify); the old \"deferred\" wording is kept only in dated history (BUILD-LOG items, docs/history/CLAUDE-repo-state-archive.md, each marked as of its date)",
   "described": "r3 YallaDo"
  },
  {
@@ -603,8 +603,8 @@
   "id": "S1",
   "finding": "Every request re-did work that never changes (path joins, build keys, a URL object and a Headers object, a session-key HMAC, two manifest reads from disk)",
   "status": "Fixed",
-  "version": "Unreleased",
-  "evidence": "Five commits on perf/backend-speed (CHANGELOG Unreleased). Interleaved A/B on one machine: +15% JSON list, +32% authenticated GET, +21% POST, +41% pre-rendered page, +23% server-rendered page; form POST 32,000 to 80,000 req/s in the full run (benchmarks/results/before-after.md, ab-published-vs-final.txt)",
+  "version": "0.3.5",
+  "evidence": "Five commits on perf/backend-speed (CHANGELOG 0.3.5). Interleaved A/B on one machine: +15% JSON list, +32% authenticated GET, +21% POST, +41% pre-rendered page, +23% server-rendered page; form POST 32,000 to 80,000 req/s in the full run (benchmarks/results/before-after.md, ab-published-vs-final.txt)",
   "described": "benchmarks"
  },
  {
@@ -630,5 +630,77 @@
   "version": "",
   "evidence": "benchmarks/results/backend-report.md. A faster server also keeps more heap, so this is not proof of a leak; no leak test was run.",
   "described": "benchmarks"
+ },
+ {
+  "id": "R1",
+  "finding": "ws on the same port as devora start",
+  "status": "Partly fixed",
+  "version": "",
+  "evidence": "Works through a wrapper script that calls createNodeServer (the function the CLI calls; a public, documented export of @devorajs/adapter-node that returns the http.Server) and handles upgrade itself: bad token 401, good token connected and echoed, API and security headers unchanged on the same port. Plain devora start exposes no server and no hook. Smallest core change: an onServer(server) option. Guide: Live updates (WebSockets).",
+  "described": "lab"
+ },
+ {
+  "id": "R2",
+  "finding": "Server-sent events from an API route",
+  "status": "Open",
+  "version": "",
+  "evidence": "A string body is sent complete after the handler finishes (first byte at 1.5 s for three events 0.5 s apart, then the connection closes, so an EventSource reconnects in a loop); a ReadableStream, an async iterable or a Readable as the body answers 500. Smallest core change: let sendApiResponse pipe a stream or async iterable and destroy it when the client disconnects.",
+  "described": "lab"
+ },
+ {
+  "id": "R3",
+  "finding": "Socket.IO as a separate server (examples/realtime)",
+  "status": "Fixed",
+  "version": "0.3.4",
+  "evidence": "Run from a scratch copy on the published 0.3.4 packages: all 19 checks of examples/check.mjs pass. Not tested in a browser.",
+  "described": "lab"
+ },
+ {
+  "id": "R4",
+  "finding": "Background jobs: BullMQ with Redis and a separate worker",
+  "status": "Fixed",
+  "version": "0.3.5",
+  "evidence": "Tested on one Node server: an authenticated route enqueued (202), the worker ran it, the route returned completed in about 330 ms; unauthenticated enqueue is 401. bullmq needs ioredis installed separately. In CI as examples/background-jobs (the Redis part skips when there is no Redis). Guide: Background jobs.",
+  "described": "lab"
+ },
+ {
+  "id": "R5",
+  "finding": "Background jobs without Redis: a SQLite queue and a worker",
+  "status": "Fixed",
+  "version": "0.3.5",
+  "evidence": "node:sqlite: result in about 100 to 220 ms. One server only (both processes share the file). In CI as examples/background-jobs, always run.",
+  "described": "lab"
+ },
+ {
+  "id": "R6",
+  "finding": "node-cron inside devora start",
+  "status": "Partly fixed",
+  "version": "",
+  "evidence": "Works, but there is no start-up hook: the schedule registers when the route that contains it is first imported (at its first request).",
+  "described": "lab"
+ },
+ {
+  "id": "R7",
+  "finding": "Each of the above on Vercel or Netlify",
+  "status": "Unconfirmed",
+  "version": "",
+  "evidence": "Not deployed, so not verified. Expected from the platforms' documented model, not tested: WebSockets, long-lived timers and a SQLite file on a function's disk do not fit functions; a BullMQ worker must run elsewhere.",
+  "described": "lab"
+ },
+ {
+  "id": "T1",
+  "finding": "A fresh scaffold prints npm warn Unknown project config \"link-workspace-packages\" on every npm command",
+  "status": "Open",
+  "version": "",
+  "evidence": "Source: packages/scaffold/src/scaffoldProjectFiles.ts:137 writes a project .npmrc containing link-workspace-packages=true, a pnpm setting (pnpm needs it so the plain \"*\" workspace dependencies link locally instead of being fetched from the registry). npm 11 does not know it and warns, saying it will stop working in the next major version. Verified: in a scaffold, npm config get registry warns with the .npmrc in place and is silent with it moved away. The repo root and every example carry the same file. Not fixed.",
+  "described": "smoke test of 0.3.5"
+ },
+ {
+  "id": "T2",
+  "finding": "On newer npm, install prints an allow-scripts warning for esbuild's postinstall",
+  "status": "Open",
+  "version": "",
+  "evidence": "Reproduced with npm 11.17.0 in an empty project: npm install esbuild@0.25.12 prints \"1 package has install scripts not yet covered by allowScripts: esbuild@0.25.12 (postinstall: node install.js)\". esbuild comes in through Vite. Install, devora dev and devora build still work. The warning comes from npm, not from Devora.js code; getting-started says so in one line. Not fixed.",
+  "described": "smoke test of 0.3.5"
  }
 ]

@@ -33,9 +33,21 @@ interface Release {
   anchorLabel?: string;
 }
 
-// Every block comes from CHANGELOG.md and the git tags (v0.3.2 and v0.3.4 are
-// the only tags). A version with no CHANGELOG entry says so.
+// Every block comes from CHANGELOG.md and the git tags (v0.3.2, v0.3.4 and v0.3.5
+// are the only tags). A version with no CHANGELOG entry says so.
 const RELEASES: Release[] = [
+  {
+    version: "0.3.5",
+    date: "2026-10-16",
+    tag: "v0.3.5",
+    points: [
+      "Faster request handling in devora start: work that never changes per request is done once. Interleaved A/B on one machine: +15% JSON list, +32% authenticated GET, +21% POST, +41% pre-rendered page, +23% server-rendered page; form POST about 32,000 to 82,000 req/s. No security default weakened.",
+      "A missing session store or secret stops devora start with one clear line; the header brand link's accessible name contains its visible text.",
+      "Guides for Live updates (WebSockets) and Background jobs, a new examples/background-jobs, backend benchmark scenarios, and a restored roadmap.",
+      "Packages: @devorajs/core 0.3.5, @devorajs/cli 0.3.5, create-devora 0.3.3; the adapters are unchanged.",
+    ],
+    anchor: "035--2026-10-16",
+  },
   {
     version: "0.3.4",
     date: "2026-10-16",
@@ -83,7 +95,15 @@ const RELEASES: Release[] = [
     ],
     anchor: "030--2026-09-23-pre-v3-hotfixes",
   },
-  { version: "0.2.2 and 0.2.1", note: "No CHANGELOG entry", points: [] },
+  {
+    version: "0.2.2 and 0.2.1",
+    date: "2026-09-16",
+    points: [
+      "@devorajs/core 0.2.1 (footer structure in the branding component) and 0.2.2 (footer styles and a package exports restructure). The CHANGELOG notes for them were reconstructed from git history and npm publish times.",
+    ],
+    anchor: "package-notes-reconstructed-from-git-history-and-npm-publish-times",
+    anchorLabel: "reconstructed notes",
+  },
   {
     version: "0.2.0",
     date: "2026-09-16",
@@ -99,7 +119,7 @@ const RELEASES: Release[] = [
     version: "0.1.x",
     points: [
       "0.1.1 and @devorajs/cli 0.1.2 (2026-09-08): the npm scope became @devorajs, the shared scaffold package, per-package READMEs.",
-      "@devorajs/core 0.1.2: no CHANGELOG entry.",
+      "@devorajs/core 0.1.2 (2026-09-09): dynamic routes and the devora deploy fixes of that day; its CHANGELOG note was reconstructed from git history.",
       "0.1.0: the CHANGELOG records only the initial commit, 2026-09-07 (SSR/SSG/CSR/ISR, islands, sessions, security headers, SEO, the CLI, the three adapters), without a version number.",
       "2026-09-09 has an entry (a CI fix, docs) with no version bump.",
     ],
@@ -164,8 +184,8 @@ export default function Roadmap() {
         <p className="devora-lead rm-lead">
           Devora.js is early and pre-1.0, built by one person. This page says what has shipped,
           version by version, and what is next. Every block below is taken from the{" "}
-          <a href={CHANGELOG}>changelog</a> and the git tags (<code>v0.3.2</code> and{" "}
-          <code>v0.3.4</code> are the only tags).
+          <a href={CHANGELOG}>changelog</a> and the git tags (<code>v0.3.2</code>,{" "}
+          <code>v0.3.4</code> and <code>v0.3.5</code> are the only tags).
         </p>
         <p>
           The same content lives in{" "}
@@ -206,8 +226,8 @@ export default function Roadmap() {
             <h3 id="rm-now">Now</h3>
             <ul>
               <li>Outside testers: <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/TESTING.md">the 15-minute guide</a>; what they hit shapes the next releases.</li>
-              <li>Ship the clear "no session store configured" message and the package README links.</li>
-              <li>Verify 0.3.4 on a live Vercel and Netlify deployment (finding N1).</li>
+              <li>Publish 0.3.5, then re-run the benchmark harness on the published packages and replace the numbers on <a href="/performance">Performance</a> (they come from a build of this release's code).</li>
+              <li>Verify 0.3.5 on a live Vercel and Netlify deployment (finding N1).</li>
             </ul>
           </section>
           <section className="rm-col rm-col-later" aria-labelledby="rm-later">
@@ -236,7 +256,7 @@ export default function Roadmap() {
           <table className="rm-table">
             <thead><tr><th>Order</th><th>Finding</th><th>Why it ranks here</th></tr></thead>
             <tbody>
-              <tr><td>1</td><td>N1: 0.3.4 not verified on a live deployment</td><td>Every deploy claim depends on it</td></tr>
+              <tr><td>1</td><td>N1: 0.3.5 not verified on a live deployment</td><td>Every deploy claim depends on it</td></tr>
               <tr><td>2</td><td>B5: several Set-Cookie headers and SSE from API routes</td><td>A real capability gap testers hit</td></tr>
               <tr><td>3</td><td>O4: the scaffold writes @devorajs/backend into new projects</td><td>The name could collide with a future real package; harder to change later</td></tr>
               <tr><td>4</td><td>U13, U14: an official session-store pattern or package; a built-in health route</td><td>Every production app needs both</td></tr>
@@ -300,6 +320,7 @@ export default function Roadmap() {
             <li>v2 backend: modules, API routes, middleware, backend-only apps, repo-splitting</li>
             <li>0.3.2: request access, action results, error pages, head API, uploads, cookie and proxy settings, CORS, <code>.env</code> loading, <code>@devorajs/adapter-node</code></li>
             <li>0.3.4: catch-all routes, the static file cache, content types, sitemap URLs, the live-updates pattern</li>
+            <li>0.3.5: faster request handling, one clear message for a missing session store, guides for live updates (WebSockets) and background jobs</li>
             <li><code>clientOnly()</code>; the <code>devora</code> CLI under npm, Yarn and pnpm</li>
             <li>adapter-node, adapter-vercel, adapter-netlify: build output verified in isolation</li>
             <li>Live Vercel and Netlify deployment (all three apps) with releases before 0.3.2</li>
@@ -307,7 +328,7 @@ export default function Roadmap() {
             <li>Docker, self-hosted VPS (nginx and Caddy; systemd unit template untested), GitHub Actions CI</li>
           </ul></section>
           <section className="rm-col rm-b-prog"><h3>In progress / partial</h3><ul>
-            <li>0.3.4 on a live Vercel or Netlify deployment: not yet verified by this project</li>
+            <li>0.3.5 on a live Vercel or Netlify deployment: not yet verified by this project</li>
             <li><code>isr</code> on Vercel and Netlify: the initial build serves correctly; ongoing regeneration on a non-persistent serverless filesystem is unverified</li>
             <li>Domain auto-binding for a <code>devora deploy</code>-managed app: not built, deliberately scoped out</li>
           </ul></section>
@@ -354,7 +375,7 @@ export default function Roadmap() {
           <li><strong>Docker:</strong> real build, run and compose; login, CSRF and tampered-cookie regression inside the container; all three apps concurrently. Container platforms (Cloud Run, App Runner, Azure Container Apps) not verified.</li>
           <li><strong>VPS:</strong> <code>devora generate:proxy</code> verified against a real local nginx and <code>caddy validate</code>. The systemd unit template is untested on a host.</li>
           <li><strong>CI:</strong> builds every app under npm, Yarn and pnpm, both adapter targets, and typechecks fresh scaffolds.</li>
-          <li><strong>0.3.4 live:</strong> not yet verified on a live deployment by this project. Generated functions were run outside the monorepo only.</li>
+          <li><strong>0.3.5 live:</strong> not yet verified on a live deployment by this project. Generated functions were run outside the monorepo only.</li>
         </ul>
 
         <h2 id="findings">Findings</h2>
