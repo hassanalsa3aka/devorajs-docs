@@ -210,7 +210,7 @@ export const RENDER_MODES_CSS = `
   .rm-card p strong { color: var(--devora-fg); }
   .rm-card pre { margin: 0; padding: 0.55rem 0.65rem; font-size: 0.76rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid #1f2937; border-left: 3px solid var(--rm); border-radius: 8px; background: #0d1117; color: #e6edf3; }
   .devora-page .rm-card pre code { background: none; border: 0; padding: 0; color: #e6edf3; font-size: inherit; }
-  .rm-chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; font-weight: 700; padding: 0.12rem 0.55rem; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+  .rm-chip { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; font-weight: 700; padding: 0.12rem 0.55rem; border-radius: 999px; border: 1px solid; max-width: 100%; }
   .rm-m-stable { color: #15803d; border-color: color-mix(in srgb, #16a34a 45%, transparent); background: color-mix(in srgb, #16a34a 10%, var(--devora-surface)); }
   .rm-m-limited { color: #a16207; border-color: color-mix(in srgb, #ca8a04 50%, transparent); background: color-mix(in srgb, #ca8a04 10%, var(--devora-surface)); }
   .rm-m-unverified { color: #1d4ed8; border-color: color-mix(in srgb, #2563eb 45%, transparent); background: color-mix(in srgb, #2563eb 8%, var(--devora-surface)); }
