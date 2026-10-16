@@ -1,0 +1,5 @@
+{
+  "title": "Your first multi-app project in 15 minutes",
+  "description": "Scaffold a Devora.js project, run it, build and serve the build, then add a second app that shares one function and one login with the first. Every command was run.",
+  "tags": ["Guide"]
+}

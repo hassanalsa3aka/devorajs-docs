@@ -1,0 +1,5 @@
+{
+  "title": "Devora.js 0.3.5: less work per request, and what it did and did not change",
+  "description": "Five profiled changes to devora start, one clearer message for a missing session store, and the measured effect: where Devora.js is ahead, level, and still behind.",
+  "tags": ["Release"]
+}

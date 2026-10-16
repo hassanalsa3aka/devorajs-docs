@@ -1,0 +1,5 @@
+{
+  "title": "Devora.js 0.3.4: catch-all routes and a faster static path",
+  "description": "Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, sitemap URLs from getStaticParams(), and the version number that skipped 0.3.3.",
+  "tags": ["Release"]
+}
