@@ -29,7 +29,7 @@ export default function GettingStarted() {
         <a href="/roadmap#findings">roadmap</a> records this as finding U11 (fixed in 0.3.2).
       </Callout>
       <p>
-        The fastest way to a working project is the <code>create-devora</code> installer. It works
+        The quickest way to a working project is the <code>create-devora</code> installer. It works
         from an empty directory — you don't need a devora.config.ts or any framework files first.
       </p>
       <div className="devora-card">
