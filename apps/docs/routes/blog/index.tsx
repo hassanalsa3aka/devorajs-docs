@@ -46,6 +46,7 @@ export default function Blog() {
         .devora-page .blog-item h2::before { content: none; }
         .devora-page .blog-item p { margin: 0; font-size: 0.92rem; }
         .blog-feed { font-size: 0.875rem; }
+        .devora-page .blog-page .blog-list { padding: 0; margin: 2rem 0 0; }
         .blog-filter { border: 0; padding: 0; margin: 1.25rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
         .blog-filter legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
         .blog-filter input { position: absolute; opacity: 0; width: 1px; height: 1px; }
