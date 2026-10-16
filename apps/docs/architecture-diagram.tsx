@@ -37,7 +37,7 @@ const APPS = [
 export function ArchitectureDiagram() {
   return (
     <figure className="arch">
-      <svg className="arch-wide" viewBox="0 0 760 330" role="img" aria-labelledby="arch-w-title arch-w-desc">
+      <svg className="arch-wide" viewBox="0 0 760 340" role="img" aria-labelledby="arch-w-title arch-w-desc">
         <title id="arch-w-title">One project, several apps</title>
         <desc id="arch-w-desc">
           Three apps (marketing, dashboard, admin) on the left each call one shared backend in
@@ -51,14 +51,15 @@ export function ArchitectureDiagram() {
         </defs>
         {APPS.map((a, i) => (
           <g key={a.name}>
-            <rect className="arch-box arch-app" x="34" y={24 + i * 100} width="200" height="72" rx="10" />
-            <text className="arch-t" x="54" y={54 + i * 100}>{a.name}</text>
-            <text className="arch-s" x="54" y={76 + i * 100}>{a.dir} · deploys on its own</text>
-            <path className="arch-line" d={`M234 ${60 + i * 100} H300 L330 165`} markerEnd="url(#arch-arrow)" />
+            <rect className="arch-box arch-app" x="34" y={20 + i * 100} width="200" height="84" rx="10" />
+            <text className="arch-t" x="54" y={46 + i * 100}>{a.name}</text>
+            <text className="arch-s" x="54" y={68 + i * 100}>{a.dir}</text>
+            <text className="arch-s" x="54" y={88 + i * 100}>deploys separately</text>
+            <path className="arch-line" d={`M234 ${62 + i * 100} H300 L330 165`} markerEnd="url(#arch-arrow)" />
           </g>
         ))}
-        <path className="arch-session" d="M16 60 V260" />
-        {[60, 160, 260].map((y) => <circle key={y} className="arch-dot" cx="16" cy={y} r="4" />)}
+        <path className="arch-session" d="M16 62 V262" />
+        {[62, 162, 262].map((y) => <circle key={y} className="arch-dot" cx="16" cy={y} r="4" />)}
         <text className="arch-c" x="2" y="318">one login</text>
         <rect className="arch-box arch-backend" x="330" y="105" width="190" height="120" rx="12" />
         <text className="arch-t" x="350" y="146">packages/backend</text>
