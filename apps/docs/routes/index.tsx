@@ -15,6 +15,12 @@ import { getCoreVersion, RELEASE_URL } from "../version.js";
 import { SHOWCASE, SHOWCASE_CHECKED, SHOWCASE_CSS, ShowcaseCard, LIVE_DEMOS } from "../showcase.js";
 import { BENCHMARK_CSS, BenchmarkWidget } from "../benchmark-widget.js";
 import { ARCH_CSS, ArchitectureDiagram } from "../architecture-diagram.js";
+import bench from "../data/benchmarks.json";
+
+// Measured by the benchmark harness (see /performance): the JavaScript the browser loads for the
+// pre-rendered /static page of each benchmark app, recompressed with gzip.
+const staticJs = (name: string) => (bench as any).frameworks[name].browser["/static"].jsGzip as number;
+const kbText = (n: number) => `${(n / 1024).toFixed(0)} kB`;
 
 export const renderMode = "ssg";
 
@@ -56,7 +62,7 @@ const FEATURES = [
   },
   {
     title: "Security by default",
-    body: "CSP and HSTS headers, CSRF checks, and revocable server-side sessions (opaque IDs, never your data in a cookie) are on for every app out of the box — you opt out, not in.",
+    body: "CSP and HSTS headers on by default for every app, CSRF protection built in (a route that changes state calls verifyCsrf()), plus revocable sessions for apps that use auth.",
     icon: <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z" />,
   },
   {
@@ -779,8 +785,8 @@ export default function Home({ data }) {
       <p className="home-prose reveal">
         That file is what <code>npm create devora@latest</code> writes. <code>devora dev</code> runs
         every app, <code>devora build</code> builds each one, and a function in{" "}
-        <code>packages/backend</code> is imported by whichever app needs it. Security headers,
-        CSRF checks and revocable sessions are on by default; render modes are chosen per route in
+        <code>packages/backend</code> is imported by whichever app needs it. CSP and HSTS
+        headers are on by default, and sessions are revocable for apps that use auth; render modes are chosen per route in
         the route file.
       </p>
 
@@ -825,12 +831,12 @@ export default function Home({ data }) {
             ],
           },
           {
-            label: "Client JS shipped",
+            label: "Client JS on a static page",
             cells: [
-              <>Zero by default; <code>"use client"</code> pulls in a whole subtree</>,
+              <>{kbText(staticJs("next"))} gzip of JavaScript on the static page of our <a href="/performance">benchmark app</a></>,
               "—",
-              "Everything, until you add your own SSR",
-              <>Zero by default; <code>island()</code> opts in one component</>,
+              "The whole client bundle",
+              <>{staticJs("devora") === 0 ? "None" : kbText(staticJs("devora"))} in the same benchmark; <code>island()</code> opts in one component</>,
             ],
           },
           {
