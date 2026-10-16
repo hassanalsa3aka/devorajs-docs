@@ -6,6 +6,7 @@
 // without CSS every tab's table shows.
 import type { ReactNode } from "react";
 import bench from "./data/benchmarks.json";
+import { join, judge, point, type Point } from "./bench-compare.js";
 
 type Fw = (typeof bench.frameworks)[keyof typeof bench.frameworks];
 const FWS = Object.entries(bench.frameworks).map(([key, f]) => ({ key, ...(f as Fw) }));
@@ -24,37 +25,41 @@ export interface Metric {
   title: string;
   better: "lower" | "higher";
   value: (f: Fw) => number;
+  /** min and max of the runs, when the metric has a spread */
+  spread?: (f: Fw) => { min: number; max: number };
   format: (n: number) => string;
   note: string;
 }
 
 export const METRICS: Metric[] = [
-  { id: "ssr", tab: "Server-rendered page", title: "Requests/second, server-rendered page", better: "higher", value: (f) => f.load.items.rps.median, format: rps, note: "A page rendered per request: 100 items from a loader and one interactive counter. The scenario closest to a real application" },
-  { id: "static", tab: "Pre-rendered page", title: "Requests/second, pre-rendered page", better: "higher", value: (f) => f.load.static.rps.median, format: rps, note: "A tiny page with no data, built ahead of time. Each framework sends its own output (sizes under \"Response size\"), so this mostly measures the HTTP layer" },
-  { id: "form", tab: "Form POST", title: "Requests/second, form POST", better: "higher", value: (f) => f.load.form.rps.median, format: rps, note: "A valid form submission answered with a 303 redirect" },
-  { id: "build", tab: "Build time", title: "Cold production build", better: "lower", value: (f) => f.build.coldMs.median, format: ms, note: "npm run build with build output and caches deleted" },
-  { id: "memory", tab: "Memory", title: "Idle server memory", better: "lower", value: (f) => f.idleMemoryMb.median, format: (n) => `${Math.round(n)} MB`, note: "Resident memory 2 s after start" },
+  { id: "ssr", tab: "Server-rendered page", title: "Requests/second, server-rendered page", better: "higher", value: (f) => f.load.items.rps.median, spread: (f) => f.load.items.rps, format: rps, note: "A page rendered per request: 100 items from a loader and one interactive counter. The scenario closest to a real application" },
+  { id: "static", tab: "Pre-rendered page", title: "Requests/second, pre-rendered page", better: "higher", value: (f) => f.load.static.rps.median, spread: (f) => f.load.static.rps, format: rps, note: "A tiny page with no data, built ahead of time. Each framework sends its own output (sizes under \"Response size\"), so this mostly measures the HTTP layer" },
+  { id: "form", tab: "Form POST", title: "Requests/second, form POST", better: "higher", value: (f) => f.load.form.rps.median, spread: (f) => f.load.form.rps, format: rps, note: "A valid form submission answered with a 303 redirect" },
+  { id: "build", tab: "Build time", title: "Cold production build", better: "lower", value: (f) => f.build.coldMs.median, spread: (f) => f.build.coldMs, format: ms, note: "npm run build with build output and caches deleted" },
+  { id: "memory", tab: "Memory", title: "Idle server memory", better: "lower", value: (f) => f.idleMemoryMb.median, spread: (f) => f.idleMemoryMb, format: (n) => `${Math.round(n)} MB`, note: "Resident memory 2 s after start" },
   { id: "js", tab: "JavaScript", title: "JavaScript sent to the browser, SSR page", better: "lower", value: (f) => f.browser["/items"].jsGzip, format: kb, note: "Every script the page loads, gzip" },
 ];
 
-/** Where Devora.js stands on each tab, as one sentence generated from the data. */
+/** Where Devora.js stands on each tab, as one sentence generated from the data. A difference inside the
+ * run-to-run spread is a tie (see bench-compare.ts). */
 function standing() {
   const devora = FWS.find((f) => f.key === "devora")!;
-  const ahead: string[] = [];
+  const first: string[] = [];
+  const tied: string[] = [];
   const behind: string[] = [];
+  const label = (m: Metric) => m.tab.toLowerCase().replace("javascript", "JavaScript");
   for (const m of METRICS) {
-    const shown = (f: Fw) => m.format(m.value(f));
-    const better = FWS.filter(
-      (f) => shown(f) !== shown(devora) && (m.better === "lower" ? m.value(f) < m.value(devora) : m.value(f) > m.value(devora))
-    );
-    if (better.length === 0) ahead.push(m.tab.toLowerCase().replace('javascript', 'JavaScript'));
-    else {
-      const leader = [...better].sort((a, b) => (m.better === "lower" ? m.value(a) - m.value(b) : m.value(b) - m.value(a)))[0]!;
-      behind.push(`${m.tab.toLowerCase().replace('javascript', 'JavaScript')} (${leader.name})`);
-    }
+    const pt = (f: Fw): Point => point(m.value(f), m.spread?.(f));
+    const v = judge(pt(devora), FWS.filter((f) => f.key !== "devora").map((f) => ({ name: f.name, point: pt(f) })), m.better);
+    if (v.kind === "first") first.push(label(m));
+    else if (v.kind === "tie") tied.push(`${label(m)} (with ${join(v.with)})`);
+    else behind.push(`${label(m)} (${v.leader})`);
   }
-  const join = (xs: string[]) => (xs.length > 1 ? `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}` : xs[0] ?? "nothing");
-  return `In this run Devora.js was first on ${join(ahead)}, and behind on ${join(behind)}.`;
+  const parts: string[] = [];
+  if (first.length) parts.push(`Devora.js was ahead of every other framework on ${join(first)}`);
+  if (tied.length) parts.push(`${parts.length ? "level, within the run-to-run spread, on " : "Devora.js was level, within the run-to-run spread, on "}${join(tied)}`);
+  if (behind.length) parts.push(`${parts.length ? "behind on " : "Devora.js was behind on "}${join(behind)}`);
+  return `In this run ${parts.join("; ")}.`;
 }
 
 function Bars({ metric }: { metric: Metric }) {

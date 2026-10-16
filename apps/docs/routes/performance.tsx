@@ -2,6 +2,8 @@ import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { JsonLd, pageMeta, SITE_URL } from "../seo.js";
+import { judge, point, join, type Point } from "../bench-compare.js";
+import { BACKEND_CSS, BackendResults } from "../backend-results.js";
 import { BENCH, BENCH_DATE, BENCHMARK_CSS, BenchmarkWidget, REPRODUCE_URL } from "../benchmark-widget.js";
 
 export const renderMode = "ssg";
@@ -27,40 +29,45 @@ const kb = (n: number) => `${(n / 1024).toFixed(1)} kB`;
 const num = (n: number) => Math.round(n).toLocaleString("en-US");
 
 // Every row of the full results; also drives "Where Devora.js is behind".
-const ROWS: { label: string; better: "lower" | "higher"; value: (f: Fw) => number; show: (f: Fw) => string }[] = [
-  { label: "Build, cold", better: "lower", value: (f) => f.build.coldMs.median, show: (f) => ms(f.build.coldMs.median) },
-  { label: "Build, warm", better: "lower", value: (f) => f.build.warmMs.median, show: (f) => ms(f.build.warmMs.median) },
-  { label: "Server start", better: "lower", value: (f) => f.startMs.median, show: (f) => ms(f.startMs.median) },
-  { label: "Idle memory", better: "lower", value: (f) => f.idleMemoryMb.median, show: (f) => `${Math.round(f.idleMemoryMb.median)} MB` },
-  { label: "Static page, req/s", better: "higher", value: (f) => f.load.static.rps.median, show: (f) => `${num(f.load.static.rps.median)} (p99 ${f.load.static.p99.median} ms)` },
-  { label: "SSR page, req/s", better: "higher", value: (f) => f.load.items.rps.median, show: (f) => `${num(f.load.items.rps.median)} (p99 ${f.load.items.p99.median} ms)` },
-  { label: "Form POST, req/s", better: "higher", value: (f) => f.load.form.rps.median, show: (f) => `${num(f.load.form.rps.median)} (p99 ${f.load.form.p99.median} ms)` },
+const ROWS: { label: string; better: "lower" | "higher"; value: (f: Fw) => number; spread?: (f: Fw) => { min: number; max: number }; show: (f: Fw) => string }[] = [
+  { label: "Build, cold", better: "lower", value: (f) => f.build.coldMs.median, spread: (f) => f.build.coldMs, show: (f) => ms(f.build.coldMs.median) },
+  { label: "Build, warm", better: "lower", value: (f) => f.build.warmMs.median, spread: (f) => f.build.warmMs, show: (f) => ms(f.build.warmMs.median) },
+  { label: "Server start", better: "lower", value: (f) => f.startMs.median, spread: (f) => f.startMs, show: (f) => ms(f.startMs.median) },
+  { label: "Idle memory", better: "lower", value: (f) => f.idleMemoryMb.median, spread: (f) => f.idleMemoryMb, show: (f) => `${Math.round(f.idleMemoryMb.median)} MB` },
+  { label: "Static page, req/s", better: "higher", value: (f) => f.load.static.rps.median, spread: (f) => f.load.static.rps, show: (f) => `${num(f.load.static.rps.median)} (p99 ${f.load.static.p99.median} ms)` },
+  { label: "SSR page, req/s", better: "higher", value: (f) => f.load.items.rps.median, spread: (f) => f.load.items.rps, show: (f) => `${num(f.load.items.rps.median)} (p99 ${f.load.items.p99.median} ms)` },
+  { label: "Form POST, req/s", better: "higher", value: (f) => f.load.form.rps.median, spread: (f) => f.load.form.rps, show: (f) => `${num(f.load.form.rps.median)} (p99 ${f.load.form.p99.median} ms)` },
   { label: "JS, SSR page (gzip)", better: "lower", value: (f) => f.browser["/items"].jsGzip, show: (f) => kb(f.browser["/items"].jsGzip) },
   { label: "JS, static page (gzip)", better: "lower", value: (f) => f.browser["/static"].jsGzip, show: (f) => kb(f.browser["/static"].jsGzip) },
-  { label: "Counter responds after", better: "lower", value: (f) => f.browser["/items"].hydrationMs.median, show: (f) => ms(f.browser["/items"].hydrationMs.median) },
+  { label: "Counter responds after", better: "lower", value: (f) => f.browser["/items"].hydrationMs.median, spread: (f) => f.browser["/items"].hydrationMs, show: (f) => ms(f.browser["/items"].hydrationMs.median) },
 ];
 
-// Place = 1 + how many frameworks did strictly better on the shown value,
-// so a tie (same rounded number) never reads as "behind".
-function rank(row: (typeof ROWS)[number]) {
-  const sorted = [...FWS].sort((a, b) => (row.better === "lower" ? row.value(a) - row.value(b) : row.value(b) - row.value(a)));
+// A difference inside the run-to-run spread is a tie, not a lead (see bench-compare.ts).
+function verdict(row: (typeof ROWS)[number]) {
   const devora = FWS.find((f) => f.key === "devora")!;
-  const shown = (f: Fw) => row.show(f).split(" ")[0];
-  const strictlyBetter = sorted.filter(
-    (f) => shown(f) !== shown(devora) && (row.better === "lower" ? row.value(f) < row.value(devora) : row.value(f) > row.value(devora))
-  );
-  return { place: strictlyBetter.length + 1, best: sorted[0] };
+  const pt = (f: Fw): Point => point(row.value(f), row.spread?.(f));
+  const others = FWS.filter((f) => f.key !== "devora");
+  const v = judge(pt(devora), others.map((f) => ({ name: f.name, point: pt(f) })), row.better);
+  const best = [...FWS].sort((a, b) => (row.better === "lower" ? row.value(a) - row.value(b) : row.value(b) - row.value(a)))[0]!;
+  // Place = 1 + how many frameworks are beyond Devora.js's whole range.
+  const place = 1 + others.filter((f) => judge(pt(devora), [{ name: f.name, point: pt(f) }], row.better).kind === "behind").length;
+  return { v, best, place };
 }
 
 export default function Performance() {
   const devora = FWS.find((f) => f.key === "devora")!;
-  const behind = ROWS.map((row) => ({ row, ...rank(row) })).filter((r) => r.place > 1);
-  const ahead = ROWS.map((row) => ({ row, ...rank(row) })).filter((r) => r.place === 1);
+  const all = ROWS.map((row) => ({ row, ...verdict(row) }));
+  const behind = all.filter((r) => r.v.kind === "behind");
+  const tied = all.filter((r) => r.v.kind === "tie");
+  const first = all.filter((r) => r.v.kind === "first");
+  const staticRow = ROWS.find((r) => r.label.startsWith("Static page"))!;
+  const staticLine = [...FWS].sort((a, b) => staticRow.value(b) - staticRow.value(a)).map((f) => `${f.name} ${num(staticRow.value(f))}`);
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <style dangerouslySetInnerHTML={{ __html: `
         .devora-page { max-width: 1180px; }
         ${BENCHMARK_CSS}
+        ${BACKEND_CSS}
         .perf-intro { max-width: 46rem; }
         .perf-wide { max-width: 62rem; }
         .perf-table-wrap { overflow-x: auto; }
@@ -98,31 +105,43 @@ export default function Performance() {
           page is part of why a framework is fast on it.
         </li>
         <li>
-          Three full runs of the published 0.3.4 packages measured roughly 71,000–82,000 requests/s
-          on the pre-rendered page. After the performance work in the repository's changelog (not
-          yet released) one full run measured about 101,500, against roughly 36,000–38,500 for Astro, SvelteKit and React
-          Router. Treat that as "more than twice", not a precise ratio.
+          On the pre-rendered page this run measured {staticLine.join(", ")} requests/s (medians of{" "}
+          {BENCH.config.loadRuns} runs). The page is tiny, so this mostly compares the HTTP layer, and
+          a result is only called a lead when it is outside the other's run-to-run spread.
         </li>
       </ul>
 
-      <h2 id="behind">Where Devora.js is behind</h2>
+      <h2 id="behind">Where Devora.js is behind, level, or ahead</h2>
+      <p className="perf-intro">
+        A difference smaller than the spread between a framework's own runs is called a tie.
+      </p>
+      <h3>Behind</h3>
       {behind.length === 0 ? (
         <p>Nowhere in this run.</p>
       ) : (
         <ul className="perf-intro">
           {behind.map(({ row, place, best }) => (
             <li key={row.label}>
-              <strong>{row.label}</strong>: {row.show(devora)}, {ordinal(place)} of {FWS.length}. {best.name}{" "}
-              is ahead with {row.show(best)}.
+              <strong>{row.label}</strong>: {row.show(devora)}, {ordinal(place)} of {FWS.length}.{" "}
+              {best.name} is ahead with {row.show(best)}.
             </li>
           ))}
         </ul>
       )}
-      {ahead.length > 0 ? (
-        <p className="perf-intro">
-          Devora.js measured best (or tied for best) on: {ahead.map((a) => a.row.label).join("; ")}.
-        </p>
-      ) : null}
+      <h3>Level, within the run-to-run spread</h3>
+      {tied.length === 0 ? (
+        <p>Nothing in this run.</p>
+      ) : (
+        <ul className="perf-intro">
+          {tied.map(({ row, v }) => (
+            <li key={row.label}>
+              <strong>{row.label}</strong>: {row.show(devora)}, level with {v.kind === "tie" ? join(v.with) : ""}.
+            </li>
+          ))}
+        </ul>
+      )}
+      <h3>Ahead of every other framework</h3>
+      <p className="perf-intro">{first.length === 0 ? "Nothing in this run." : first.map((a) => a.row.label).join("; ") + "."}</p>
 
       <h2 id="results">All results</h2>
       <p className="perf-intro">Medians of the runs. Spreads (min–max of every run) are in the raw data.</p>
@@ -156,6 +175,17 @@ export default function Performance() {
           </tbody>
         </table>
       </div>
+
+      <h2 id="api-routes">API routes</h2>
+      <p className="perf-intro">
+        The same JSON API (identical payloads, status codes and validation, checked before timing) in
+        Devora.js, Express, Fastify, Hono, NestJS on its Express and on its Fastify platform, and the
+        API routes of Next.js, SvelteKit, React Router and Astro. Devora.js sends CSP, HSTS and
+        X-Frame-Options on every response and runs a real session layer for the authenticated
+        scenario; the bare backend frameworks do neither, so part of any gap to them is that work.
+        Memory and start time for these apps are in the repository's backend report.
+      </p>
+      <BackendResults />
 
       <h2 id="method">How it was measured</h2>
       <div className="perf-intro">
