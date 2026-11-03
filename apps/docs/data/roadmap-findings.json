@@ -546,9 +546,9 @@
  {
   "id": "N1",
   "finding": "A live Vercel or Netlify deployment of the current release is not verified",
-  "status": "Open",
+  "status": "Partly fixed",
   "version": "",
-  "evidence": "Generated functions were run outside the monorepo; live deployments exist only for releases before 0.3.2 (docs/guides/DEPLOYING.md, VERIFICATION.md). Still 0.3.4 unverified live.",
+  "evidence": "Generated functions were run outside the monorepo; live deployments exist only for releases before 0.3.2 (docs/guides/DEPLOYING.md, VERIFICATION.md). Since 2026-10-16 this documentation site (one app, every page pre-rendered, no session store or API route) runs on Vercel with @devorajs/core and @devorajs/cli 0.3.5, built from the npm packages (Production deployment of devorajs-docs, state success). Multi-app, sessions, API routes and Netlify are not verified live on 0.3.5.",
   "described": "VERIFICATION not verified"
  },
  {

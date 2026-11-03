@@ -231,7 +231,7 @@ export default function Roadmap() {
             <ul>
               <li>Outside testers: <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/TESTING.md">the 15-minute guide</a>; what they hit shapes the next releases.</li>
               <li>Deploy this site with the numbers measured on the published 0.3.5 packages, and the release post.</li>
-              <li>Verify 0.3.5 on a live Vercel and Netlify deployment (finding N1).</li>
+              <li>Verify 0.3.5 on a live multi-app Vercel and Netlify deployment, with sessions and API routes (finding N1; this documentation site, a pre-rendered single app, already runs on Vercel with 0.3.5).</li>
             </ul>
           </section>
           <section className="rm-col rm-col-later" aria-labelledby="rm-later">
@@ -260,7 +260,7 @@ export default function Roadmap() {
           <table className="rm-table">
             <thead><tr><th>Order</th><th>Finding</th><th>Why it ranks here</th></tr></thead>
             <tbody>
-              <tr><td>1</td><td>N1: 0.3.5 not verified on a live deployment</td><td>Every deploy claim depends on it</td></tr>
+              <tr><td>1</td><td>N1: 0.3.5 verified live only for this documentation site (a pre-rendered single app on Vercel); not for multi-app, sessions, API routes or Netlify</td><td>Every deploy claim depends on it</td></tr>
               <tr><td>2</td><td>B5: several Set-Cookie headers and SSE from API routes</td><td>A real capability gap testers hit</td></tr>
               <tr><td>3</td><td>O4: the scaffold writes @devorajs/backend into new projects</td><td>The name could collide with a future real package; harder to change later</td></tr>
               <tr><td>4</td><td>U13, U14: an official session-store pattern or package; a built-in health route</td><td>Every production app needs both</td></tr>
@@ -312,7 +312,7 @@ export default function Roadmap() {
           <li>Routes actually render (SSR, SSG, CSR, streaming, ISR per <code>renderMode</code>). SSR and SSG/CSR/ISR were done in v1; streaming was deferred from v1 and shipped in v2.</li>
           <li>Auth and session context is real, shared by default, isolable per app. Done.</li>
           <li>Client-only libraries (three.js, fabric.js) never crash on the server. Done; <code>clientOnly()</code> is verified with a real negative control.</li>
-          <li>Each app deploys independently to at least one real target. Done: adapter-node, Vercel and Netlify were deployed live by the maintainer with releases before 0.3.2, by git integration and by <code>devora deploy</code>. 0.3.4 is not yet verified on a live deployment by this project.</li>
+          <li>Each app deploys independently to at least one real target. Done: adapter-node, Vercel and Netlify were deployed live by the maintainer with releases before 0.3.2, by git integration and by <code>devora deploy</code>. 0.3.5 is verified live only for this documentation site (a single pre-rendered app on Vercel since 2026-10-16); the multi-app demos, sessions and API functions, and Netlify are not yet verified on it.</li>
           <li>SEO primitives work: OG tags and a per-app opt-in <code>sitemap.xml</code>, both verified.</li>
         </ol>
 
@@ -336,7 +336,7 @@ export default function Roadmap() {
             <li>Docker, self-hosted VPS (nginx and Caddy; systemd unit template untested), GitHub Actions CI</li>
           </ul></section>
           <section className="rm-col rm-b-prog"><h3>In progress / partial</h3><ul>
-            <li>0.3.5 on a live Vercel or Netlify deployment: not yet verified by this project</li>
+            <li>0.3.5 on a live Vercel or Netlify deployment: verified only for this documentation site (a single pre-rendered app on Vercel); multi-app, sessions, API routes and Netlify are not yet verified</li>
             <li><code>isr</code> on Vercel and Netlify: the initial build serves correctly; ongoing regeneration on a non-persistent serverless filesystem is unverified</li>
             <li>Domain auto-binding for a <code>devora deploy</code>-managed app: not built, deliberately scoped out</li>
           </ul></section>
@@ -383,7 +383,7 @@ export default function Roadmap() {
           <li><strong>Docker:</strong> real build, run and compose; login, CSRF and tampered-cookie regression inside the container; all three apps concurrently. Container platforms (Cloud Run, App Runner, Azure Container Apps) not verified.</li>
           <li><strong>VPS:</strong> <code>devora generate:proxy</code> verified against a real local nginx and <code>caddy validate</code>. The systemd unit template is untested on a host.</li>
           <li><strong>CI:</strong> builds every app under npm, Yarn and pnpm, both adapter targets, and typechecks fresh scaffolds.</li>
-          <li><strong>0.3.5 live:</strong> not yet verified on a live deployment by this project. Generated functions were run outside the monorepo only.</li>
+          <li><strong>0.3.5 live:</strong> this documentation site, one app with every page pre-rendered, runs on Vercel with <code>@devorajs/core</code> and <code>@devorajs/cli</code> 0.3.5 (deployed 2026-10-16, built from the npm packages). That site has no session store, no API route and no serverless function in use, so the generated functions, sessions and the multi-app demos are not verified live on 0.3.5, and neither is Netlify. Those were run outside the monorepo only.</li>
         </ul>
 
         <h2 id="findings">Findings</h2>
