@@ -94,7 +94,7 @@ export default function Go() {
 
       <h3>3. CSRF is checked by default for cookie-authenticated writes</h3>
       <p>
-        Until 0.3.5 a route checked CSRF only if it called <code>ctx.verifyCsrf()</code>, so a route that forgot
+        Until 0.3.5 a route checked CSRF only if it called <code>ctx{"."}verifyCsrf()</code>, so a route that forgot
         accepted cross-site writes. In 0.4.0 a <code>POST</code>, <code>PUT</code>, <code>PATCH</code> or{" "}
         <code>DELETE</code> that arrives with a live session in the session cookie is checked before the page&apos;s{" "}
         <code>action</code> or the API route&apos;s <code>handler</code> runs. The token must be in the{" "}
@@ -154,7 +154,7 @@ export const handler = apiRoute((req) => {
       <p>
         An app with <code>csrf: false</code> in <code>app.config.ts</code> issues no CSRF cookie, so its
         cookie-authenticated writes get a 403 unless the route opts out. Keep calling{" "}
-        <code>ctx.verifyCsrf()</code> yourself on anonymous writes such as a login form: the default does not cover
+        <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form: the default does not cover
         them.
       </p>
 
@@ -232,7 +232,7 @@ export const rateLimit = { max: 10, windowSeconds: 60 }; // 10 POSTs per client 
         <li>Every response sends <code>X-Content-Type-Options: nosniff</code>, including static files, and the Vercel and Netlify adapters add it to files their CDNs serve directly.</li>
         <li><code>.svg</code> files are served with a sandboxing Content-Security-Policy, so an SVG opened directly cannot run script on your origin. Do not serve user-uploaded SVG or HTML from the app&apos;s origin; this header covers files you ship, not files your app stores and sends back.</li>
         <li><code>devora start</code> serves a file only if its real path, with symlinks followed, is inside the client folder.</li>
-        <li>In development, a route that reads <code>ctx.session</code> but never calls <code>ctx.requireAuth()</code> gets one warning per path.</li>
+        <li>In development, a route that reads <code>ctx.session</code> but never calls <code>ctx{"."}requireAuth()</code> gets one warning per path.</li>
         <li>A streaming page&apos;s failed island import that errored before the shell was ready is now reported instead of dropped.</li>
       </ul>
 
