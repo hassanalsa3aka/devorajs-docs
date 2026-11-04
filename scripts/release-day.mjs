@@ -54,8 +54,9 @@ function write(p, text) {
 function edit(file, pairs) {
   let s = read(file);
   for (const { from, to, all } of pairs) {
-    if (s.includes(from)) s = all ? s.split(from).join(to) : s.replace(from, () => to);
-    else if (s.includes(to)) console.log(`  (already applied in ${file}: ${to.slice(0, 60).replace(/\n/g, " ")}...)`);
+    // `to` first: some edits insert text that still contains `from`, and must not be inserted twice.
+    if (s.includes(to)) console.log(`  (already applied in ${file}: ${to.slice(0, 60).replace(/\n/g, " ")}...)`);
+    else if (s.includes(from)) s = all ? s.split(from).join(to) : s.replace(from, () => to);
     else throw new Error(`${file}: expected text not found, the page changed since this script was written:\n${from.slice(0, 200)}`);
   }
   write(file, s);
@@ -99,7 +100,7 @@ for (const slug of POSTS) {
   }
   let post = read(draftTsx);
   if (slug === "devora-0-4-0") {
-    const anchorLine = /\/\/ RELEASE-DAY:[^\n]*\n\/\/ [^\n]*\n\/\/ [^\n]*\n/;
+    const anchorLine = /\/\/ RELEASE-DAY:[^\n]*\n(\/\/[^\n]*\n)+/;
     if (!anchorLine.test(post)) throw new Error(`${draftTsx}: the RELEASE-DAY comment about the CHANGELOG anchor is gone`);
     post = post.replace(anchorLine, "");
     if (!post.includes("#040--DATE-TO-FILL")) throw new Error(`${draftTsx}: the CHANGELOG anchor placeholder is gone`);
@@ -198,7 +199,7 @@ edit("apps/docs/routes/roadmap.tsx", [
       "A security hardening release: CSRF is checked by default for cookie-authenticated writes, redirect() stays on the app's origin, responses that touch the session cookie are private, no-store, and the CLI requires vite 6.4.4 or later. Each breaking change has a migration step.",
       "New settings: allowedHosts, server timeouts and a header size limit, form field and file limits, an opt-in per-route rateLimit; nosniff everywhere, a sandbox policy for .svg files, symlink-safe static files, and a dev server that restarts on config, env and route-file changes.",
       "New projects install and run on pnpm 11 and later and on Yarn 4's default settings. There has been no third-party audit.",
-      "Packages: @devorajs/core 0.4.0, @devorajs/cli 0.4.0, @devorajs/adapter-node 0.3.0, @devorajs/adapter-vercel 0.3.0, @devorajs/adapter-netlify 0.3.0, create-devora 0.4.0.",
+      "Packages: @devorajs/core 0.4.0, @devorajs/cli 0.4.0, @devorajs/adapter-node 0.3.0, @devorajs/adapter-vercel 0.3.0, @devorajs/adapter-netlify 0.3.0, create-devora 0.4.0.", // version-ok
     ],
     anchor: "${ANCHOR}",
     post: "/blog/devora-0-4-0",
@@ -272,7 +273,7 @@ else {
   write(up, page);
 }
 
-console.log(`\n${DRY ? "Would change" : "Changed"} ${changed.length} file(s):\n  ${changed.join("\n  ") || "(nothing)"}`);
+console.log(`\n${DRY ? "Would change" : "Changed"} ${new Set(changed).size} file(s):\n  ${[...new Set(changed)].join("\n  ") || "(nothing)"}`);
 console.log(`
 Next, by hand:
   npm install                       # installs @devorajs/core and cli ${VERSION} from npm and updates package-lock.json

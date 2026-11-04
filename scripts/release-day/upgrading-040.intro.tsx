@@ -18,7 +18,7 @@
         </li>
         <li>
           If you import an adapter directly, use <code>@devorajs/adapter-node</code>, <code>@devorajs/adapter-vercel</code>{" "}
-          or <code>@devorajs/adapter-netlify</code> <code>0.3.0</code>: they depend on <code>@devorajs/core</code>{" "}
+          or <code>@devorajs/adapter-netlify</code> <code>0.3.0</code>: they depend on <code>@devorajs/core</code>{" "} {/* version-ok */}
           <code>^0.4.0</code> (<code>devora</code> bundles the adapters, so most projects don't depend on them at all).
         </li>
         <li>Install, then run <code>npm run typecheck</code>, <code>npm run dev</code> and <code>npm run build</code>.</li>
@@ -52,7 +52,7 @@
       </div>
 
       <p>
-        TypeScript (0.3.4 and later): <code>ctx.params</code> keeps its type (<code>Record&lt;string, string&gt;</code>),
+        TypeScript (0.3.4 and later): <code>ctx.params</code> keeps its type (<code>Record&lt;string, string&gt;</code>), {/* version-ok */}
         so existing code compiles unchanged. A catch-all's segments are joined with <code>/</code>{" "}
         there, and <code>ctx.catchAll.slug</code> (or <code>req.catchAll.slug</code> in an API
         route) is the <code>string[]</code>.
