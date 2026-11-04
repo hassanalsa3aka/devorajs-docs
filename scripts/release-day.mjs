@@ -5,12 +5,15 @@
  *   node scripts/release-day.mjs 2026-11-20            apply everything
  *   node scripts/release-day.mjs 2026-11-20 --dry-run  say what would change, write nothing
  *   node scripts/release-day.mjs 2026-11-20 --no-build skip the og cards and the RSS feed (they need Chrome)
+ *   node scripts/release-day.mjs 2026-11-20 --drafts=<dir>   where the two drafts are (default drafts/blog in this repo; the
+ *                                                      drafts are not tracked: use ~/Developer/_lab/drafts-backup/blog)
  *
  * Run it only after 0.4.0 is on npm. It changes:
  *   1. @devorajs/core and @devorajs/cli to ^0.4.0 (and vite to ^6.4.4) in apps/docs/package.json, package.json,
  *      README.md and Getting started;
  *   2. apps/docs/data/release.json (version, date, post);
- *   3. the two drafts in drafts/blog: moved to apps/docs/routes/blog, their metadata added to data/blog-posts.json
+ *   3. the two drafts (in --drafts=<dir>, default drafts/blog): copied to apps/docs/routes/blog (removed from the folder
+ *      only when it is inside this repo), their metadata added to data/blog-posts.json
  *      with the date, the draft JSON files removed, the CHANGELOG anchor in the release post set to the dated heading;
  *   4. the og cards and the RSS feed (unless --no-build);
  *   5. Getting started: the Yarn 4 and pnpm 11+ notes ("new projects work; projects from 0.3.x need the file or
@@ -33,6 +36,10 @@ const args = process.argv.slice(2);
 const date = args.find((a) => !a.startsWith("--"));
 const DRY = args.includes("--dry-run");
 const NO_BUILD = args.includes("--no-build");
+// The drafts are not tracked by git. Where they are: --drafts=<dir>, else $DEVORA_DRAFTS_DIR, else drafts/blog in this repo.
+const draftsArg = args.find((a) => a.startsWith("--drafts="))?.slice("--drafts=".length) ?? process.env.DEVORA_DRAFTS_DIR;
+const DRAFTS_DIR = path.resolve(draftsArg ?? path.join(root, "drafts/blog"));
+const DRAFTS_IN_REPO = DRAFTS_DIR.startsWith(root + path.sep);
 
 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(`${date}T00:00:00Z`)) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) {
   console.error("usage: node scripts/release-day.mjs <YYYY-MM-DD> [--dry-run] [--no-build]   (a real date, the day 0.4.0 is published)");
@@ -93,12 +100,12 @@ step(3, "the two drafts become posts");
 const blogFile = "apps/docs/data/blog-posts.json";
 const blog = JSON.parse(read(blogFile));
 for (const slug of POSTS) {
-  const draftTsx = `drafts/blog/${slug}.tsx`, draftJson = `drafts/blog/${slug}.json`, postTsx = `apps/docs/routes/blog/${slug}.tsx`;
-  if (!fs.existsSync(path.join(root, draftTsx))) {
+  const draftTsx = path.join(DRAFTS_DIR, `${slug}.tsx`), draftJson = path.join(DRAFTS_DIR, `${slug}.json`), postTsx = `apps/docs/routes/blog/${slug}.tsx`;
+  if (!fs.existsSync(draftTsx)) {
     if (fs.existsSync(path.join(root, postTsx))) { console.log(`  (${slug}: already moved)`); continue; }
-    throw new Error(`neither ${draftTsx} nor ${postTsx} exists`);
+    throw new Error(`neither ${draftTsx} nor ${postTsx} exists (the drafts are not tracked: pass --drafts=<dir>, for example --drafts=$HOME/Developer/_lab/drafts-backup/blog)`);
   }
-  let post = read(draftTsx);
+  let post = fs.readFileSync(draftTsx, "utf8");
   if (slug === "devora-0-4-0") {
     const anchorLine = /\/\/ RELEASE-DAY:[^\n]*\n(\/\/[^\n]*\n)+/;
     if (!anchorLine.test(post)) throw new Error(`${draftTsx}: the RELEASE-DAY comment about the CHANGELOG anchor is gone`);
@@ -107,16 +114,17 @@ for (const slug of POSTS) {
     post = post.replace("#040--DATE-TO-FILL", `#${ANCHOR}`);
   }
   if (/DATE-TO-FILL/.test(post)) throw new Error(`${draftTsx}: a DATE-TO-FILL placeholder is left`);
-  const meta = JSON.parse(read(draftJson));
+  const meta = JSON.parse(fs.readFileSync(draftJson, "utf8"));
   blog.posts = blog.posts.filter((p) => p.slug !== slug);
   blog.posts.push({ slug, title: meta.title, ...(meta.seoTitle ? { seoTitle: meta.seoTitle } : {}), date, description: meta.description, tags: meta.tags });
-  changed.push(postTsx, `${draftTsx} (removed)`, `${draftJson} (removed)`);
+  changed.push(postTsx);
+  if (DRAFTS_IN_REPO) changed.push(`${rel(draftTsx)} (removed)`, `${rel(draftJson)} (removed)`);
   if (!DRY) {
     fs.writeFileSync(path.join(root, postTsx), post);
-    fs.rmSync(path.join(root, draftTsx));
-    fs.rmSync(path.join(root, draftJson));
+    // A draft inside this repo is moved; one kept outside (the backup folder) is only copied, so it stays.
+    if (DRAFTS_IN_REPO) { fs.rmSync(draftTsx); fs.rmSync(draftJson); }
   }
-  console.log(`  ${slug}: moved, dated ${date}`);
+  console.log(`  ${slug}: ${DRAFTS_IN_REPO ? "moved" : "copied"}, dated ${date}`);
 }
 write(blogFile, JSON.stringify(blog, null, 2) + "\n");
 

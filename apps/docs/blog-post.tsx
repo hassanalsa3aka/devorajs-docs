@@ -16,7 +16,7 @@ export interface PostMeta {
   title: string;
   /** Shorter <title> for search results (the page's h1 stays `title`). Optional. */
   seoTitle?: string;
-  /** The day the post was published. Absent on a draft (drafts/blog), which is never in a production build. */
+  /** The day the post was published. Absent on a draft (drafts are kept outside the repo, see scripts/release-day.mjs), which is never in a production build. */
   date?: string;
   description: string;
   tags: Tag[];

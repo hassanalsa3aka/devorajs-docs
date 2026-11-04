@@ -1,8 +1,0 @@
-{
-  "title": "A security review of Devora.js after the recent Next.js advisories",
-  "seoTitle": "Security review after Next.js advisories",
-  "description": "Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.",
-  "tags": [
-    "Story"
-  ]
-}

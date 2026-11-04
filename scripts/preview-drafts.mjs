@@ -2,9 +2,10 @@
 /**
  * Lays the blog drafts over a copy of the site so they can be previewed. Nothing is published by this.
  *
- * Drafts live in drafts/blog/: <slug>.tsx (a post route, same shape as apps/docs/routes/blog/*.tsx) and
+ * Drafts are not tracked by git. They live in $DEVORA_DRAFTS_DIR, or drafts/blog/ in this repo if you put them there
+ * (the backup is ~/Developer/_lab/drafts-backup/blog): <slug>.tsx (a post route, same shape as apps/docs/routes/blog/*.tsx) and
  * <slug>.json (its metadata: title, description, tags). A draft has no date: a post is dated with the day it is
- * actually published, when it moves out of drafts/ (see "Publishing a draft" in drafts/blog/README.md).
+ * actually published (scripts/release-day.mjs does that).
  *
  * Usage: node scripts/preview-drafts.mjs <target-dir>
  *   <target-dir> is a checkout (a git worktree) of this repo with node_modules linked. The script copies each
@@ -21,7 +22,11 @@ if (!process.argv[2] || !existsSync(path.join(target, "apps/docs/data/blog-posts
   console.error("Usage: node scripts/preview-drafts.mjs <target-dir>   (a checkout of this repo)");
   process.exit(1);
 }
-const dir = path.join(root, "drafts/blog");
+const dir = path.resolve(process.env.DEVORA_DRAFTS_DIR ?? path.join(root, "drafts/blog"));
+if (!existsSync(dir)) {
+  console.error(`No drafts in ${dir}. They are not tracked: set DEVORA_DRAFTS_DIR (for example $HOME/Developer/_lab/drafts-backup/blog).`);
+  process.exit(1);
+}
 const jsonFile = path.join(target, "apps/docs/data/blog-posts.json");
 const blog = JSON.parse(readFileSync(jsonFile, "utf-8"));
 const slugs = readdirSync(dir).filter((f) => f.endsWith(".tsx")).map((f) => f.slice(0, -4));
