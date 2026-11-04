@@ -11,7 +11,7 @@ export function meta() {
   return pageMeta("/background-jobs", {
     title: "Background jobs",
     description:
-      "Devora.js has no job runner. Three tested ways to run work outside a request on one Node server: BullMQ with Redis and a worker, a SQLite queue with a worker, and node-cron.",
+      "Devora.js has no job runner. Three tested ways to run work outside a request on one Node server: BullMQ with Redis, a SQLite queue, and node-cron.",
     image: "/og/background-jobs.png",
   });
 }

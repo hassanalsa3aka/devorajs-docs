@@ -27,7 +27,7 @@ export const renderMode = "ssg";
 export function meta() {
   return pageMeta("/", {
     title: "Devora.js — one project, several apps",
-    fullTitle: "Devora.js — one project, several apps, one backend and one login",
+    fullTitle: "Devora.js: one project, several apps, one login",
     description:
       "A React framework for projects with more than one app: one shared backend, one login, each app deployed on its own.",
   });

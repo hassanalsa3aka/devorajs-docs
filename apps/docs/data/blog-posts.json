@@ -7,8 +7,9 @@
     {
       "slug": "devora-0-3-2",
       "title": "Devora.js 0.3.2: what changed and what to do",
+      "seoTitle": "Devora.js 0.3.2: what changed, what to do",
       "date": "2026-10-14",
-      "description": "Request access in loaders, actions that return data, error pages, a head API, cookie and proxy settings, CORS, and a fixed Vercel runtime — plus the changes an existing app has to act on.",
+      "description": "Request access in loaders, actions that return data, error pages, a head API, cookie and proxy settings, CORS, and what an existing app has to change.",
       "tags": [
         "Release"
       ]
@@ -25,6 +26,7 @@
     {
       "slug": "deploying-multi-app-to-vercel",
       "title": "One repo, several Vercel projects: deploying a multi-app project",
+      "seoTitle": "One repo, several Vercel projects",
       "date": "2026-10-14",
       "description": "Each app in a Devora.js project is its own Vercel project. The settings, the session store, the api/ folder trap, and the repo-root alternative.",
       "tags": [
@@ -34,8 +36,9 @@
     {
       "slug": "devora-0-3-5",
       "title": "Devora.js 0.3.5: less work per request, and what it did and did not change",
+      "seoTitle": "Devora.js 0.3.5: less work per request",
       "date": "2026-10-16",
-      "description": "Five profiled changes to devora start, one clearer message for a missing session store, and the measured effect: where Devora.js is ahead, level, and still behind.",
+      "description": "Five profiled changes to devora start, a clearer missing-session-store message, and the measured effect: where Devora.js is ahead, level, and behind.",
       "tags": [
         "Release"
       ]
@@ -43,8 +46,9 @@
     {
       "slug": "devora-0-3-4",
       "title": "Devora.js 0.3.4: catch-all routes and a faster static path",
+      "seoTitle": "Devora.js 0.3.4: catch-all routes",
       "date": "2026-10-16",
-      "description": "Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, sitemap URLs from getStaticParams(), and the version number that skipped 0.3.3.",
+      "description": "Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, and the version that skipped 0.3.3.",
       "tags": [
         "Release"
       ]
@@ -53,7 +57,7 @@
       "slug": "first-multi-app-project",
       "title": "Your first multi-app project in 15 minutes",
       "date": "2026-10-16",
-      "description": "Scaffold a Devora.js project, run it, build and serve the build, then add a second app that shares one function and one login with the first. Every command was run.",
+      "description": "Scaffold a Devora.js project, run and build it, then add a second app that shares one function and one login with the first. Every command was run.",
       "tags": [
         "Guide"
       ]

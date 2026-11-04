@@ -26,7 +26,7 @@ export function meta() {
     title: "Devora.js vs. other frameworks",
     fullTitle: "Devora.js vs. Next.js, SvelteKit, Astro, NestJS & more",
     description:
-      "An honest comparison with Next.js, React Router, SvelteKit, Astro, Express, Fastify, and NestJS — focused feature tables, adoption numbers, and where the others are ahead.",
+      "An honest comparison with Next.js, React Router, SvelteKit, Astro, Express, Fastify and NestJS: feature tables, adoption numbers, where the others are ahead.",
   });
 }
 

@@ -4,8 +4,9 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "devora dev",
-    "prebuild": "node scripts/check-guide-names.mjs && node scripts/check-versions.mjs && node scripts/build-rss.mjs",
+    "prebuild": "node scripts/check-guide-names.mjs && node scripts/check-versions.mjs && node scripts/build-seo-files.mjs",
     "build": "devora build",
+    "check:seo": "node scripts/check-seo.mjs",
     "postbuild": "bash scripts/build-docs.sh",
     "start": "devora start"
   },
