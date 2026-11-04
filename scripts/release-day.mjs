@@ -109,7 +109,7 @@ for (const slug of POSTS) {
   if (/DATE-TO-FILL/.test(post)) throw new Error(`${draftTsx}: a DATE-TO-FILL placeholder is left`);
   const meta = JSON.parse(read(draftJson));
   blog.posts = blog.posts.filter((p) => p.slug !== slug);
-  blog.posts.push({ slug, title: meta.title, date, description: meta.description, tags: meta.tags });
+  blog.posts.push({ slug, title: meta.title, ...(meta.seoTitle ? { seoTitle: meta.seoTitle } : {}), date, description: meta.description, tags: meta.tags });
   changed.push(postTsx, `${draftTsx} (removed)`, `${draftJson} (removed)`);
   if (!DRY) {
     fs.writeFileSync(path.join(root, postTsx), post);
@@ -120,12 +120,12 @@ for (const slug of POSTS) {
 }
 write(blogFile, JSON.stringify(blog, null, 2) + "\n");
 
-// 4. og cards and RSS (need the posts in blog-posts.json first)
+// 4. og cards, then the RSS feed, robots.txt and sitemap.xml (need the posts in blog-posts.json first)
 step(4, "og cards and the RSS feed");
 if (NO_BUILD || DRY) console.log("  skipped (--no-build or --dry-run)");
 else {
   execFileSync("bash", ["scripts/og-cards.sh", "--blog-only"], { cwd: root, stdio: "inherit" });
-  execFileSync("node", ["scripts/build-rss.mjs"], { cwd: root, stdio: "inherit" });
+  execFileSync("node", ["scripts/build-seo-files.mjs"], { cwd: root, stdio: "inherit" });
 }
 
 // 5. Getting started: package manager notes and coverage
@@ -268,7 +268,7 @@ else {
   page = page.slice(0, h1) + intro + page.slice(next);
   page = page.replace(marker, () => changes + marker);
   page = page.replace('title: "Upgrading to 0.3.5",', 'title: "Upgrading to 0.4.0",');
-  page = page.replace(/description:\n\s+"Every behavior change from Devora\.js 0\.3\.4 to 0\.3\.5[^"]*",/, `description:\n      "Every breaking change from Devora.js 0.3.5 to 0.4.0 and what an existing app has to do about it, the earlier behavior changes back to 0.3.1, and the upgrade steps.",`);
+  page = page.replace(/description:\n\s+"Every behavior change from Devora\.js 0\.3\.4 to 0\.3\.5[^"]*",/, `description:\n      "Every breaking change from Devora.js 0.3.5 to 0.4.0 and what an app has to do about it, the earlier behavior changes back to 0.3.1, and the steps.",`);
   if (!page.includes('title: "Upgrading to 0.4.0"')) throw new Error(`${up}: the page title was not found`);
   write(up, page);
 }

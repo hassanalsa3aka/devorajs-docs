@@ -1,6 +1,7 @@
 {
   "title": "Devora.js 0.4.0: a security hardening release, and what to change before you upgrade",
-  "description": "CSRF checked by default for cookie-authenticated writes, redirect() that stays on your origin, no-store on session responses, vite 6.4.4 or later, and new settings: allowedHosts, server timeouts, form limits, a rate limiter and a dev server that restarts itself.",
+  "seoTitle": "Devora.js 0.4.0: security hardening",
+  "description": "CSRF checked by default, redirect() kept on your origin, no-store on session responses, vite 6.4.4 or later, allowedHosts, timeouts, form limits.",
   "tags": [
     "Release"
   ]
