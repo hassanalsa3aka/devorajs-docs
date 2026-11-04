@@ -44,8 +44,7 @@ export default function Security() {
       <Callout kind="info" title="Not published yet">
         <p>
           This section describes the release after {RELEASE_VERSION}. It is merged into the framework
-          repository, no version number has been chosen, and it is not on npm: {RELEASE_VERSION} does
-          not behave this way. The rest of this page describes {RELEASE_VERSION}.
+          repository and is not on npm: {RELEASE_VERSION} does not behave this way. The rest of this page describes {RELEASE_VERSION}.
         </p>
       </Callout>
       <p>
