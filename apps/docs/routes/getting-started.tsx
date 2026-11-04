@@ -18,6 +18,36 @@ export async function loader() {
   return {};
 }
 
+type PmId = "npm" | "yarn" | "pnpm";
+type PmCellData = { cmd: string; also?: { label: string; cmd: string } };
+const PM_NAMES: Array<{ id: PmId; label: string }> = [
+  { id: "npm", label: "npm" },
+  { id: "yarn", label: "Yarn" },
+  { id: "pnpm", label: "pnpm" },
+];
+// The commands as they were run (see "What differs" below for what each printed). @project/app-app is the name
+// field of that app's package.json.
+const PM_ROWS: Array<{ task: string } & Record<PmId, PmCellData>> = [
+  { task: "Create a project", npm: { cmd: "npm create devora@latest" }, yarn: { cmd: "yarn create devora", also: { label: "Yarn 4", cmd: "yarn dlx create-devora" } }, pnpm: { cmd: "pnpm create devora", also: { label: "or", cmd: "pnpm dlx create-devora" } } },
+  { task: "Install", npm: { cmd: "npm install" }, yarn: { cmd: "yarn install" }, pnpm: { cmd: "pnpm install" } },
+  { task: "Dev servers", npm: { cmd: "npm run dev" }, yarn: { cmd: "yarn dev" }, pnpm: { cmd: "pnpm run dev" } },
+  { task: "Build", npm: { cmd: "npm run build" }, yarn: { cmd: "yarn build" }, pnpm: { cmd: "pnpm run build" } },
+  { task: "Serve the build", npm: { cmd: "npm run start" }, yarn: { cmd: "yarn start" }, pnpm: { cmd: "pnpm run start" } },
+  { task: "Add a package to one app", npm: { cmd: "npm install dayjs -w apps/app" }, yarn: { cmd: "yarn workspace @project/app-app add dayjs" }, pnpm: { cmd: "pnpm --filter @project/app-app add dayjs" } },
+  { task: "Add a package to the project root", npm: { cmd: "npm install dayjs" }, yarn: { cmd: "yarn add -W dayjs", also: { label: "Yarn 4", cmd: "yarn add dayjs" } }, pnpm: { cmd: "pnpm add -w dayjs" } },
+  { task: "Run a package script", npm: { cmd: "npm run typecheck" }, yarn: { cmd: "yarn typecheck" }, pnpm: { cmd: "pnpm run typecheck" } },
+  { task: "Run the project's CLI once", npm: { cmd: "npx devora list" }, yarn: { cmd: "yarn devora list" }, pnpm: { cmd: "pnpm exec devora list" } },
+];
+
+function PmCell({ cell }: { cell: PmCellData }) {
+  return (
+    <>
+      <code>{cell.cmd}</code>
+      {cell.also ? <> ({cell.also.label}: <code>{cell.also.cmd}</code>)</> : null}
+    </>
+  );
+}
+
 export default function GettingStarted() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
@@ -47,6 +77,104 @@ export default function GettingStarted() {
         On a recent npm (11), the install can print a warning that esbuild's postinstall script is
         not yet covered by <code>allowScripts</code>; install, <code>devora dev</code> and{" "}
         <code>devora build</code> still work, and the warning comes from npm, not from Devora.js.
+      </p>
+
+      <h2 id="package-managers">npm, Yarn and pnpm</h2>
+      <p>
+        A project works with all three. These are the commands for each; run them from the project folder.
+        In the workspace commands, <code>@project/app-app</code> stands for the <code>name</code> in that
+        app's <code>package.json</code>.
+      </p>
+      <style dangerouslySetInnerHTML={{ __html: `
+        .pm-wide table { table-layout: fixed; width: 100%; }
+        .pm-wide code, .pm-stack code { overflow-wrap: anywhere; white-space: pre-wrap; }
+        .pm-stack { display: none; }
+        .pm-stack h3 { margin: 1.25rem 0 0.4rem; font-size: 1.05rem; }
+        .pm-stack dl { margin: 0; border-top: 1px solid var(--devora-border); }
+        .pm-stack dt { margin: 0; padding: 0.6rem 0 0.1rem; font-size: 0.85rem; color: var(--devora-fg-muted); }
+        .pm-stack dd { margin: 0; padding: 0 0 0.6rem; border-bottom: 1px solid var(--devora-border); }
+        @media (max-width: 700px) { .pm-wide { display: none; } .pm-stack { display: block; } }
+      ` }} />
+      <div className="docs-table-wrap pm-wide">
+        <table>
+          <thead><tr><th>Task</th>{PM_NAMES.map((n) => <th key={n.id}>{n.label}</th>)}</tr></thead>
+          <tbody>
+            {PM_ROWS.map((row) => (
+              <tr key={row.task}>
+                <td>{row.task}</td>
+                {PM_NAMES.map((n) => <td key={n.id}><PmCell cell={row[n.id]} /></td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="pm-stack">
+        {PM_NAMES.map((n) => (
+          <section key={n.id} aria-label={n.label}>
+            <h3>{n.label}</h3>
+            <dl>
+              {PM_ROWS.map((row) => (
+                <div key={row.task}>
+                  <dt>{row.task}</dt>
+                  <dd><PmCell cell={row[n.id]} /></dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
+      </div>
+      <p>
+        Inside a project, the one-off command runs the CLI that project pins. Outside one, <code>npx devora</code>{" "}
+        looks up an unrelated package of that name, as described <a href="#why-not-just-devora-dev">below</a>.
+      </p>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What differs</h3>
+      <p>Only what was seen when these commands were run (see the last paragraph of this section):</p>
+      <ul>
+        <li>
+          <strong>npm 11</strong> prints <code>Unknown project config "link-workspace-packages"</code> on every
+          command, because the project's <code>.npmrc</code> carries a pnpm setting. It also prints the{" "}
+          <code>allowScripts</code> warning for esbuild described above. npm 10 prints neither. Everything works.
+        </li>
+        <li>
+          <strong>Yarn 1</strong> warns about an unmet peer dependency (<code>react</code>) on install. A plain{" "}
+          <code>yarn add dayjs</code> at the project root stops with an error asking for <code>-W</code>.
+        </li>
+        <li>
+          <strong>Yarn 4</strong> installs with Plug'n'Play by default, and the CLI does not run under it: it stops
+          with <code>@devorajs/cli tried to access esbuild</code>. Before installing, put{" "}
+          <code>nodeLinker: node-modules</code> in a <code>.yarnrc.yml</code> at the project root; then everything
+          below works. Yarn 4 also prints peer-dependency warnings (<code>YN0002</code>) about <code>react</code>.
+        </li>
+        <li>
+          <strong>pnpm 9 and 10</strong>: a plain <code>pnpm add dayjs</code> at the project root stops with{" "}
+          <code>ERR_PNPM_ADDING_TO_ROOT</code> and asks for <code>-w</code>. pnpm 10 also prints{" "}
+          <code>Ignored build scripts: esbuild</code> after the install; the project still installs, builds and runs.
+        </li>
+        <li>
+          <strong>pnpm 11 and later</strong> (12.10 was tried) cannot install a fresh project: it ignores the{" "}
+          <code>link-workspace-packages</code> setting in <code>.npmrc</code> and looks for the project's own{" "}
+          <code>@devorajs/backend</code> on npm (<code>ERR_PNPM_FETCH_404</code>), and then fails on esbuild's
+          ignored build script (<code>ERR_PNPM_IGNORED_BUILDS</code>). Use pnpm 9 or 10, or replace the contents of{" "}
+          <code>pnpm-workspace.yaml</code> with the block below and install again. This is a known gap in the
+          scaffold; it is tracked on the <a href="/roadmap">roadmap</a>.
+        </li>
+      </ul>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`# pnpm-workspace.yaml, for pnpm 11 and later
+packages:
+  - "packages/*"
+  - "apps/*"
+linkWorkspacePackages: true
+allowBuilds:
+  esbuild: true`}
+        </pre>
+      </div>
+      <p>
+        <strong>What is covered.</strong> On every push, CI installs the repository's own workspace with npm 10, Yarn 1
+        and pnpm 9.9; the tests and every app build run under pnpm only. The commands in the table were run by hand
+        on Node 20 against a new project: npm 10.8 and 11.17, Yarn 1.22 and 4.18 (through corepack), and pnpm 9.15,
+        10.34 and 12.10. Bun and Deno were not tested, so they are not listed as supported.
       </p>
 
       <h2>What it asks</h2>
@@ -183,7 +311,7 @@ npm run dev`}
         warning). <code>.env</code> files in the project root are loaded automatically.
       </p>
       <p>
-        <strong>Why not just <code>devora dev</code>?</strong> The CLI is installed into the
+        <strong id="why-not-just-devora-dev">Why not just <code>devora dev</code>?</strong> The CLI is installed into the
         project (<code>node_modules</code>), not onto your system <code>PATH</code> — so a bare{" "}
         <code>devora</code> command isn't found. That's normal: Next.js, Vite, and most framework
         CLIs work exactly the same way. It also means every project runs the exact CLI version it

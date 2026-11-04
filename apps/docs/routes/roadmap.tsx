@@ -382,7 +382,7 @@ export default function Roadmap() {
           <li><strong><code>devora deploy</code>:</strong> a real authenticated deploy on both platforms, before 0.3.2. Domain auto-binding not built.</li>
           <li><strong>Docker:</strong> real build, run and compose; login, CSRF and tampered-cookie regression inside the container; all three apps concurrently. Container platforms (Cloud Run, App Runner, Azure Container Apps) not verified.</li>
           <li><strong>VPS:</strong> <code>devora generate:proxy</code> verified against a real local nginx and <code>caddy validate</code>. The systemd unit template is untested on a host.</li>
-          <li><strong>CI:</strong> builds every app under npm, Yarn and pnpm, both adapter targets, and typechecks fresh scaffolds.</li>
+          <li><strong>CI:</strong> installs the workspace under npm, Yarn 1 and pnpm 9; under pnpm only, runs the tests, builds every app (and both adapter targets) and typechecks fresh scaffolds.</li>
           <li><strong>0.3.5 live:</strong> this documentation site, one app with every page pre-rendered, runs on Vercel with <code>@devorajs/core</code> and <code>@devorajs/cli</code> 0.3.5 (deployed 2026-10-16, built from the npm packages). That site has no session store, no API route and no serverless function in use, so the generated functions, sessions and the multi-app demos are not verified live on 0.3.5, and neither is Netlify. Those were run outside the monorepo only.</li>
         </ul>
 
