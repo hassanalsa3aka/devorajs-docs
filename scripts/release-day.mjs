@@ -139,7 +139,7 @@ edit("apps/docs/routes/getting-started.tsx", [
     to: `          <strong>Yarn 4</strong> prints peer-dependency warnings (<code>YN0002</code>) about <code>react</code>. A new
           project works with Yarn 4's default settings, because <code>create-devora</code> writes a{" "}
           <code>.yarnrc.yml</code> with <code>nodeLinker: node-modules</code> when you pick Yarn (Plug'n'Play, Yarn 4's
-          default, does not run the CLI: <code>@devorajs/cli tried to access esbuild</code>). A project made by{" "}
+          default, also ran the CLI in a test from the 0.4.0 build; before that it stopped with <code>@devorajs/cli tried to access esbuild</code>). A project made by{" "}
           <code>create-devora</code> 0.3.x needs that one-line file added before installing.`,
   },
   {
@@ -223,8 +223,7 @@ edit("apps/docs/routes/security.tsx", [
     from: `      <Callout kind="info" title="Not published yet">
         <p>
           This section describes the release after {RELEASE_VERSION}. It is merged into the framework
-          repository, no version number has been chosen, and it is not on npm: {RELEASE_VERSION} does
-          not behave this way. The rest of this page describes {RELEASE_VERSION}.
+          repository and is not on npm: {RELEASE_VERSION} does not behave this way. The rest of this page describes {RELEASE_VERSION}.
         </p>
       </Callout>`,
     to: `      <Callout kind="info" title="Changed in 0.4.0">

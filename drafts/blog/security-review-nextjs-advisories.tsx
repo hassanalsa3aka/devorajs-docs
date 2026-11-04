@@ -95,7 +95,7 @@ export default function Post() {
         <li>
           <strong>A server-function wire protocol</strong> (GHSA-p3m5-59mp-jv5r, GHSA-673q-mjm6-r5xr). Devora.js has no
           React Server Components stream and no Server Actions protocol; a custom RSC-style serialization protocol is
-          one of the things the project has said it will not build. A page&apos;s <code>action</code> is a function
+          one of the things the project has said it will not build in v1. A page&apos;s <code>action</code> is a function
           exported from the route file, called with the parsed form data of a <code>POST</code> to that route&apos;s own
           URL. The client cannot name a function to call, so the set of things a request can run is the set of route
           files. That is a smaller surface; it is not a claim of denial-of-service immunity. A request body is
