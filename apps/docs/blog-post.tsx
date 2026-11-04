@@ -1,4 +1,4 @@
-// Shared by the blog index, every post and scripts/build-rss.mjs (which
+// Shared by the blog index, every post and scripts/build-seo-files.mjs (which
 // reads data/blog-posts.json directly). A post route passes its slug; the
 // title, date and description come from that one file, so the index, the
 // post, its JSON-LD and /rss.xml can't disagree.
@@ -14,6 +14,8 @@ export type Tag = "Release" | "Guide" | "Story";
 export interface PostMeta {
   slug: string;
   title: string;
+  /** Shorter <title> for search results (the page's h1 stays `title`). Optional. */
+  seoTitle?: string;
   /** The day the post was published. Absent on a draft (drafts/blog), which is never in a production build. */
   date?: string;
   description: string;
@@ -40,7 +42,7 @@ export function formatDate(iso: string | undefined): string {
 
 export function postMeta(slug: string) {
   const post = findPost(slug);
-  const meta = pageMeta(`/blog/${slug}`, { title: post.title, description: post.description, image: `/og/blog-${slug}.png` });
+  const meta = pageMeta(`/blog/${slug}`, { title: post.seoTitle ?? post.title, description: post.description, image: `/og/blog-${slug}.png` });
   const feed = { rel: "alternate", href: "/rss.xml", type: "application/rss+xml", title: "Devora.js blog" };
   return { ...meta, head: { ...meta.head, links: [...meta.head.links, feed] } };
 }

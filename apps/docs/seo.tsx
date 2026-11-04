@@ -7,7 +7,12 @@
 // a canonical link and a twitter:card below; <html lang> is set once in
 // app.config.ts.
 
-export const SITE_URL = "https://devorajs-docs-docs.vercel.app";
+import site from "./data/site.json";
+
+// The one place the site's address is written is data/site.json. Everything
+// below, the sitemap, robots.txt, the RSS feed (scripts/build-seo-files.mjs),
+// devora.config.ts and the analytics host check read that value.
+export const SITE_URL = site.url.replace(/\/+$/, "");
 export const SITE_NAME = "Devora.js";
 // 1200x630, the size every major link-preview renderer expects.
 export const OG_IMAGE = `${SITE_URL}/og/devorajs-og.png`;

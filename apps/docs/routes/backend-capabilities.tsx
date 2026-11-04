@@ -10,7 +10,7 @@ export function meta() {
   return pageMeta("/backend-capabilities", {
     title: "Backend capabilities",
     description:
-      "Recommended patterns for validation, logging, CORS, rate limiting, and file uploads in a Devora.js project — built from plain middleware and libraries you choose.",
+      "Recommended patterns for validation, logging, CORS, rate limiting and file uploads in a Devora.js project, built from plain middleware and libraries you choose.",
   });
 }
 

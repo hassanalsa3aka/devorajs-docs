@@ -11,7 +11,7 @@ export function meta() {
   return pageMeta("/live-updates", {
     title: "Live updates (WebSockets)",
     description:
-      "WebSockets in Devora.js: a separate Socket.IO server, ws attached through a wrapper script, polling, and why server-sent events are not supported yet. The token flow, the CSP setting and a runnable example.",
+      "WebSockets in Devora.js: a separate Socket.IO server, ws through a wrapper script, polling, and why server-sent events are not supported yet.",
     image: "/og/live-updates.png",
   });
 }

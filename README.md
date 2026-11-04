@@ -8,7 +8,7 @@
 
 Devora.js is a React framework for projects with more than one app: one shared backend, one login, each app deployed on its own. This site is built with it.
 
-Live at **[devorajs-docs-docs.vercel.app](https://devorajs-docs-docs.vercel.app)**.
+Live at **[devorajs-docs-docs.vercel.app](https://devorajs-docs-docs.vercel.app)**. The site's address is written once, in `apps/docs/data/site.json`; canonical links, Open Graph tags, structured data, the sitemap, robots.txt and the RSS feed all read it.
 
 <p>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License" /></a>
@@ -56,7 +56,8 @@ devorajs-docs/
 ├── packages/backend/        # the shared-backend stub every project has (unused here)
 ├── scripts/
 │   ├── build-docs.sh            # adapter build + Pagefind index
-│   ├── build-rss.mjs            # assets/rss.xml from data/blog-posts.json (runs before every build)
+│   ├── build-seo-files.mjs      # assets/rss.xml, robots.txt, sitemap.xml from data/site.json and the routes (runs before every build)
+│   ├── check-seo.mjs            # after a build: titles, descriptions, h1, canonical, Open Graph, JSON-LD, sitemap (npm run check:seo)
 │   ├── sync-benchmarks.mjs      # copies devora.js/benchmarks/results/latest.json into data/
 │   ├── fetch-npm-downloads.mjs  # refreshes apps/docs/data/npm-downloads.json
 │   ├── og-card.html             # template for the link-preview cards in assets/og/

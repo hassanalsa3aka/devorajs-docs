@@ -26,6 +26,16 @@ const DOCS_GROUPS = [
     ],
   },
   {
+    label: "Common questions",
+    color: "#f59e0b",
+    items: [
+      { id: "marketing-site-app-admin-panel", label: "Marketing site, app and admin panel", href: "/marketing-site-app-admin-panel" },
+      { id: "share-login-across-apps", label: "One login across several apps", href: "/share-login-across-apps" },
+      { id: "nextjs-alternative-multi-app", label: "Next.js alternative for multi-app projects", href: "/nextjs-alternative-multi-app" },
+      { id: "islands-architecture-react", label: "Islands architecture in React", href: "/islands-architecture-react" },
+    ],
+  },
+  {
     label: "Reference",
     color: "#10b981",
     items: [

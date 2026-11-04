@@ -12,7 +12,7 @@ export function meta() {
   return pageMeta("/performance", {
     title: "Performance",
     description:
-      "Devora.js measured against Next.js, Astro, SvelteKit and React Router on the same three pages: build time, requests/second, memory and JavaScript sent — including where Devora.js is slower.",
+      "Devora.js measured against Next.js, Astro, SvelteKit and React Router on the same three pages: build time, requests/second, memory, JavaScript sent.",
     image: "/og/performance.png",
   });
 }

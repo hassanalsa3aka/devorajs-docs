@@ -14,7 +14,7 @@
       <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
       <category>Release</category>
-      <description>Five profiled changes to devora start, one clearer message for a missing session store, and the measured effect: where Devora.js is ahead, level, and still behind.</description>
+      <description>Five profiled changes to devora start, a clearer missing-session-store message, and the measured effect: where Devora.js is ahead, level, and behind.</description>
     </item>
     <item>
       <title>Devora.js 0.3.4: catch-all routes and a faster static path</title>
@@ -23,7 +23,7 @@
       <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
       <category>Release</category>
-      <description>Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, sitemap URLs from getStaticParams(), and the version number that skipped 0.3.3.</description>
+      <description>Catch-all routes for pages and API routes, pre-rendered pages served from memory with ETags, correct content types, and the version that skipped 0.3.3.</description>
     </item>
     <item>
       <title>Your first multi-app project in 15 minutes</title>
@@ -32,7 +32,7 @@
       <pubDate>Fri, 16 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
       <category>Guide</category>
-      <description>Scaffold a Devora.js project, run it, build and serve the build, then add a second app that shares one function and one login with the first. Every command was run.</description>
+      <description>Scaffold a Devora.js project, run and build it, then add a second app that shares one function and one login with the first. Every command was run.</description>
     </item>
     <item>
       <title>Devora.js 0.3.2: what changed and what to do</title>
@@ -41,7 +41,7 @@
       <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
       <dc:creator>hassanalsa3aka</dc:creator>
       <category>Release</category>
-      <description>Request access in loaders, actions that return data, error pages, a head API, cookie and proxy settings, CORS, and a fixed Vercel runtime — plus the changes an existing app has to act on.</description>
+      <description>Request access in loaders, actions that return data, error pages, a head API, cookie and proxy settings, CORS, and what an existing app has to change.</description>
     </item>
     <item>
       <title>Why multi-app is a first-class idea</title>

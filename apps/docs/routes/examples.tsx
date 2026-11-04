@@ -11,7 +11,7 @@ export function meta() {
   return pageMeta("/examples", {
     title: "Examples and live demos",
     description:
-      "Five runnable Devora.js projects checked in CI — multi-app, a Bearer-token API, a content site, live updates (WebSockets), background jobs — and the example apps deployed by the maintainer.",
+      "Five runnable Devora.js projects checked in CI (multi-app, Bearer API, content site, WebSockets, background jobs) and the example apps the maintainer deployed.",
     image: "/og/examples.png",
   });
 }

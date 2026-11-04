@@ -27,7 +27,6 @@
 (function () {
   // Paste the Measurement ID from GA → Admin → Data streams → your web stream.
   var GA_ID = "G-KEHQV89XCM";
-  var PRODUCTION_HOST = "devorajs-docs-docs.vercel.app";
   var CONSENT_KEY = "devora-analytics-consent"; // "granted" | "denied"
   var DEBUG_KEY = "devora-analytics-debug";
 
@@ -39,7 +38,13 @@
   }
 
   var debug = storageGet(DEBUG_KEY) === "1";
-  var enabled = location.hostname === PRODUCTION_HOST || debug;
+  // Production means "this page's own address is the one its canonical link
+  // names" (the canonical comes from data/site.json), so no host is written here
+  // and preview deploys, which canonicalize to production, stay out of the numbers.
+  var canonical = document.querySelector('link[rel="canonical"]');
+  var isProduction = false;
+  try { isProduction = !!canonical && new URL(canonical.href).origin === location.origin; } catch (e) { /* no canonical */ }
+  var enabled = isProduction || debug;
   var gaConfigured = /^G-[A-Z0-9]+$/.test(GA_ID) && GA_ID !== "G-XXXXXXXXXX";
   var gpc = navigator.globalPrivacyControl === true;
 
