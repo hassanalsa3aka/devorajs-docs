@@ -3,6 +3,7 @@ import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
 import { DocsLayout, Tag, Callout } from "../docs-layout.js";
 import { pageMeta } from "../seo.js";
+import { RELEASE_VERSION } from "../version.js";
 
 export const renderMode = "ssg";
 
@@ -27,6 +28,74 @@ export default function Security() {
         Devora.js treats security as a default, not an opt-in plugin — every app gets a set of
         protections whether or not its <code>app.config.ts</code> declares a{" "}
         <code>security</code> block at all.
+      </p>
+
+      <Callout kind="warning" title="No third-party audit">
+        <p>
+          Devora.js has had no security audit by anyone outside the project. It had an internal
+          pass, described at the end of this page, which is not the same thing. To report a
+          problem, use GitHub's private vulnerability reporting or Discord, as{" "}
+          <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/SECURITY.md">SECURITY.md</a>{" "}
+          says.
+        </p>
+      </Callout>
+
+      <h2 id="next-release">Next release</h2>
+      <Callout kind="info" title="Not published yet">
+        <p>
+          This section describes the release after {RELEASE_VERSION}. It is merged into the framework
+          repository, no version number has been chosen, and it is not on npm: {RELEASE_VERSION} does
+          not behave this way. The rest of this page describes {RELEASE_VERSION}.
+        </p>
+      </Callout>
+      <p>
+        Auth and CSRF are decided per route, as everything else in Devora.js is: nothing is
+        checked unless the route or the defaults below say so. In the next release one default
+        changes that for the request an attacker most wants to forge: a{" "}
+        <code>POST</code>, <code>PUT</code>, <code>PATCH</code> or <code>DELETE</code> that arrives
+        with a live session in the session cookie is CSRF-checked before the page's{" "}
+        <code>action</code> or the API route's <code>handler</code> runs. Bearer requests,
+        anonymous requests and reads are not checked by that default.
+      </p>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What the defaults protect</h3>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>Default</th><th>Protects against</th><th>Change it with</th></tr></thead>
+          <tbody>
+            <tr><td>CSRF check on cookie-authenticated writes</td><td>A page on another site making a logged-in browser post to your app</td><td><code>export const csrf = false</code> on a route</td></tr>
+            <tr><td><code>X-Content-Type-Options: nosniff</code> on every response</td><td>A browser treating a file as a type you did not send</td><td>Cannot be turned off</td></tr>
+            <tr><td>A sandboxing CSP on <code>.svg</code> files</td><td>An SVG opened directly running script with your origin's cookies</td><td>Cannot be turned off</td></tr>
+            <tr><td><code>redirect()</code> stays on your origin</td><td>Open redirects: <code>//evil.com</code>, <code>https://evil.com</code>, <code>/\evil.com</code> and encoded forms</td><td><code>redirect(url, {"{ allowedOrigins }"})</code></td></tr>
+            <tr><td>Static files must resolve inside the client folder, symlinks followed</td><td>A symlink in <code>public/</code> serving a file outside it</td><td>None</td></tr>
+            <tr><td><code>Cache-Control: private, no-store</code> on responses that read or set the session cookie</td><td>A CDN or proxy storing one user's page or <code>Set-Cookie</code> and serving it to another</td><td>None</td></tr>
+            <tr><td>Server timeouts and a header size limit in <code>devora start</code></td><td>Clients holding connections open by trickling headers or never finishing a request</td><td><code>server</code> in <code>app.config.ts</code></td></tr>
+            <tr><td>At most 1000 form fields and 20 files</td><td>One request carrying thousands of parts</td><td><code>maxFormFields</code>, <code>maxFormFiles</code></td></tr>
+            <tr><td>vite 6.4.4 or later</td><td>Known vulnerabilities in older vite releases</td><td>Not optional</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What you still have to do</h3>
+      <ul>
+        <li>Call <code>ctx{"."}requireAuth()</code> in every route that needs a signed-in user. In development a route that reads <code>ctx{"."}session</code> without it gets a warning; in production nothing says so.</li>
+        <li>Send the token from the browser: <code>&lt;CsrfField token={"{csrfToken}"} /&gt;</code> in a form, and the <code>x-devora-csrf</code> header on a <code>fetch</code> to an API route. A webhook or other cross-site caller that sends the session cookie needs <code>csrf = false</code>. Call <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form.</li>
+        <li>List your hosts in <code>allowedHosts</code> in <code>app.config.ts</code> so a forged <code>Host</code> gets a 400, and build password-reset links from a configured origin, never from the <code>Host</code> header or <code>ctx{"."}url</code>.</li>
+        <li>Never serve user-uploaded SVG or HTML from the app's origin. The SVG policy covers files you ship, not files your app stores and sends back. Use a separate domain, or <code>Content-Disposition: attachment</code>.</li>
+        <li>Rate-limit login routes at your proxy or platform. A route can export <code>rateLimit</code>, but it counts in memory per process and does not lock accounts.</li>
+        <li>Set <code>trustProxy</code> only when the app can be reached only through your proxy, and use a real session store and <code>DEVORA_SESSION_SECRET</code> in production.</li>
+      </ul>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What to check when you upgrade</h3>
+      <ul>
+        <li><code>redirect()</code> with a full URL to another origin throws a 400 unless you pass <code>allowedOrigins</code>.</li>
+        <li>A cookie-authenticated write without the CSRF token is a 403.</li>
+        <li>A <code>Cache-Control: public</code> set by a handler is replaced on responses that read the session cookie.</li>
+        <li>Large uploads must finish within 60 seconds by default (<code>server.requestTimeoutMs</code>).</li>
+        <li>Apps on vite 5 must move to vite 6.4.4 or later.</li>
+      </ul>
+      <p>
+        The full list is in the framework's{" "}
+        <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md">CHANGELOG</a>{" "}
+        once it is published. None of this has been checked on a live Vercel or Netlify deployment: the
+        generated header rules are tested as generated output only.
       </p>
 
       <h2>CSP, HSTS, and frame options</h2>
