@@ -18,6 +18,36 @@ export async function loader() {
   return {};
 }
 
+type PmId = "npm" | "yarn" | "pnpm";
+type PmCellData = { cmd: string; also?: { label: string; cmd: string } };
+const PM_NAMES: Array<{ id: PmId; label: string }> = [
+  { id: "npm", label: "npm" },
+  { id: "yarn", label: "Yarn" },
+  { id: "pnpm", label: "pnpm" },
+];
+// The commands as they were run (see "What differs" below for what each printed). @project/app-app is the name
+// field of that app's package.json.
+const PM_ROWS: Array<{ task: string } & Record<PmId, PmCellData>> = [
+  { task: "Create a project", npm: { cmd: "npm create devora@latest" }, yarn: { cmd: "yarn create devora", also: { label: "Yarn 4", cmd: "yarn dlx create-devora" } }, pnpm: { cmd: "pnpm create devora", also: { label: "or", cmd: "pnpm dlx create-devora" } } },
+  { task: "Install", npm: { cmd: "npm install" }, yarn: { cmd: "yarn install" }, pnpm: { cmd: "pnpm install" } },
+  { task: "Dev servers", npm: { cmd: "npm run dev" }, yarn: { cmd: "yarn dev" }, pnpm: { cmd: "pnpm run dev" } },
+  { task: "Build", npm: { cmd: "npm run build" }, yarn: { cmd: "yarn build" }, pnpm: { cmd: "pnpm run build" } },
+  { task: "Serve the build", npm: { cmd: "npm run start" }, yarn: { cmd: "yarn start" }, pnpm: { cmd: "pnpm run start" } },
+  { task: "Add a package to one app", npm: { cmd: "npm install dayjs -w apps/app" }, yarn: { cmd: "yarn workspace @project/app-app add dayjs" }, pnpm: { cmd: "pnpm --filter @project/app-app add dayjs" } },
+  { task: "Add a package to the project root", npm: { cmd: "npm install dayjs" }, yarn: { cmd: "yarn add -W dayjs", also: { label: "Yarn 4", cmd: "yarn add dayjs" } }, pnpm: { cmd: "pnpm add -w dayjs" } },
+  { task: "Run a package script", npm: { cmd: "npm run typecheck" }, yarn: { cmd: "yarn typecheck" }, pnpm: { cmd: "pnpm run typecheck" } },
+  { task: "Run the project's CLI once", npm: { cmd: "npx devora list" }, yarn: { cmd: "yarn devora list" }, pnpm: { cmd: "pnpm exec devora list" } },
+];
+
+function PmCell({ cell }: { cell: PmCellData }) {
+  return (
+    <>
+      <code>{cell.cmd}</code>
+      {cell.also ? <> ({cell.also.label}: <code>{cell.also.cmd}</code>)</> : null}
+    </>
+  );
+}
+
 export default function GettingStarted() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
@@ -55,21 +85,43 @@ export default function GettingStarted() {
         In the workspace commands, <code>@project/app-app</code> stands for the <code>name</code> in that
         app's <code>package.json</code>.
       </p>
-      <div className="docs-table-wrap">
+      <style dangerouslySetInnerHTML={{ __html: `
+        .pm-wide table { table-layout: fixed; width: 100%; }
+        .pm-wide code, .pm-stack code { overflow-wrap: anywhere; white-space: pre-wrap; }
+        .pm-stack { display: none; }
+        .pm-stack h3 { margin: 1.25rem 0 0.4rem; font-size: 1.05rem; }
+        .pm-stack dl { margin: 0; border-top: 1px solid var(--devora-border); }
+        .pm-stack dt { margin: 0; padding: 0.6rem 0 0.1rem; font-size: 0.85rem; color: var(--devora-fg-muted); }
+        .pm-stack dd { margin: 0; padding: 0 0 0.6rem; border-bottom: 1px solid var(--devora-border); }
+        @media (max-width: 700px) { .pm-wide { display: none; } .pm-stack { display: block; } }
+      ` }} />
+      <div className="docs-table-wrap pm-wide">
         <table>
-          <thead><tr><th>Task</th><th>npm</th><th>Yarn</th><th>pnpm</th></tr></thead>
+          <thead><tr><th>Task</th>{PM_NAMES.map((n) => <th key={n.id}>{n.label}</th>)}</tr></thead>
           <tbody>
-            <tr><td>Create a project</td><td><code>npm create devora@latest</code></td><td><code>yarn create devora</code> (Yarn 4: <code>yarn dlx create-devora</code>)</td><td><code>pnpm create devora</code> (or <code>pnpm dlx create-devora</code>)</td></tr>
-            <tr><td>Install</td><td><code>npm install</code></td><td><code>yarn install</code></td><td><code>pnpm install</code></td></tr>
-            <tr><td>Dev servers</td><td><code>npm run dev</code></td><td><code>yarn dev</code></td><td><code>pnpm run dev</code></td></tr>
-            <tr><td>Build</td><td><code>npm run build</code></td><td><code>yarn build</code></td><td><code>pnpm run build</code></td></tr>
-            <tr><td>Serve the build</td><td><code>npm run start</code></td><td><code>yarn start</code></td><td><code>pnpm run start</code></td></tr>
-            <tr><td>Add a package to one app</td><td><code>npm install dayjs -w apps/app</code></td><td><code>yarn workspace @project/app-app add dayjs</code></td><td><code>pnpm --filter @project/app-app add dayjs</code></td></tr>
-            <tr><td>Add a package to the project root</td><td><code>npm install dayjs</code></td><td><code>yarn add -W dayjs</code> (Yarn 4: <code>yarn add dayjs</code>)</td><td><code>pnpm add -w dayjs</code></td></tr>
-            <tr><td>Run a package script</td><td><code>npm run typecheck</code></td><td><code>yarn typecheck</code></td><td><code>pnpm run typecheck</code></td></tr>
-            <tr><td>Run the project's CLI once</td><td><code>npx devora list</code></td><td><code>yarn devora list</code></td><td><code>pnpm exec devora list</code></td></tr>
+            {PM_ROWS.map((row) => (
+              <tr key={row.task}>
+                <td>{row.task}</td>
+                {PM_NAMES.map((n) => <td key={n.id}><PmCell cell={row[n.id]} /></td>)}
+              </tr>
+            ))}
           </tbody>
         </table>
+      </div>
+      <div className="pm-stack">
+        {PM_NAMES.map((n) => (
+          <section key={n.id} aria-label={n.label}>
+            <h3>{n.label}</h3>
+            <dl>
+              {PM_ROWS.map((row) => (
+                <div key={row.task}>
+                  <dt>{row.task}</dt>
+                  <dd><PmCell cell={row[n.id]} /></dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))}
       </div>
       <p>
         Inside a project, the one-off command runs the CLI that project pins. Outside one, <code>npx devora</code>{" "}
