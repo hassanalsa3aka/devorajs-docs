@@ -702,5 +702,21 @@
   "version": "",
   "evidence": "Reproduced with npm 11.17.0 in an empty project: npm install esbuild@0.25.12 prints \"1 package has install scripts not yet covered by allowScripts: esbuild@0.25.12 (postinstall: node install.js)\". esbuild comes in through Vite. Install, devora dev and devora build still work. The warning comes from npm, not from Devora.js code; getting-started says so in one line. Not fixed.",
   "described": "smoke test of 0.3.5"
+ },
+ {
+  "id": "T3",
+  "finding": "A fresh project does not install with pnpm 11 or later (tried 12.10)",
+  "status": "Open",
+  "version": "",
+  "evidence": "pnpm 11 and later ignore link-workspace-packages in .npmrc, so the project's own @devorajs/backend is fetched from npm (ERR_PNPM_FETCH_404), and then the install fails on esbuild's ignored build script (ERR_PNPM_IGNORED_BUILDS). Works with pnpm 9 and 10, and with pnpm 12 after pnpm-workspace.yaml gets linkWorkspacePackages: true and allowBuilds: esbuild: true. Seen with the published create-devora and with the local 0.4.0 build. Not fixed in the scaffold; getting-started documents the workaround.",
+  "described": "package manager tests"
+ },
+ {
+  "id": "T4",
+  "finding": "A fresh project does not run under Yarn 4's default Plug'n'Play linker",
+  "status": "Open",
+  "version": "",
+  "evidence": "Install succeeds with peer-dependency warnings, then devora dev and build stop with \"@devorajs/cli tried to access esbuild, but it isn't declared in its dependencies\". With nodeLinker: node-modules in .yarnrc.yml everything works (install, dev, build, start, typecheck, add). Seen with the published 0.3.5 packages and the local 0.4.0 build. Not fixed in the scaffold; getting-started documents the setting.",
+  "described": "package manager tests"
  }
 ]

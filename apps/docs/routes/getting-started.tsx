@@ -49,6 +49,82 @@ export default function GettingStarted() {
         <code>devora build</code> still work, and the warning comes from npm, not from Devora.js.
       </p>
 
+      <h2 id="package-managers">npm, Yarn and pnpm</h2>
+      <p>
+        A project works with all three. These are the commands for each; run them from the project folder.
+        In the workspace commands, <code>@project/app-app</code> stands for the <code>name</code> in that
+        app's <code>package.json</code>.
+      </p>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>Task</th><th>npm</th><th>Yarn</th><th>pnpm</th></tr></thead>
+          <tbody>
+            <tr><td>Create a project</td><td><code>npm create devora@latest</code></td><td><code>yarn create devora</code> (Yarn 4: <code>yarn dlx create-devora</code>)</td><td><code>pnpm create devora</code> (or <code>pnpm dlx create-devora</code>)</td></tr>
+            <tr><td>Install</td><td><code>npm install</code></td><td><code>yarn install</code></td><td><code>pnpm install</code></td></tr>
+            <tr><td>Dev servers</td><td><code>npm run dev</code></td><td><code>yarn dev</code></td><td><code>pnpm run dev</code></td></tr>
+            <tr><td>Build</td><td><code>npm run build</code></td><td><code>yarn build</code></td><td><code>pnpm run build</code></td></tr>
+            <tr><td>Serve the build</td><td><code>npm run start</code></td><td><code>yarn start</code></td><td><code>pnpm run start</code></td></tr>
+            <tr><td>Add a package to one app</td><td><code>npm install dayjs -w apps/app</code></td><td><code>yarn workspace @project/app-app add dayjs</code></td><td><code>pnpm --filter @project/app-app add dayjs</code></td></tr>
+            <tr><td>Add a package to the project root</td><td><code>npm install dayjs</code></td><td><code>yarn add -W dayjs</code> (Yarn 4: <code>yarn add dayjs</code>)</td><td><code>pnpm add -w dayjs</code></td></tr>
+            <tr><td>Run a package script</td><td><code>npm run typecheck</code></td><td><code>yarn typecheck</code></td><td><code>pnpm run typecheck</code></td></tr>
+            <tr><td>Run the project's CLI once</td><td><code>npx devora list</code></td><td><code>yarn devora list</code></td><td><code>pnpm exec devora list</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Inside a project, the one-off command runs the CLI that project pins. Outside one, <code>npx devora</code>{" "}
+        looks up an unrelated package of that name, as described <a href="#why-not-just-devora-dev">below</a>.
+      </p>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What differs</h3>
+      <p>Only what was seen when these commands were run (see the last paragraph of this section):</p>
+      <ul>
+        <li>
+          <strong>npm 11</strong> prints <code>Unknown project config "link-workspace-packages"</code> on every
+          command, because the project's <code>.npmrc</code> carries a pnpm setting. It also prints the{" "}
+          <code>allowScripts</code> warning for esbuild described above. npm 10 prints neither. Everything works.
+        </li>
+        <li>
+          <strong>Yarn 1</strong> warns about an unmet peer dependency (<code>react</code>) on install. A plain{" "}
+          <code>yarn add dayjs</code> at the project root stops with an error asking for <code>-W</code>.
+        </li>
+        <li>
+          <strong>Yarn 4</strong> installs with Plug'n'Play by default, and the CLI does not run under it: it stops
+          with <code>@devorajs/cli tried to access esbuild</code>. Before installing, put{" "}
+          <code>nodeLinker: node-modules</code> in a <code>.yarnrc.yml</code> at the project root; then everything
+          below works. Yarn 4 also prints peer-dependency warnings (<code>YN0002</code>) about <code>react</code>.
+        </li>
+        <li>
+          <strong>pnpm 9 and 10</strong>: a plain <code>pnpm add dayjs</code> at the project root stops with{" "}
+          <code>ERR_PNPM_ADDING_TO_ROOT</code> and asks for <code>-w</code>. pnpm 10 also prints{" "}
+          <code>Ignored build scripts: esbuild</code> after the install; the project still installs, builds and runs.
+        </li>
+        <li>
+          <strong>pnpm 11 and later</strong> (12.10 was tried) cannot install a fresh project: it ignores the{" "}
+          <code>link-workspace-packages</code> setting in <code>.npmrc</code> and looks for the project's own{" "}
+          <code>@devorajs/backend</code> on npm (<code>ERR_PNPM_FETCH_404</code>), and then fails on esbuild's
+          ignored build script (<code>ERR_PNPM_IGNORED_BUILDS</code>). Use pnpm 9 or 10, or replace the contents of{" "}
+          <code>pnpm-workspace.yaml</code> with the block below and install again. This is a known gap in the
+          scaffold; it is tracked on the <a href="/roadmap">roadmap</a>.
+        </li>
+      </ul>
+      <div className="devora-card">
+        <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
+{`# pnpm-workspace.yaml, for pnpm 11 and later
+packages:
+  - "packages/*"
+  - "apps/*"
+linkWorkspacePackages: true
+allowBuilds:
+  esbuild: true`}
+        </pre>
+      </div>
+      <p>
+        <strong>What is covered.</strong> On every push, CI installs the repository's own workspace with npm 10, Yarn 1
+        and pnpm 9.9; the tests and every app build run under pnpm only. The commands in the table were run by hand
+        on Node 20 against a new project: npm 10.8 and 11.17, Yarn 1.22 and 4.18 (through corepack), and pnpm 9.15,
+        10.34 and 12.10. Bun and Deno were not tested, so they are not listed as supported.
+      </p>
+
       <h2>What it asks</h2>
       <p>Run with no flags in a real terminal, it prompts for four things in order:</p>
       <p>
@@ -183,7 +259,7 @@ npm run dev`}
         warning). <code>.env</code> files in the project root are loaded automatically.
       </p>
       <p>
-        <strong>Why not just <code>devora dev</code>?</strong> The CLI is installed into the
+        <strong id="why-not-just-devora-dev">Why not just <code>devora dev</code>?</strong> The CLI is installed into the
         project (<code>node_modules</code>), not onto your system <code>PATH</code> — so a bare{" "}
         <code>devora</code> command isn't found. That's normal: Next.js, Vite, and most framework
         CLIs work exactly the same way. It also means every project runs the exact CLI version it
