@@ -50,11 +50,11 @@ export default function Security() {
       <p>
         Auth and CSRF are decided per route, as everything else in Devora.js is: nothing is
         checked unless the route or the defaults below say so. In the next release one default
-        changes that for the request an attacker most wants to forge: a{" "}
-        <code>POST</code>, <code>PUT</code>, <code>PATCH</code> or <code>DELETE</code> that arrives
-        with a live session in the session cookie is CSRF-checked before the page's{" "}
-        <code>action</code> or the API route's <code>handler</code> runs. Bearer requests,
-        anonymous requests and reads are not checked by that default.
+        changes that for the request an attacker most wants to forge: a write (any method but{" "}
+        <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) that arrives with a live session
+        in the session cookie is CSRF-checked before the page's <code>action</code> or the API
+        route's <code>handler</code> runs. Bearer requests, anonymous requests and reads are not
+        checked by that default.
       </p>
       <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What the defaults protect</h3>
       <div className="docs-table-wrap">
@@ -70,6 +70,10 @@ export default function Security() {
             <tr><td>Server timeouts and a header size limit in <code>devora start</code></td><td>Clients holding connections open by trickling headers or never finishing a request</td><td><code>server</code> in <code>app.config.ts</code></td></tr>
             <tr><td>At most 1000 form fields and 20 files</td><td>One request carrying thousands of parts</td><td><code>maxFormFields</code>, <code>maxFormFiles</code></td></tr>
             <tr><td>vite 6.4.4 or later</td><td>Known vulnerabilities in older vite releases</td><td>Not optional</td></tr>
+            <tr><td><code>ctx{"."}url</code> takes its host from the <code>Host</code> header (or a trusted <code>X-Forwarded-Host</code>) only</td><td>A request target such as <code>http://other.example/x</code> naming a host that <code>allowedHosts</code> never checked</td><td>None</td></tr>
+            <tr><td>A malformed cookie is kept as sent; the first of two cookies with one name wins</td><td>One bad cookie from another app on the domain breaking every page; a cookie set later from a sibling subdomain replacing the app's own</td><td>None</td></tr>
+            <tr><td><code>devora dev</code> refuses cross-site requests to Vite's <code>/__open-in-editor</code></td><td>A web page you visit making the dev server open files in your editor</td><td>None (development only)</td></tr>
+            <tr><td><code>create-devora</code> and <code>devora new</code> accept only plain app names and host names</td><td>A name with quotes, <code>;</code> or <code>../</code> ending up in generated code, paths or a build command</td><td>None</td></tr>
           </tbody>
         </table>
       </div>
@@ -81,6 +85,7 @@ export default function Security() {
         <li>Never serve user-uploaded SVG or HTML from the app's origin. The SVG policy covers files you ship, not files your app stores and sends back. Use a separate domain, or <code>Content-Disposition: attachment</code>.</li>
         <li>Rate-limit login routes at your proxy or platform. A route can export <code>rateLimit</code>, but it counts in memory per process and does not lock accounts.</li>
         <li>Set <code>trustProxy</code> only when the app can be reached only through your proxy, and use a real session store and <code>DEVORA_SESSION_SECRET</code> in production.</li>
+        <li>Do not share the app's domain with sites you do not control. Cookies can be set across subdomains of one domain, so host other people's apps, user content and previews on a separate domain.</li>
       </ul>
       <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>What to check when you upgrade</h3>
       <ul>
@@ -89,7 +94,21 @@ export default function Security() {
         <li>A <code>Cache-Control: public</code> set by a handler is replaced on responses that read the session cookie.</li>
         <li>Large uploads must finish within 60 seconds by default (<code>server.requestTimeoutMs</code>).</li>
         <li>Apps on vite 5 must move to vite 6.4.4 or later.</li>
+        <li>An API route without a <code>methods</code> list that is called with an unusual method (<code>PURGE</code>, <code>PROPPATCH</code>) and the session cookie now needs the CSRF token too, and such requests count toward the route's <code>rateLimit</code>.</li>
+        <li><code>create-devora</code> and <code>devora new</code> refuse an app name with capital letters or anything but letters, digits, <code>-</code> and <code>_</code>. Existing projects are not affected.</li>
       </ul>
+      <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>Red-team pass</h3>
+      <p>
+        Before the release, the integration branch was attacked on localhost by the project itself (not a
+        third party): path traversal in many encodings, header injection and request smuggling, forged{" "}
+        <code>Host</code> and <code>Origin</code>, CSRF bypass attempts, session fixation and cookie flags, large
+        and slow requests, form and upload limits, prototype pollution, slow regular expressions, output
+        encoding, the dev server and the scaffolders, plus bounded random fuzzing of the path, host, cookie,
+        redirect and body parsers. Six problems were found and fixed, each with a regression test; they are the
+        last four rows of the table above and the CSRF and rate-limit method change. Two design items stay
+        open on the <a href="/roadmap">roadmap</a>: tying the CSRF token to the session, and how{" "}
+        <code>rateLimit</code> groups IPv6 addresses.
+      </p>
       <p>
         The full list is in the framework's{" "}
         <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md">CHANGELOG</a>{" "}

@@ -248,8 +248,8 @@ edit("apps/docs/routes/security.tsx", [
       <Callout kind="warning" title="Changed in 0.4.0">
         <p>
           The next paragraphs describe 0.3.x, where a route checks CSRF only if it calls{" "}
-          <code>ctx{"."}verifyCsrf()</code>. Since 0.4.0 a cookie-authenticated <code>POST</code>,{" "}
-          <code>PUT</code>, <code>PATCH</code> or <code>DELETE</code> is also checked before the route runs: see{" "}
+          <code>ctx{"."}verifyCsrf()</code>. Since 0.4.0 a cookie-authenticated write (any method but{" "}
+          <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) is also checked before the route runs: see{" "}
           <a href="#new-in-0-4-0">New in 0.4.0</a>. Anonymous writes (a login form) still need the explicit call.
         </p>
       </Callout>
@@ -257,7 +257,11 @@ edit("apps/docs/routes/security.tsx", [
 ]);
 // the sentence about "once it is published" in the same section
 edit("apps/docs/routes/security.tsx", [
-  { from: "once it is published. None of this has been checked on a live Vercel or Netlify deployment", to: ". None of this has been checked on a live Vercel or Netlify deployment" },
+  // The replacement must not be part of the original text, or edit() reports it as already applied and skips it.
+  {
+    from: 'CHANGELOG</a>{" "}\n        once it is published. None of this has been checked on a live Vercel or Netlify deployment',
+    to: "CHANGELOG</a>. None of this has been checked on a live Vercel or Netlify deployment",
+  },
 ]);
 
 // 8. Upgrading page

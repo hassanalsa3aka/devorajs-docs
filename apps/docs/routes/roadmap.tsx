@@ -279,7 +279,8 @@ export default function Roadmap() {
         <p>
           A desktop app and a native mobile app. If they happen, business logic, the backend client,
           validation and design tokens would be shared and the UI would be platform-specific. React
-          was chosen partly to keep that door open.
+          was chosen partly to keep that door open. Mobile, and the Metro-class bundler and device
+          tooling it would need, come later than desktop: nothing for them exists in the code.
         </p>
 
         <h2 id="ideas">Ideas (open, not promised)</h2>
@@ -353,7 +354,7 @@ export default function Roadmap() {
             <li>A custom RSC-style serialization protocol</li>
           </ul></section>
           <section className="rm-col rm-b-goal"><h3>Planned goals, not started</h3><ul>
-            <li>Desktop and native mobile apps. Nothing exists and there are no dates. React was chosen partly to keep that door open.</li>
+            <li>Desktop and native mobile apps. Nothing is published and there are no dates; mobile and its Metro-class tooling come after desktop. React was chosen partly to keep that door open.</li>
           </ul></section>
         </div>
 
