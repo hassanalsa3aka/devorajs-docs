@@ -62,7 +62,7 @@ devorajs-docs/
 │   ├── fetch-npm-downloads.mjs  # refreshes apps/docs/data/npm-downloads.json
 │   ├── og-card.html             # template for the link-preview cards in assets/og/
 │   └── og-cards.sh              # renders those cards (site-wide and per page)
-├── drafts/                  # earlier drafts of the compare page, not published
+├── drafts/                  # not tracked (see .gitignore): unpublished blog drafts; scripts/release-day.mjs --drafts=<dir> reads them
 └── devora.config.ts
 ```
 

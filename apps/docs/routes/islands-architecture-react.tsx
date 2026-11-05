@@ -38,7 +38,7 @@ export default function IslandsArchitectureReact() {
 
 const LikeButton = island(() => import("../components/LikeButton"));
 
-export default function Post({ data }) {
+export default function Post({ data }: { data: { title: string; body: string; id: number; likes: number } }) {
   return (
     <article>
       <h1>{data.title}</h1>
