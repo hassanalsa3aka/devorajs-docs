@@ -283,6 +283,25 @@ export default function Roadmap() {
           tooling it would need, come later than desktop: nothing for them exists in the code.
         </p>
 
+        <h2 id="experimental">Experimental, off by default</h2>
+        <p>
+          In the framework repository for the next release, not published, each behind an explicit opt-in:
+        </p>
+        <ul>
+          <li>
+            <strong>A desktop target</strong> (<code>devora desktop ... --experimental</code>, Tauri 2): the same
+            app in a window, its server as a sidecar on 127.0.0.1 with a random port and a per-launch token, one
+            allowed origin, no IPC command unless listed, no unsigned updates. Built and tested without a display;
+            the window itself has not been clicked through yet. See the <a href="/cli-reference#desktop">CLI reference</a>.
+          </li>
+          <li>
+            <strong>A dev server of Devora's own</strong>: its security core exists (127.0.0.1 only, no production,
+            a host check against DNS rebinding, a WebSocket with an Origin check and a per-launch token, files served
+            only from listed folders with symlinks checked, no dotfiles). It does not render pages yet, so it is not
+            reachable from the CLI. Vite stays the dev server and the build.
+          </li>
+        </ul>
+
         <h2 id="ideas">Ideas (open, not promised)</h2>
         <p>Nothing here is planned, scheduled or numbered.</p>
         <ul>
