@@ -295,10 +295,15 @@ export default function Roadmap() {
             the window itself has not been clicked through yet. See the <a href="/cli-reference#desktop">CLI reference</a>.
           </li>
           <li>
-            <strong>A dev server of Devora's own</strong>: its security core exists (127.0.0.1 only, no production,
-            a host check against DNS rebinding, a WebSocket with an Origin check and a per-launch token, files served
-            only from listed folders with symlinks checked, no dotfiles). It does not render pages yet, so it is not
-            reachable from the CLI. Vite stays the dev server and the build.
+            <strong>A dev server of Devora's own</strong> (<code>devora dev --experimental-dev-server</code>):
+            experimental, runs only from a checkout of the framework's repository, and is not the default (
+            <code>devora dev</code> is Vite). It renders pages and API routes with the same handlers as the Vite
+            path, with esbuild transforms, React Fast Refresh, CSS and assets, and hot updates over a WebSocket on
+            127.0.0.1 with an Origin check and a per-launch token; files are served from listed folders only, with
+            symlinks checked and no dotfiles, and it refuses production. It does not read <code>vite.config.ts</code>{" "}
+            (no Vite plugins), and has no PostCSS, Sass or CSS modules, no <code>import.meta.glob</code>, no tsconfig
+            path aliases, no <code>--host</code> and no HTTPS. No performance numbers are published. Vite stays the
+            default dev server and the build.
           </li>
         </ul>
 

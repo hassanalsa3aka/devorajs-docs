@@ -130,6 +130,7 @@ export default function CliReference() {
             <tr><td><code>--host</code></td><td>Listen on every network interface and print LAN URLs (with a warning)</td></tr>
             <tr><td><code>--routes</code></td><td>List every API route, however many (same as <code>DEVORA_ROUTES=all</code>)</td></tr>
             <tr><td><code>--quiet</code></td><td>Only warnings, errors and one URL line per app; Vite logs at <code>warn</code></td></tr>
+            <tr><td><code>--experimental-dev-server</code> <Tag color="gray">experimental</Tag></td><td>Use the dev server of Devora's own instead of Vite (see below); repository checkout only</td></tr>
           </tbody>
         </table>
       </div>
@@ -147,6 +148,14 @@ export default function CliReference() {
         on the same network. It prints a warning when enabled, since anyone on that network can
         then reach your dev server. Scaffolded projects include it as a script:{" "}
         <code>npm run dev:host</code>.
+      </p>
+      <p>
+        <strong><code>--experimental-dev-server</code></strong> (also <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>)
+        runs a dev server of Devora's own instead of Vite. It is experimental, runs only from a checkout of the
+        framework's repository (it is not in the published CLI), and is not the default: plain{" "}
+        <code>devora dev</code> is Vite and is unchanged. It does not read <code>vite.config.ts</code>, so there
+        are no Vite plugins, no PostCSS, Sass or CSS modules, no <code>import.meta.glob</code>, no tsconfig path
+        aliases, no <code>--host</code> and no HTTPS. No performance numbers are published.
       </p>
 
       <h2 id="build"><code>devora build</code></h2>
