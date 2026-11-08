@@ -1,8 +1,9 @@
 import { PageShell } from "@devorajs/core";
 import { DOCS_NAV } from "../nav.js";
 import { SiteFooter } from "../site-footer.js";
-import { DocsLayout, Tag } from "../docs-layout.js";
+import { DocsLayout, Tag, Callout } from "../docs-layout.js";
 import { pageMeta } from "../seo.js";
+import { RELEASE_VERSION } from "../version.js";
 
 export const renderMode = "ssg";
 
@@ -271,6 +272,28 @@ export default function CliReference() {
         <code>nginx</code> or <code>caddy</code>; <code>--out &lt;path&gt;</code> sets where the
         file is written instead of the default location.
       </p>
+
+      <h2 id="desktop"><code>devora desktop dev|build|serve</code> <Tag color="gray">experimental</Tag></h2>
+      <Callout kind="warning" title="Experimental, off by default, not published yet">
+        <p>
+          This command is in the framework repository for the release after {RELEASE_VERSION} and is not on npm.
+          It does nothing unless you pass <code>--experimental</code>, and its shape may change.
+        </p>
+      </Callout>
+      <p>
+        Runs one app in a desktop window with Tauri 2. The app's own server starts as a sidecar on{" "}
+        <code>127.0.0.1</code>, on a random port, and answers only requests that carry a token created for that
+        launch; any other host gets a 400 and any request without the token a 403. The window loads only that
+        origin, the generated configuration allows no IPC command unless <code>apps/&lt;app&gt;/desktop.json</code>{" "}
+        lists it, the CSP is the app's own, nothing remote is loaded, and updates are configured only when they are
+        signed. <code>--app &lt;name&gt;</code> picks the app.
+      </p>
+      <ul>
+        <li><code>dev</code>: builds the app and serves it behind those rules, and prints a launch URL to check it in a browser on the same machine.</li>
+        <li><code>build</code>: builds the app and writes its Tauri project to <code>apps/&lt;app&gt;/desktop/src-tauri</code>. Building the window itself needs Rust and the Tauri CLI on your machine.</li>
+        <li><code>serve</code>: the sidecar the window starts (token in <code>DEVORA_DESKTOP_TOKEN</code>, port in <code>PORT</code>).</li>
+      </ul>
+      <p>Mobile, and Metro-class bundling and device tooling, come later; nothing in the code is about them.</p>
       </DocsLayout>
     </PageShell>
   );

@@ -9,8 +9,8 @@ const CHANGES_040: { change: ReactNode; todo: ReactNode }[] = [
     todo: <>If an API route sets <code>Cache-Control: public</code> or <code>s-maxage</code> on responses to logged-in browsers, that header is dropped for them. Put the cacheable version on a route that does not read the session. Otherwise nothing to do.</>,
   },
   {
-    change: <>CSRF is checked by default for a <code>POST</code>, <code>PUT</code>, <code>PATCH</code> or <code>DELETE</code> that arrives with a live session in the session cookie. The token must be in the <code>_csrf</code> form field or the <code>x-devora-csrf</code> header, or the response is a <strong>403</strong>. Bearer requests, requests with no session cookie and reads are not checked by this default.</>,
-    todo: <>(1) Every page form with an <code>action</code> renders <code>{"<CsrfField token={csrfToken} />"}</code>. (2) A browser <code>fetch()</code> that writes to an API route sends the page's <code>csrfToken</code> in the <code>x-devora-csrf</code> header. (3) A webhook or other cross-site caller that sends the session cookie exports <code>export const csrf = false</code> from its route and verifies its caller itself. (4) An app with <code>csrf: false</code> in <code>app.config.ts</code> has no CSRF cookie: its cookie-authenticated writes get a 403 unless the route opts out. Keep calling <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form.</>,
+    change: <>CSRF is checked by default for a write (any method but <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) that arrives with a live session in the session cookie. The token must be in the <code>_csrf</code> form field or the <code>x-devora-csrf</code> header, or the response is a <strong>403</strong>. Bearer requests, requests with no session cookie and reads are not checked by this default. For a signed-in browser the token is tied to the session, so a token from another session is refused.</>,
+    todo: <>(1) Every page form with an <code>action</code> renders <code>{"<CsrfField token={csrfToken} />"}</code>. (2) A browser <code>fetch()</code> that writes to an API route sends the page's <code>csrfToken</code> in the <code>x-devora-csrf</code> header. (3) A webhook or other cross-site caller that sends the session cookie exports <code>export const csrf = false</code> from its route and verifies its caller itself. (4) A script that logs in and then posts a form must load the page again after login: a token read before login is not valid for the new session. (5) An app with <code>csrf: false</code> in <code>app.config.ts</code> has no CSRF cookie: its cookie-authenticated writes get a 403 unless the route opts out. Keep calling <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form.</>,
   },
   {
     change: <><code>@devorajs/cli</code> requires <strong>vite <code>^6.4.4</code></strong> (it accepted <code>^5.4.0 || ^6.0.0</code>); older releases have known vulnerabilities.</>,
@@ -20,5 +20,16 @@ const CHANGES_040: { change: ReactNode; todo: ReactNode }[] = [
     change: <><code>devora start</code> sets its own server limits, and a page form is limited: the whole request must arrive within <strong>60 seconds</strong> (Node's default was 5 minutes), the headers within 15 seconds; a form may carry <strong>1000</strong> non-file fields and <strong>20</strong> files.</>,
     todo: <>An app that accepts big uploads over slow links sets <code>server: {"{ requestTimeoutMs: 300000 }"}</code> in <code>app.config.ts</code>; one that really posts more than 20 files raises <code>maxFormFiles</code>. Behind a load balancer, set <code>server.keepAliveTimeoutMs</code> above its idle timeout.</>,
   },
+  {
+    change: <>When a cookie name is sent twice, the <strong>first</strong> value is used (it was the last). Browsers send an app's own cookie first, so a cookie set later from a sibling subdomain no longer replaces it. A cookie with a malformed percent-escape is kept as sent instead of failing the request.</>,
+    todo: <>Nothing, unless your app relied on a duplicated cookie name: give the cookies distinct names.</>,
+  },
+  {
+    change: <><code>rateLimit</code> counts an IPv6 client by its <strong>/64 prefix</strong> (the first four groups), so every address in one /64 shares a count. IPv4 clients are unchanged.</>,
+    todo: <>Nothing, unless many real users share one /64 and one limit: raise <code>max</code> on that route.</>,
+  },
+  {
+    change: <><code>create-devora</code> and <code>devora new</code> accept an app name only of lowercase letters, digits, <code>-</code> and <code>_</code> (at most 50 characters), and a domain only as a host name.</>,
+    todo: <>Nothing for existing projects. Pick a lowercase name for new apps.</>,
+  },
 ];
-

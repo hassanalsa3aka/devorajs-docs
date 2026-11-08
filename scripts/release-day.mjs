@@ -5,12 +5,15 @@
  *   node scripts/release-day.mjs 2026-11-20            apply everything
  *   node scripts/release-day.mjs 2026-11-20 --dry-run  say what would change, write nothing
  *   node scripts/release-day.mjs 2026-11-20 --no-build skip the og cards and the RSS feed (they need Chrome)
+ *   node scripts/release-day.mjs 2026-11-20 --drafts=<dir>   where the two drafts are (default drafts/blog in this repo; the
+ *                                                      drafts are not tracked: use ~/Developer/_lab/drafts-backup/blog)
  *
  * Run it only after 0.4.0 is on npm. It changes:
  *   1. @devorajs/core and @devorajs/cli to ^0.4.0 (and vite to ^6.4.4) in apps/docs/package.json, package.json,
  *      README.md and Getting started;
  *   2. apps/docs/data/release.json (version, date, post);
- *   3. the two drafts in drafts/blog: moved to apps/docs/routes/blog, their metadata added to data/blog-posts.json
+ *   3. the two drafts (in --drafts=<dir>, default drafts/blog): copied to apps/docs/routes/blog (removed from the folder
+ *      only when it is inside this repo), their metadata added to data/blog-posts.json
  *      with the date, the draft JSON files removed, the CHANGELOG anchor in the release post set to the dated heading;
  *   4. the og cards and the RSS feed (unless --no-build);
  *   5. Getting started: the Yarn 4 and pnpm 11+ notes ("new projects work; projects from 0.3.x need the file or
@@ -33,6 +36,10 @@ const args = process.argv.slice(2);
 const date = args.find((a) => !a.startsWith("--"));
 const DRY = args.includes("--dry-run");
 const NO_BUILD = args.includes("--no-build");
+// The drafts are not tracked by git. Where they are: --drafts=<dir>, else $DEVORA_DRAFTS_DIR, else drafts/blog in this repo.
+const draftsArg = args.find((a) => a.startsWith("--drafts="))?.slice("--drafts=".length) ?? process.env.DEVORA_DRAFTS_DIR;
+const DRAFTS_DIR = path.resolve(draftsArg ?? path.join(root, "drafts/blog"));
+const DRAFTS_IN_REPO = DRAFTS_DIR.startsWith(root + path.sep);
 
 if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(Date.parse(`${date}T00:00:00Z`)) || new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date) {
   console.error("usage: node scripts/release-day.mjs <YYYY-MM-DD> [--dry-run] [--no-build]   (a real date, the day 0.4.0 is published)");
@@ -93,12 +100,12 @@ step(3, "the two drafts become posts");
 const blogFile = "apps/docs/data/blog-posts.json";
 const blog = JSON.parse(read(blogFile));
 for (const slug of POSTS) {
-  const draftTsx = `drafts/blog/${slug}.tsx`, draftJson = `drafts/blog/${slug}.json`, postTsx = `apps/docs/routes/blog/${slug}.tsx`;
-  if (!fs.existsSync(path.join(root, draftTsx))) {
+  const draftTsx = path.join(DRAFTS_DIR, `${slug}.tsx`), draftJson = path.join(DRAFTS_DIR, `${slug}.json`), postTsx = `apps/docs/routes/blog/${slug}.tsx`;
+  if (!fs.existsSync(draftTsx)) {
     if (fs.existsSync(path.join(root, postTsx))) { console.log(`  (${slug}: already moved)`); continue; }
-    throw new Error(`neither ${draftTsx} nor ${postTsx} exists`);
+    throw new Error(`neither ${draftTsx} nor ${postTsx} exists (the drafts are not tracked: pass --drafts=<dir>, for example --drafts=$HOME/Developer/_lab/drafts-backup/blog)`);
   }
-  let post = read(draftTsx);
+  let post = fs.readFileSync(draftTsx, "utf8");
   if (slug === "devora-0-4-0") {
     const anchorLine = /\/\/ RELEASE-DAY:[^\n]*\n(\/\/[^\n]*\n)+/;
     if (!anchorLine.test(post)) throw new Error(`${draftTsx}: the RELEASE-DAY comment about the CHANGELOG anchor is gone`);
@@ -107,25 +114,26 @@ for (const slug of POSTS) {
     post = post.replace("#040--DATE-TO-FILL", `#${ANCHOR}`);
   }
   if (/DATE-TO-FILL/.test(post)) throw new Error(`${draftTsx}: a DATE-TO-FILL placeholder is left`);
-  const meta = JSON.parse(read(draftJson));
+  const meta = JSON.parse(fs.readFileSync(draftJson, "utf8"));
   blog.posts = blog.posts.filter((p) => p.slug !== slug);
-  blog.posts.push({ slug, title: meta.title, date, description: meta.description, tags: meta.tags });
-  changed.push(postTsx, `${draftTsx} (removed)`, `${draftJson} (removed)`);
+  blog.posts.push({ slug, title: meta.title, ...(meta.seoTitle ? { seoTitle: meta.seoTitle } : {}), date, description: meta.description, tags: meta.tags });
+  changed.push(postTsx);
+  if (DRAFTS_IN_REPO) changed.push(`${rel(draftTsx)} (removed)`, `${rel(draftJson)} (removed)`);
   if (!DRY) {
     fs.writeFileSync(path.join(root, postTsx), post);
-    fs.rmSync(path.join(root, draftTsx));
-    fs.rmSync(path.join(root, draftJson));
+    // A draft inside this repo is moved; one kept outside (the backup folder) is only copied, so it stays.
+    if (DRAFTS_IN_REPO) { fs.rmSync(draftTsx); fs.rmSync(draftJson); }
   }
-  console.log(`  ${slug}: moved, dated ${date}`);
+  console.log(`  ${slug}: ${DRAFTS_IN_REPO ? "moved" : "copied"}, dated ${date}`);
 }
 write(blogFile, JSON.stringify(blog, null, 2) + "\n");
 
-// 4. og cards and RSS (need the posts in blog-posts.json first)
+// 4. og cards, then the RSS feed, robots.txt and sitemap.xml (need the posts in blog-posts.json first)
 step(4, "og cards and the RSS feed");
 if (NO_BUILD || DRY) console.log("  skipped (--no-build or --dry-run)");
 else {
   execFileSync("bash", ["scripts/og-cards.sh", "--blog-only"], { cwd: root, stdio: "inherit" });
-  execFileSync("node", ["scripts/build-rss.mjs"], { cwd: root, stdio: "inherit" });
+  execFileSync("node", ["scripts/build-seo-files.mjs"], { cwd: root, stdio: "inherit" });
 }
 
 // 5. Getting started: package manager notes and coverage
@@ -139,7 +147,7 @@ edit("apps/docs/routes/getting-started.tsx", [
     to: `          <strong>Yarn 4</strong> prints peer-dependency warnings (<code>YN0002</code>) about <code>react</code>. A new
           project works with Yarn 4's default settings, because <code>create-devora</code> writes a{" "}
           <code>.yarnrc.yml</code> with <code>nodeLinker: node-modules</code> when you pick Yarn (Plug'n'Play, Yarn 4's
-          default, does not run the CLI: <code>@devorajs/cli tried to access esbuild</code>). A project made by{" "}
+          default, also ran the CLI in a test from the 0.4.0 build; before that it stopped with <code>@devorajs/cli tried to access esbuild</code>). A project made by{" "}
           <code>create-devora</code> 0.3.x needs that one-line file added before installing.`,
   },
   {
@@ -223,8 +231,7 @@ edit("apps/docs/routes/security.tsx", [
     from: `      <Callout kind="info" title="Not published yet">
         <p>
           This section describes the release after {RELEASE_VERSION}. It is merged into the framework
-          repository, no version number has been chosen, and it is not on npm: {RELEASE_VERSION} does
-          not behave this way. The rest of this page describes {RELEASE_VERSION}.
+          repository and is not on npm: {RELEASE_VERSION} does not behave this way. The rest of this page describes {RELEASE_VERSION}.
         </p>
       </Callout>`,
     to: `      <Callout kind="info" title="Changed in 0.4.0">
@@ -241,8 +248,8 @@ edit("apps/docs/routes/security.tsx", [
       <Callout kind="warning" title="Changed in 0.4.0">
         <p>
           The next paragraphs describe 0.3.x, where a route checks CSRF only if it calls{" "}
-          <code>ctx{"."}verifyCsrf()</code>. Since 0.4.0 a cookie-authenticated <code>POST</code>,{" "}
-          <code>PUT</code>, <code>PATCH</code> or <code>DELETE</code> is also checked before the route runs: see{" "}
+          <code>ctx{"."}verifyCsrf()</code>. Since 0.4.0 a cookie-authenticated write (any method but{" "}
+          <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) is also checked before the route runs: see{" "}
           <a href="#new-in-0-4-0">New in 0.4.0</a>. Anonymous writes (a login form) still need the explicit call.
         </p>
       </Callout>
@@ -250,7 +257,11 @@ edit("apps/docs/routes/security.tsx", [
 ]);
 // the sentence about "once it is published" in the same section
 edit("apps/docs/routes/security.tsx", [
-  { from: "once it is published. None of this has been checked on a live Vercel or Netlify deployment", to: ". None of this has been checked on a live Vercel or Netlify deployment" },
+  // The replacement must not be part of the original text, or edit() reports it as already applied and skips it.
+  {
+    from: 'CHANGELOG</a>{" "}\n        once it is published. None of this has been checked on a live Vercel or Netlify deployment',
+    to: "CHANGELOG</a>. None of this has been checked on a live Vercel or Netlify deployment",
+  },
 ]);
 
 // 8. Upgrading page
@@ -268,7 +279,7 @@ else {
   page = page.slice(0, h1) + intro + page.slice(next);
   page = page.replace(marker, () => changes + marker);
   page = page.replace('title: "Upgrading to 0.3.5",', 'title: "Upgrading to 0.4.0",');
-  page = page.replace(/description:\n\s+"Every behavior change from Devora\.js 0\.3\.4 to 0\.3\.5[^"]*",/, `description:\n      "Every breaking change from Devora.js 0.3.5 to 0.4.0 and what an existing app has to do about it, the earlier behavior changes back to 0.3.1, and the upgrade steps.",`);
+  page = page.replace(/description:\n\s+"Every behavior change from Devora\.js 0\.3\.4 to 0\.3\.5[^"]*",/, `description:\n      "Every breaking change from Devora.js 0.3.5 to 0.4.0 and what an app has to do about it, the earlier behavior changes back to 0.3.1, and the steps.",`);
   if (!page.includes('title: "Upgrading to 0.4.0"')) throw new Error(`${up}: the page title was not found`);
   write(up, page);
 }
