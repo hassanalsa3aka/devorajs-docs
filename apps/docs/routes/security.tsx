@@ -83,7 +83,7 @@ export default function Security() {
         <li>Send the token from the browser: <code>&lt;CsrfField token={"{csrfToken}"} /&gt;</code> in a form, and the <code>x-devora-csrf</code> header on a <code>fetch</code> to an API route. A webhook or other cross-site caller that sends the session cookie needs <code>csrf = false</code>. Call <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form.</li>
         <li>List your hosts in <code>allowedHosts</code> in <code>app.config.ts</code> so a forged <code>Host</code> gets a 400, and build password-reset links from a configured origin, never from the <code>Host</code> header or <code>ctx{"."}url</code>.</li>
         <li>Never serve user-uploaded SVG or HTML from the app's origin. The SVG policy covers files you ship, not files your app stores and sends back. Use a separate domain, or <code>Content-Disposition: attachment</code>.</li>
-        <li>Rate-limit login routes at your proxy or platform. A route can export <code>rateLimit</code>, but it counts in memory per process and does not lock accounts.</li>
+        <li>Rate-limit login routes at your proxy or platform. A route can export <code>rateLimit</code>, but it counts in memory per process (IPv6 clients by /64 prefix) and does not lock accounts.</li>
         <li>Set <code>trustProxy</code> only when the app can be reached only through your proxy, and use a real session store and <code>DEVORA_SESSION_SECRET</code> in production.</li>
         <li>Do not share the app's domain with sites you do not control. Cookies can be set across subdomains of one domain, so host other people's apps, user content and previews on a separate domain.</li>
       </ul>
@@ -95,6 +95,8 @@ export default function Security() {
         <li>Large uploads must finish within 60 seconds by default (<code>server.requestTimeoutMs</code>).</li>
         <li>Apps on vite 5 must move to vite 6.4.4 or later.</li>
         <li>An API route without a <code>methods</code> list that is called with an unusual method (<code>PURGE</code>, <code>PROPPATCH</code>) and the session cookie now needs the CSRF token too, and such requests count toward the route's <code>rateLimit</code>.</li>
+        <li>For a signed-in browser the CSRF token is now tied to the session, so a token read before login is not valid after it. A script that logs in and then posts a form must load the page again after login to get the new token. Requests without a session and routes with <code>export const csrf = false</code> behave as before.</li>
+        <li><code>rateLimit</code> counts an IPv6 client by its /64 prefix (the first four groups of the address), so every address in one /64 shares a count. IPv4 clients are unchanged.</li>
         <li><code>create-devora</code> and <code>devora new</code> refuse an app name with capital letters or anything but letters, digits, <code>-</code> and <code>_</code>. Existing projects are not affected.</li>
       </ul>
       <h3 style={{ fontSize: "1.05rem", margin: "1.75rem 0 0.5rem" }}>Red-team pass</h3>
@@ -104,10 +106,11 @@ export default function Security() {
         <code>Host</code> and <code>Origin</code>, CSRF bypass attempts, session fixation and cookie flags, large
         and slow requests, form and upload limits, prototype pollution, slow regular expressions, output
         encoding, the dev server and the scaffolders, plus bounded random fuzzing of the path, host, cookie,
-        redirect and body parsers. Six problems were found and fixed, each with a regression test; they are the
-        last four rows of the table above and the CSRF and rate-limit method change. Two design items stay
-        open on the <a href="/roadmap">roadmap</a>: tying the CSRF token to the session, and how{" "}
-        <code>rateLimit</code> groups IPv6 addresses.
+        redirect and body parsers. Eight problems were found and fixed, each with a regression test; they are the
+        last four rows of the table above, the CSRF and rate-limit method change, the session-bound CSRF token
+        and the IPv6 rate-limit key. One item stays open on the <a href="/roadmap">roadmap</a>: the Netlify
+        function reads the request body before <code>maxBodyBytes</code> applies, and Netlify caps function
+        request bodies itself.
       </p>
       <p>
         The full list is in the framework's{" "}
@@ -332,8 +335,10 @@ export const handler = apiRoute(async (req, ctx) => {
       <p>
         CSRF protection is an explicit call, not framework-injected middleware — a route that
         changes state calls <code>ctx{"."}verifyCsrf(...)</code> itself, the same way it calls{" "}
-        <code>requireAuth()</code>. It's a double-submit-cookie pattern, with one difference from
-        the textbook version: the token is embedded server-side into the rendered form rather than
+        <code>requireAuth()</code>. It's a double-submit-cookie pattern. Since 0.4.0, a signed-in browser's token is an HMAC of
+        the session ID keyed with the session secret, so a token from another session is refused and a cookie
+        planted from a sibling subdomain cannot stand in for it; a request with no session (a login form, say)
+        still uses the double-submit cookie. The token is embedded server-side into the rendered form rather than
         read from the cookie by client JS, so the CSRF cookie stays <code>HttpOnly</code>. A page
         gets its token as the <code>csrfToken</code> prop; a <code>&lt;form&gt;</code> posts it
         via <code>CsrfField</code>, and a same-origin API call sends it on the{" "}

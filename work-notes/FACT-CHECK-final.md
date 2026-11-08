@@ -19,7 +19,7 @@ Verdicts: **True** (matches the evidence), **Fixed** (was wrong, corrected in th
 | An API route without `methods` called with an unusual method and the session cookie needs the CSRF token and counts toward `rateLimit` | security.tsx:97 | csrf.ts, rateLimit.ts (`UNCOUNTED_METHODS`); redteamFindings.test.ts H26 (PURGE 403 then 200 with the header; rateLimit counts PURGE, PROPPATCH, LINK); attack-prod run: 403 for five methods | True |
 | The integration branch was attacked on localhost by the project itself, not a third party, in the listed categories | security.tsx:100-106 | devora.js/work-notes/redteam/REDTEAM.md; scripts attack-prod.mjs, attack-dev.mjs, fuzz.mts, redos.mts | True |
 | Six problems were found and fixed, each with a regression test: the last four rows of the table and the method change | security.tsx:107-108 | REDTEAM.md findings H24 to H29 (the cookie row covers H24 and H25); each test checked failing with the fix stashed | True |
-| Two design items stay open: tying the CSRF token to the session, and how rateLimit groups IPv6 addresses | security.tsx:108-110 | devora.js/ROADMAP.md H30, H31 (Open). No exploit detail on the page | True |
+| The CSRF token of a signed-in browser is tied to the session (HMAC of the session ID); rateLimit counts IPv6 by /64; one item (Netlify body read, accepted) stays open | security.tsx (CSRF section, Next release list, Red-team pass) | devora.js CHANGELOG 0.4.0, `csrfSessionBinding.test.ts`, `rateLimit.test.ts` (H31), ROADMAP H30/H31 Fixed, H32 Open | True |
 | Mobile and Metro-class tooling come later than desktop; nothing for them exists in the code | apps/docs/routes/roadmap.tsx:282, :357 | `grep -ri "metro\|react-native\|expo" devora.js/packages devora.js/adapters devora.js/create-devora --include=*.ts` returns nothing | True |
 | Release-day template: CSRF checked for a write, any method but GET/HEAD/OPTIONS | scripts/release-day/upgrading-040.changes.tsx:12; scripts/release-day.mjs:251 | csrf.ts | True |
 | Release-day template: the first value of a duplicated cookie name is used (it was the last); a malformed escape is kept | upgrading-040.changes.tsx:24 | session.ts; on main `parseCookieHeader` assigned every value in order (last wins) and called `decodeURIComponent` unguarded | True |
@@ -39,7 +39,7 @@ Verdicts: **True** (matches the evidence), **Fixed** (was wrong, corrected in th
 | A slow-header client was closed after 15 seconds | 64 | attack-prod run: 408 after 15125 ms | True |
 | No parser input took more than about a tenth of a second | 64 | redos.mts slowest 117 ms (10 MB inputs); fuzz slowest single input 52.6 ms | True ("about") |
 | `pnpm audit --prod` on the framework repository reports no known vulnerabilities; the test runner's advisories are dev-only and on the roadmap | 64-66 | Run 2026-11-05: "No known vulnerabilities found"; full audit: 14 advisories, all via vitest (finding H18) | True |
-| Two design questions on the roadmap | 70-73 | ROADMAP H30, H31 | True |
+| One open item on the roadmap (H32, accepted) | Red-team pass | ROADMAP H32 | True |
 | Findings H24 to H32 are in the framework's ROADMAP | 80 | devora.js/ROADMAP.md | True |
 | No "fastest" claim, no tool or assistant named, date left for the publishing day | whole file | grep | True |
 

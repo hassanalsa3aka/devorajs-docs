@@ -1,6 +1,6 @@
 ---
 title: "Attacking our own release before shipping it"
-description: "What an internal red-team pass on Devora.js 0.4.0 tried, the six problems it found and fixed, and the two design items still open."
+description: "What an internal red-team pass on Devora.js 0.4.0 tried, the eight problems it found and fixed, and the one item left open."
 date: PUBLISH-DATE (fill in the day this post is published)
 status: draft, not routed, not linked from the site, the feed or the sitemap
 ---
@@ -36,7 +36,7 @@ carries more files than the limit". It ran about 95 million inputs.
 
 ## What broke, and what changed
 
-Six problems, all fixed in 0.4.0, each with a test that fails without the fix:
+Eight problems, all fixed in 0.4.0, each with a test that fails without the fix:
 
 1. **One bad cookie could break every page.** A cookie with a malformed percent-escape made the cookie parser
    throw, so each page answered 500 for that browser. Any app on the same domain could set such a cookie. Now the
@@ -55,6 +55,15 @@ Six problems, all fixed in 0.4.0, each with a test that fails without the fix:
 6. **App names went unchecked into generated code.** `create-devora` and `devora new` wrote the app name into
    `devora.config.ts`, into folder paths and into the Netlify build command. Names are now limited to lowercase
    letters, digits, `-` and `_`.
+7. **The CSRF token was only compared with a cookie.** A browser that could set cookies for the app's domain, such
+   as a sibling subdomain, could choose the cookie, so the check did not prove the request came from a page the app
+   served. Now, for a signed-in browser, the token is derived from the session ID and the session secret, and a token
+   from another session is refused. Requests without a session keep the cookie-based check, and a route can still
+   opt out with `export const csrf = false`. If your own script fetches the login response and then submits a form
+   with the token it read before logging in, load the page again after login: the token changes with the session.
+8. **`rateLimit` counted each IPv6 address separately.** A client with a whole /64 block could rotate addresses and
+   never reach the limit. IPv6 clients are now counted by their /64 prefix; IPv4 clients are unchanged. Everyone
+   behind one /64 shares a count, which is how a home or office network is usually allocated.
 
 ## What held
 
@@ -67,11 +76,8 @@ by users) are a separate roadmap item.
 
 ## What is still open
 
-Two design questions are on the roadmap rather than in this release, because each changes how existing apps
-behave:
-
-- tying the CSRF token to the session, instead of comparing it only with a cookie;
-- how `rateLimit` groups IPv6 addresses.
+One item: the Netlify function reads the whole request body before `maxBodyBytes` is applied. Netlify caps the size
+of a function's request body itself, so we left it as it is and wrote it down in case that platform limit changes.
 
 If you run several apps on subdomains of one domain, do not give a subdomain to anyone you do not trust: cookies can
 be set across subdomains. The [security model](/security) page lists what the defaults cover and what stays your
