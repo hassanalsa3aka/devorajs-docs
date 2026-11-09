@@ -130,7 +130,7 @@ export default function CliReference() {
             <tr><td><code>--host</code></td><td>Listen on every network interface and print LAN URLs (with a warning)</td></tr>
             <tr><td><code>--routes</code></td><td>List every API route, however many (same as <code>DEVORA_ROUTES=all</code>)</td></tr>
             <tr><td><code>--quiet</code></td><td>Only warnings, errors and one URL line per app; Vite logs at <code>warn</code></td></tr>
-            <tr><td><code>--engine &lt;vite|own&gt;</code> <Tag color="gray">experimental</Tag></td><td>Dev engine: <code>vite</code> (default) or <code>own</code> (Devora Engine, see below); beats <code>engine</code> in <code>devora.config.ts</code></td></tr>
+            <tr><td><code>--engine &lt;vite|own&gt;</code> <Tag color="gray">experimental</Tag></td><td>Dev engine: <code>vite</code> (default) or <code>own</code> (Sekhem, see below); beats <code>engine</code> in <code>devora.config.ts</code></td></tr>
             <tr><td><code>--experimental-dev-server</code> <Tag color="gray">experimental</Tag></td><td>Same as <code>--engine=own</code></td></tr>
           </tbody>
         </table>
@@ -152,7 +152,7 @@ export default function CliReference() {
       </p>
       <p>
         <strong><code>--engine=own</code></strong> (the same as <code>--experimental-dev-server</code>, also{" "}
-        <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>) runs a dev server of Devora's own, called Devora Engine for now,
+        <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>) runs a dev server of Devora's own, called Sekhem,
         instead of Vite. Set <code>engine: "own"</code> in <code>devora.config.ts</code> to make it the project default;
         the flag wins over the file, and an unknown value is an error. It is experimental, runs only from a checkout of
         the framework's repository (it is not in the published CLI), and is not the default: plain{" "}
