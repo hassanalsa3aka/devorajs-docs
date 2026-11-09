@@ -61,6 +61,46 @@
       "tags": [
         "Guide"
       ]
+    },
+    {
+      "slug": "sekhem-experimental-engine",
+      "title": "Sekhem: an experimental engine for Devora.js, without Vite",
+      "seoTitle": "Sekhem: an experimental Devora.js engine",
+      "date": "2026-11-09",
+      "description": "A dev server and build on esbuild that does not use Vite: how to try it, what was measured, what does not work yet.",
+      "tags": [
+        "Story"
+      ]
+    },
+    {
+      "slug": "devora-performance-measured",
+      "title": "Measuring Devora.js on two machines and four Node versions",
+      "seoTitle": "Devora.js performance, measured",
+      "date": "2026-11-09",
+      "description": "Eleven frameworks, two machines, Node 20 to 26: what we ran, where Devora.js is ahead and behind, and what we got wrong the first time.",
+      "tags": [
+        "Story"
+      ]
+    },
+    {
+      "slug": "devora-0-4-0",
+      "title": "Devora.js 0.4.0: a security hardening release, and what to change before you upgrade",
+      "seoTitle": "Devora.js 0.4.0: security hardening",
+      "description": "CSRF checked by default, redirect() kept on your origin, no-store on session responses, vite 6.4.4 or later, allowedHosts, timeouts, form limits.",
+      "tags": [
+        "Release"
+      ],
+      "date": "2026-11-09"
+    },
+    {
+      "slug": "security-review-nextjs-advisories",
+      "title": "A security review of Devora.js after the recent Next.js advisories",
+      "seoTitle": "Security review after Next.js advisories",
+      "description": "Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.",
+      "tags": [
+        "Story"
+      ],
+      "date": "2026-11-09"
     }
   ],
   "tags": [
