@@ -291,8 +291,19 @@ export default function Roadmap() {
           <li>
             <strong>A desktop target</strong> (<code>devora desktop ... --experimental</code>, Tauri 2): the same
             app in a window, its server as a sidecar on 127.0.0.1 with a random port and a per-launch token, one
-            allowed origin, no IPC command unless listed, no unsigned updates. Built and tested without a display;
-            the window itself has not been clicked through yet. See the <a href="/cli-reference#desktop">CLI reference</a>.
+            allowed origin, no IPC command unless listed, no unsigned updates. On macOS an automated check
+            (<code>pnpm run check:desktop-window</code>) builds the Rust shell, opens the real window and has the page report back;
+            nobody has clicked through it by hand, and Windows and Linux are not tested. See the{" "}
+            <a href="/cli-reference#desktop">CLI reference</a>.
+          </li>
+          <li>
+            <strong>What a music-player-style desktop app needs</strong> (a Spotify-style app), and what Devora.js has of it today:
+            audio playback (the web view's own audio element; nothing in the framework), media keys and the system now-playing
+            panel (an operating-system integration per platform: not built), a tray icon and menu (Tauri has one; not wired up
+            by <code>devora desktop</code>), offline listening (stored files and a service-worker or file cache with an
+            expiry policy: not built, and a rights question before a technical one), and protected streams. Streams protected
+            by DRM depend on what each platform's web view supports; this project has not tested any, so assume it will not work
+            until a test on the target platform says it does. A shipped app also needs signing and an update channel.
           </li>
           <li>
             <strong>A dev server of Devora's own</strong> (<code>devora dev --engine=own</code>):
