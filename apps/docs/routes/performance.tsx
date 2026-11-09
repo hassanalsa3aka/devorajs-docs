@@ -230,6 +230,136 @@ export default function Performance() {
         </p>
       </div>
 
+      <h2 id="node-versions">Node versions and the two engines</h2>
+      <ul className="perf-intro">
+        <li>
+          Measured on 9 November 2026 on one Mac (Apple M5, 10 cores, 16 GB, macOS, arm64). Five runs per cell, medians, the
+          four apps of the devora.js repository built with <code>devora build</code> from a clean output folder. Vite 6.4.5,
+          7.3.7 and 8.3.6; Sekhem is the experimental engine (<code>--engine=own</code>). Peak memory is the whole process
+          tree. The raw JSON is in <a href={`${REPRODUCE_URL}/results`}>benchmarks/results/</a>; reproduce with{" "}
+          <code>pnpm run measure:build</code> in the repository (Vite 7 and 8 through <code>DEVORA_VITE7_DIR</code> and{" "}
+          <code>DEVORA_VITE8_DIR</code>). No Oracle or other machine was measured.
+        </li>
+      </ul>
+      <div className="perf-table-wrap">
+      <table className="perf-table">
+        <thead>
+          <tr><th>Node</th><th>Vite 6</th><th>Vite 7</th><th>Vite 8</th><th>Sekhem</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>20.20.2</td><td>1.73 s, 549 MB</td><td>not run</td><td>not run</td><td>refuses (needs 22.15)</td></tr>
+          <tr><td>22.23.4</td><td>1.64 s, 511 MB</td><td>1.84 s, 511 MB</td><td>1.11 s, 478 MB</td><td>0.62 s, 218 MB</td></tr>
+          <tr><td>24.22.2</td><td>1.44 s, 486 MB</td><td>1.62 s, 532 MB</td><td>0.97 s, 486 MB</td><td>0.58 s, 217 MB</td></tr>
+          <tr><td>26.13.0</td><td>1.42 s, 566 MB</td><td>1.59 s, 486 MB</td><td>0.95 s, 461 MB</td><td>0.56 s, 234 MB</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <ul className="perf-intro">
+        <li>
+          Build time, median of five, four apps together. Output size was 18.9 MB for every Vite build and 9.7 MB for Sekhem
+          (neither minifies the server code; the difference was not investigated).
+        </li>
+        <li>
+          Newer Node was faster in this test. Medians on Node 24 and 26 were 12% and 14% lower than on Node 22 with Vite 6
+          (the five-run ranges overlap slightly: 1.62 to 1.79 s on Node 22, 1.44 to 1.70 s on Node 24) and 7% and 10%
+          lower with Sekhem (the ranges for Node 22 and Node 24 or 26 do not overlap). Memory differences between Node
+          lines are within the spread.
+        </li>
+        <li>
+          Dev server, small app, warm start until the page is interactive (median of five, includes the CLI's own start-up):
+          Sekhem 168, 145 and 166 ms on Node 22, 24 and 26; Vite 6 373, 337 and 334 ms. A change to a component shows in the
+          page after 32 to 33 ms with Sekhem and with Vite when its file watcher is tuned, and after about 160 ms with
+          Vite's default settings. Where Sekhem is behind: idle CPU of its dev server was 1.0% on Node 22 and 0.8% on Node
+          24 against 0.0 to 0.8% for Vite (0.1% on Node 26 for both), and in an earlier run on Node 22 a server-side edit
+          in a 1000-module app took 17 ms against 14.7 ms for tuned Vite 8.
+        </li>
+        <li>
+          Not measured here: the eight request scenarios per Node version, other machines, and Vite 7 and 8 on Node 20.
+        </li>
+      </ul>
+
+      <h2 id="request-scenarios">Request scenarios, Devora.js with Vite and with Sekhem, Node 22</h2>
+      <ul className="perf-intro">
+        <li>
+          Same API in every app (<code>benchmarks/backend/CONTRACT.md</code>), production builds, fresh server per round, five
+          rounds of 10 s after a 5 s warm-up, 50 connections, autocannon on the same machine, medians. Rounds alternate between
+          apps. Run on 9 November 2026. Raw JSON and the harness: <a href={`${REPRODUCE_URL}/results`}>benchmarks/results/</a>;
+          reproduce with <code>node benchmarks/setup-devora-local.mjs</code> and <code>node benchmarks/run-backend.mjs</code>.
+          The two Devora.js rows run this commit's CLI; they differ only in the build engine.
+        </li>
+        <li>
+          Mac: Apple M5, 10 cores, 16 GB, macOS (Darwin 27.2), Node 22.23.4. The machine's one-minute load average was 5.25 when
+          the run started, from earlier work, so treat small gaps with care.
+        </li>
+        <li>
+          Oracle: Neoverse-N1 (arm64), 2 vCPU, 12 GB, Ubuntu 24.04, Node 22.23.4. An Ollama service was running (idle) and the
+          load average was 0.68 at the start of the first part and about 1.7 during the second; the load generator shares the
+          two CPUs with the server. Devora.js, Express, Fastify and Hono ran in one pass and the other six frameworks in a later
+          one. The Mac and the Oracle numbers are not comparable with each other.
+        </li>
+      </ul>
+      <div className="perf-table-wrap">
+        <table className="perf-table">
+          <caption>Mac (Apple M5), Node 22.23.4, median of 5 runs</caption>
+          <thead><tr><th>Framework</th><th>JSON list req/s</th><th>Authenticated GET req/s</th><th>POST valid req/s</th><th>POST invalid req/s</th><th>One async step req/s</th><th>Build ms</th><th>Start ms</th><th>Idle MB</th></tr></thead>
+          <tbody>
+            <tr><td>Devora.js with Vite</td><td>27,208</td><td>41,098</td><td>39,251</td><td>39,705</td><td>16,194</td><td>646</td><td>278</td><td>136</td></tr>
+            <tr><td>Devora.js with Sekhem</td><td>27,381</td><td>40,851</td><td>39,661</td><td>39,711</td><td>16,480</td><td>531</td><td>279</td><td>137</td></tr>
+            <tr><td>Express 5</td><td>12,204</td><td>16,203</td><td>13,904</td><td>13,571</td><td>12,010</td><td>191</td><td>250</td><td>124</td></tr>
+            <tr><td>Fastify 5</td><td>34,250</td><td>71,316</td><td>60,755</td><td>60,813</td><td>15,840</td><td>193</td><td>301</td><td>132</td></tr>
+            <tr><td>Hono</td><td>33,399</td><td>70,217</td><td>55,114</td><td>56,452</td><td>15,469</td><td>190</td><td>222</td><td>126</td></tr>
+            <tr><td>NestJS (Express platform)</td><td>11,400</td><td>14,470</td><td>12,859</td><td>11,879</td><td>12,069</td><td>1,012</td><td>463</td><td>161</td></tr>
+            <tr><td>NestJS (Fastify platform)</td><td>31,929</td><td>58,963</td><td>52,278</td><td>42,230</td><td>15,450</td><td>1,122</td><td>463</td><td>166</td></tr>
+            <tr><td>Next.js</td><td>5,095</td><td>5,581</td><td>4,925</td><td>4,903</td><td>5,457</td><td>2,676</td><td>465</td><td>160</td></tr>
+            <tr><td>SvelteKit</td><td>16,661</td><td>22,610</td><td>17,431</td><td>17,812</td><td>15,707</td><td>2,230</td><td>251</td><td>128</td></tr>
+            <tr><td>React Router</td><td>5,572</td><td>6,074</td><td>6,369</td><td>6,372</td><td>5,891</td><td>857</td><td>324</td><td>143</td></tr>
+            <tr><td>Astro</td><td>9,780</td><td>11,538</td><td>9,165</td><td>9,195</td><td>11,224</td><td>1,148</td><td>334</td><td>152</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="perf-table-wrap">
+        <table className="perf-table">
+          <caption>Oracle (Neoverse-N1, 2 vCPU), Node 22.23.4, median of 5 runs</caption>
+          <thead><tr><th>Framework</th><th>JSON list req/s</th><th>Authenticated GET req/s</th><th>POST valid req/s</th><th>POST invalid req/s</th><th>One async step req/s</th><th>Build ms</th><th>Start ms</th><th>Idle MB</th></tr></thead>
+          <tbody>
+            <tr><td>Devora.js with Vite</td><td>6,091</td><td>6,397</td><td>5,788</td><td>5,835</td><td>9,481</td><td>1,326</td><td>367</td><td>149</td></tr>
+            <tr><td>Devora.js with Sekhem</td><td>6,135</td><td>6,325</td><td>5,809</td><td>5,916</td><td>9,469</td><td>888</td><td>392</td><td>148</td></tr>
+            <tr><td>Express 5</td><td>3,232</td><td>3,713</td><td>3,028</td><td>3,039</td><td>4,091</td><td>214</td><td>333</td><td>129</td></tr>
+            <tr><td>Fastify 5</td><td>8,771</td><td>12,456</td><td>8,792</td><td>9,141</td><td>11,941</td><td>214</td><td>411</td><td>136</td></tr>
+            <tr><td>Hono</td><td>8,810</td><td>12,431</td><td>8,738</td><td>8,941</td><td>11,023</td><td>216</td><td>306</td><td>131</td></tr>
+            <tr><td>NestJS (Express platform)</td><td>2,847</td><td>3,132</td><td>2,621</td><td>2,421</td><td>3,463</td><td>1,870</td><td>779</td><td>172</td></tr>
+            <tr><td>NestJS (Fastify platform)</td><td>7,765</td><td>9,451</td><td>6,883</td><td>5,498</td><td>10,720</td><td>3,010</td><td>833</td><td>176</td></tr>
+            <tr><td>Next.js</td><td>1,037</td><td>1,186</td><td>1,045</td><td>1,054</td><td>1,120</td><td>7,997</td><td>741</td><td>158</td></tr>
+            <tr><td>SvelteKit</td><td>2,958</td><td>3,331</td><td>2,642</td><td>2,638</td><td>3,763</td><td>4,286</td><td>314</td><td>132</td></tr>
+            <tr><td>React Router</td><td>1,266</td><td>1,372</td><td>1,385</td><td>1,391</td><td>1,400</td><td>1,705</td><td>492</td><td>152</td></tr>
+            <tr><td>Astro</td><td>1,969</td><td>2,091</td><td>1,705</td><td>1,681</td><td>2,463</td><td>2,084</td><td>481</td><td>163</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul className="perf-intro">
+        <li>
+          Sekhem and the Vite engine serve the same production code, so their request numbers match within the run-to-run spread on
+          both machines; only the build differs (Mac 531 ms against 646 ms for this one API app, Oracle 888 ms against 1,326 ms).
+        </li>
+        <li>
+          On the Mac with Node 22 Devora.js answered the JSON list at 27,208 requests a second against 12,204 for Express, 5,095
+          for Next.js and 16,661 for SvelteKit, and is behind Fastify (34,250) and Hono (33,399), whose ranges lie above
+          Devora.js's. On the authenticated GET Fastify and Hono were about 70,000 against 41,098. For the one async step the
+          ranges of Devora.js, Fastify and Hono overlap, which is a tie. A likely reason, not isolated by a measurement: its request path
+          does more work for each request (host check, security headers, session and CSRF handling, which are on by default). We
+          did not measure it with those off in this round, so this is an explanation, not a result.
+        </li>
+        <li>
+          Node matters for these ranks: on Node 24 (Mac, three rounds) Express reached 28,500 on the JSON list and 51,431 on the
+          authenticated GET, which is level with or ahead of Devora.js (28,652 and 44,900) there, so the Node 22 gap to Express
+          is not a property of Devora.js alone. Per-Node request tables are in the raw JSON; the table above is Node 22 only.
+        </li>
+        <li>
+          Not measured: Nuxt (no Nuxt app of this API was written), Bun, Node 20, the SSR page, static file, streaming, ISR hit,
+          CRUD and WebSocket scenarios, and install time per package manager.
+        </li>
+      </ul>
+
       <h2 id="caveats">Caveats</h2>
       <ul className="perf-intro">
         <li>Localhost has no network latency; real deployments add it to every request.</li>

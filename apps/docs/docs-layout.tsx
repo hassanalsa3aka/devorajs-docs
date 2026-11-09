@@ -41,6 +41,8 @@ const DOCS_GROUPS = [
     items: [
       { id: "api-reference", label: "API reference", href: "/api-reference" },
       { id: "cli-reference", label: "CLI reference", href: "/cli-reference" },
+      { id: "engines", label: "Engines: Vite and Sekhem", href: "/engines" },
+      { id: "sekhem", label: "Sekhem: the Devora.js engine of our own", href: "/sekhem" },
       { id: "deployment", label: "Deployment", href: "/deployment" },
       { id: "security", label: "Security model", href: "/security" },
       { id: "roadmap", label: "Roadmap", href: "/roadmap" },

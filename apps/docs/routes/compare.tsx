@@ -645,6 +645,29 @@ export default function Compare({ data }) {
       </section>
 
       <section className="compare-section" aria-labelledby="limitations">
+        <h2 id="built-in-0-4">What Devora.js 0.4.0 has built in</h2>
+        <p>
+          Devora.js column only, checked against this repository on 9 November 2026. The other frameworks were not re-checked
+          for these rows; the tables above, last checked on {OTHERS_CHECKED}, still say what they say, and you should check a
+          framework's own documentation before relying on a "no" or a "yes" for it.
+        </p>
+        <div className="docs-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Area</th><th>Devora.js</th><th>What is not covered</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Several apps in one project</td><td>One <code>devora.config.ts</code> declares the apps; they share a core and a backend and build and deploy on their own.</td><td>Live deployment of several apps with sessions and API routes is not verified (roadmap N1).</td></tr>
+              <tr><td>Shared login</td><td>One login across apps (a cookie on a shared domain), or an isolated login per app, or no sessions for an app (<code>auth: "none"</code>). Sessions are stored on the server and can be revoked.</td><td>You supply the session store for production; there is no built-in user database or auth provider.</td></tr>
+              <tr><td>Security defaults</td><td>CSP, HSTS, X-Frame-Options and nosniff on responses the app serves; CSRF checked for cookie-authenticated writes (opt out per route with <code>export const csrf = false</code>; Bearer requests are exempt); <code>redirect()</code> stays on your origin; <code>allowedHosts</code>; server timeouts; form limits; opt-in per-route <code>rateLimit</code>.</td><td>Files a CDN serves straight from disk on Vercel and Netlify get only some headers. Rate limiting is per process. No third-party audit.</td></tr>
+              <tr><td>Rendering modes</td><td><code>ssr</code>, <code>ssg</code>, <code>csr</code>, <code>isr</code> and <code>streaming</code>, chosen per route, plus islands.</td><td><code>streaming</code> is GET only; <code>isr</code> regeneration on serverless filesystems is not verified.</td></tr>
+              <tr><td>Adapters</td><td>Node (<code>devora start</code>, Docker), Vercel and Netlify.</td><td>Container platforms other than a local Docker image are not verified (roadmap N2).</td></tr>
+              <tr><td>Desktop target</td><td><code>devora desktop</code> runs an app in a Tauri 2 window, with the server on a random loopback port and a token on every request.</td><td>Experimental. Checked on macOS only; Windows and Linux are not tested. No audio, tray or media-key support.</td></tr>
+              <tr><td>Engine choice</td><td>Vite is the default. Sekhem, our own engine on esbuild, is opt-in (<code>engine: "own"</code>) for dev and build.</td><td>Experimental, Node 22.15 or later, no Vite plugins, not yet published as a package. See <a href="/engines">Engines</a>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <h2 id="limitations">Known limitations</h2>
         <p>
           As of <code>@devorajs/core@{version}</code>, checked in its source:
@@ -674,7 +697,7 @@ export default function Compare({ data }) {
             changed route code.
           </li>
           <li>
-            Desktop and native mobile apps are planned goals, not started.
+            Native mobile apps are a planned goal, not started. A desktop target exists but is experimental and was checked on macOS only.
           </li>
           <li>Pre-1.0: behavior changes can land in any release; the CHANGELOG lists them first.</li>
         </ul>

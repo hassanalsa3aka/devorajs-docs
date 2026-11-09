@@ -70,7 +70,7 @@ export default function GettingStarted() {
       <p>
         Yarn and pnpm work the same way: <code>yarn create devora</code> or{" "}
         <code>pnpm create devora</code> (<code>npx create-devora@latest</code> does too). You need
-        Node 20 or newer. New projects depend on <code>@devorajs/core</code> and{" "}
+        Node 20 or newer (checked on 20.20, 22.23, 24.22 and 26.13; the experimental Sekhem engine needs 22.15 or newer). New projects depend on <code>@devorajs/core</code> and{" "}
         <code>@devorajs/cli</code> <code>^0.3.5</code> and start on React 18.
       </p>
       <p>

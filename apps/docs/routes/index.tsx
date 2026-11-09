@@ -953,7 +953,7 @@ import { addNote } from "@devorajs/backend/notes";`}
       </div>
 
       <p className="home-whatsnext reveal">
-        <strong>What's next.</strong> Desktop and native mobile apps are planned goals, not started,
+        <strong>What's next.</strong> A desktop target (experimental, macOS-checked) exists; native mobile apps are a planned goal, not started,
         and there are no dates. See the <a href="/roadmap">roadmap</a>
         {" "}(also as <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/ROADMAP.md">ROADMAP.md</a> on GitHub).
       </p>
