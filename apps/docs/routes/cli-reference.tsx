@@ -130,7 +130,8 @@ export default function CliReference() {
             <tr><td><code>--host</code></td><td>Listen on every network interface and print LAN URLs (with a warning)</td></tr>
             <tr><td><code>--routes</code></td><td>List every API route, however many (same as <code>DEVORA_ROUTES=all</code>)</td></tr>
             <tr><td><code>--quiet</code></td><td>Only warnings, errors and one URL line per app; Vite logs at <code>warn</code></td></tr>
-            <tr><td><code>--experimental-dev-server</code> <Tag color="gray">experimental</Tag></td><td>Use the dev server of Devora's own instead of Vite (see below); repository checkout only</td></tr>
+            <tr><td><code>--engine &lt;vite|own&gt;</code> <Tag color="gray">experimental</Tag></td><td>Dev engine: <code>vite</code> (default) or <code>own</code> (Devora Engine, see below); beats <code>engine</code> in <code>devora.config.ts</code></td></tr>
+            <tr><td><code>--experimental-dev-server</code> <Tag color="gray">experimental</Tag></td><td>Same as <code>--engine=own</code></td></tr>
           </tbody>
         </table>
       </div>
@@ -150,12 +151,17 @@ export default function CliReference() {
         <code>npm run dev:host</code>.
       </p>
       <p>
-        <strong><code>--experimental-dev-server</code></strong> (also <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>)
-        runs a dev server of Devora's own instead of Vite. It is experimental, runs only from a checkout of the
-        framework's repository (it is not in the published CLI), and is not the default: plain{" "}
-        <code>devora dev</code> is Vite and is unchanged. It does not read <code>vite.config.ts</code>, so there
-        are no Vite plugins, no PostCSS, Sass or CSS modules, no <code>import.meta.glob</code>, no tsconfig path
-        aliases, no <code>--host</code> and no HTTPS. No performance numbers are published.
+        <strong><code>--engine=own</code></strong> (the same as <code>--experimental-dev-server</code>, also{" "}
+        <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>) runs a dev server of Devora's own, called Devora Engine for now,
+        instead of Vite. Set <code>engine: "own"</code> in <code>devora.config.ts</code> to make it the project default;
+        the flag wins over the file, and an unknown value is an error. It is experimental, runs only from a checkout of
+        the framework's repository (it is not in the published CLI), and is not the default: plain{" "}
+        <code>devora dev</code> is Vite and is unchanged. It does not read <code>vite.config.ts</code>, so there are no
+        Vite plugins, no PostCSS or Sass, and no <code>--host</code> or HTTPS; it does support tsconfig path aliases,
+        CSS modules and <code>import.meta.glob</code> with literal patterns, and it needs Node 22.15 or later (it says
+        so and stops on older Node). <code>devora build --engine=own</code> is not available yet and stops with a
+        message; it never falls back to Vite silently. <code>create-devora</code> asks which engine to use (Vite is the
+        default, and the answer without a terminal) and <code>--engine=own</code> answers for you.
       </p>
 
       <h2 id="build"><code>devora build</code></h2>
