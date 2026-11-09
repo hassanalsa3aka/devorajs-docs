@@ -230,6 +230,54 @@ export default function Performance() {
         </p>
       </div>
 
+      <h2 id="node-versions">Node versions and the two engines</h2>
+      <ul className="perf-intro">
+        <li>
+          Measured on 9 November 2026 on one Mac (Apple M5, 10 cores, 16 GB, macOS, arm64). Five runs per cell, medians, the
+          four apps of the devora.js repository built with <code>devora build</code> from a clean output folder. Vite 6.4.5,
+          7.3.7 and 8.3.6; Sekhem is the experimental engine (<code>--engine=own</code>). Peak memory is the whole process
+          tree. The raw JSON is in <a href={`${REPRODUCE_URL}/results`}>benchmarks/results/</a>; reproduce with{" "}
+          <code>pnpm run measure:build</code> in the repository (Vite 7 and 8 through <code>DEVORA_VITE7_DIR</code> and{" "}
+          <code>DEVORA_VITE8_DIR</code>). No Oracle or other machine was measured.
+        </li>
+      </ul>
+      <div className="perf-table-wrap">
+      <table className="perf-table">
+        <thead>
+          <tr><th>Node</th><th>Vite 6</th><th>Vite 7</th><th>Vite 8</th><th>Sekhem</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>20.20.2</td><td>1.73 s, 549 MB</td><td>not run</td><td>not run</td><td>refuses (needs 22.15)</td></tr>
+          <tr><td>22.23.4</td><td>1.64 s, 511 MB</td><td>1.84 s, 511 MB</td><td>1.11 s, 478 MB</td><td>0.62 s, 218 MB</td></tr>
+          <tr><td>24.22.2</td><td>1.44 s, 486 MB</td><td>1.62 s, 532 MB</td><td>0.97 s, 486 MB</td><td>0.58 s, 217 MB</td></tr>
+          <tr><td>26.13.0</td><td>1.42 s, 566 MB</td><td>1.59 s, 486 MB</td><td>0.95 s, 461 MB</td><td>0.56 s, 234 MB</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <ul className="perf-intro">
+        <li>
+          Build time, median of five, four apps together. Output size was 18.9 MB for every Vite build and 9.7 MB for Sekhem
+          (neither minifies the server code; the difference was not investigated).
+        </li>
+        <li>
+          Newer Node was faster in this test. Medians on Node 24 and 26 were 12% and 14% lower than on Node 22 with Vite 6
+          (the five-run ranges overlap slightly: 1.62 to 1.79 s on Node 22, 1.44 to 1.70 s on Node 24) and 7% and 10%
+          lower with Sekhem (the ranges for Node 22 and Node 24 or 26 do not overlap). Memory differences between Node
+          lines are within the spread.
+        </li>
+        <li>
+          Dev server, small app, warm start until the page is interactive (median of five, includes the CLI's own start-up):
+          Sekhem 168, 145 and 166 ms on Node 22, 24 and 26; Vite 6 373, 337 and 334 ms. A change to a component shows in the
+          page after 32 to 33 ms with Sekhem and with Vite when its file watcher is tuned, and after about 160 ms with
+          Vite's default settings. Where Sekhem is behind: idle CPU of its dev server was 1.0% on Node 22 and 0.8% on Node
+          24 against 0.0 to 0.8% for Vite (0.1% on Node 26 for both), and in an earlier run on Node 22 a server-side edit
+          in a 1000-module app took 17 ms against 14.7 ms for tuned Vite 8.
+        </li>
+        <li>
+          Not measured here: the eight request scenarios per Node version, other machines, and Vite 7 and 8 on Node 20.
+        </li>
+      </ul>
+
       <h2 id="caveats">Caveats</h2>
       <ul className="perf-intro">
         <li>Localhost has no network latency; real deployments add it to every request.</li>
