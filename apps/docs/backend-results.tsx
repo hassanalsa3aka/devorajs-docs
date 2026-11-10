@@ -38,7 +38,7 @@ export function BackendResults() {
         const d = load(devora, sc.id);
         const v = judge(
           point(d.rps.median, d.rps),
-          FWS.filter((f) => f.key !== "devora-api").map((f) => ({ name: f.name, point: point(load(f, sc.id).rps.median, load(f, sc.id).rps) })),
+          FWS.filter((f) => !f.key.startsWith("devora")).map((f) => ({ name: f.name, point: point(load(f, sc.id).rps.median, load(f, sc.id).rps) })),
           "higher"
         );
         const verdict =
@@ -64,7 +64,7 @@ export function BackendResults() {
                 </thead>
                 <tbody>
                   {rows.map(({ f, l }) => (
-                    <tr key={f.key} className={f.key === "devora-api" ? "be-devora" : undefined}>
+                    <tr key={f.key} className={f.key.startsWith("devora") ? "be-devora" : undefined}>
                       <th scope="row">{f.name} <small>{f.version}</small></th>
                       <td className="num">{num(l.rps.median)} ({num(l.rps.min)}–{num(l.rps.max)})</td>
                       <td className="num">{l.p99.median} ms</td>

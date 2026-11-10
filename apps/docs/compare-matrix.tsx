@@ -284,7 +284,7 @@ export const COMPARE_MATRIX_CSS = `
 .cmx-filter-option:has(input:checked) { border-color: var(--devora-border-strong); background: var(--devora-surface); }
 .cmx-filter-option:has(input:focus-visible) { outline: 2px solid var(--devora-ring); outline-offset: 2px; }
 .cmx-filter-option input { accent-color: var(--devora-accent-from); margin: 0; width: 15px; height: 15px; }
-.cmx-filter-option .home-compare-logo { width: 14px; height: 14px; }
+.cmx-filter-option .home-compare-logo { width: 14px; height: 14px; fill: var(--devora-fg); }
 
 .cmx-scroll {
   overflow-x: auto;

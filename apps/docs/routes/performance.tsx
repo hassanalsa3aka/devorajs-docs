@@ -5,7 +5,7 @@ import { JsonLd, pageMeta, SITE_URL } from "../seo.js";
 import { judge, point, join, type Point } from "../bench-compare.js";
 import { BACKEND_CSS, BackendResults } from "../backend-results.js";
 import { ENGINE_CSS, EngineResults } from "../engine-results.js";
-import { PagesResults, ScenarioResults } from "../pages-results.js";
+import { ScenarioResults } from "../pages-results.js";
 import { BENCH, BENCH_DATE, BENCHMARK_CSS, BenchmarkWidget, REPRODUCE_URL } from "../benchmark-widget.js";
 
 export const renderMode = "ssg";
@@ -14,7 +14,7 @@ export function meta() {
   return pageMeta("/performance", {
     title: "Performance",
     description:
-      "Devora.js measured against Next.js, Astro, SvelteKit and React Router on the same three pages: build time, requests/second, memory, JavaScript sent.",
+      "Devora.js 0.4.0 measured against Next.js, Astro, SvelteKit, React Router and Nuxt on the same three pages: build time, requests/second, memory, JavaScript sent.",
     image: "/og/performance.png",
   });
 }
@@ -48,7 +48,7 @@ const ROWS: { label: string; better: "lower" | "higher"; value: (f: Fw) => numbe
 function verdict(row: (typeof ROWS)[number]) {
   const devora = FWS.find((f) => f.key === "devora")!;
   const pt = (f: Fw): Point => point(row.value(f), row.spread?.(f));
-  const others = FWS.filter((f) => f.key !== "devora");
+  const others = FWS.filter((f) => !f.key.startsWith("devora"));
   const v = judge(pt(devora), others.map((f) => ({ name: f.name, point: pt(f) })), row.better);
   const best = [...FWS].sort((a, b) => (row.better === "lower" ? row.value(a) - row.value(b) : row.value(b) - row.value(a)))[0]!;
   // Place = 1 + how many frameworks are beyond Devora.js's whole range.
@@ -80,7 +80,7 @@ export default function Performance() {
       <h1>Performance</h1>
       <p className="devora-lead perf-intro">
         The same three pages — a static page, a server-rendered page with 100 items and one
-        interactive counter, and a form — built in Devora.js and four other frameworks, each with
+        interactive counter, and a form — built in Devora.js (with its default engine, Vite 8, and with Sekhem, our own) and five other frameworks, each with
         its own documented production setup. Measured {BENCH_DATE}; every number on this page
         comes from that run's JSON.
       </p>
@@ -154,7 +154,7 @@ export default function Performance() {
             <tr>
               <th scope="col">Metric</th>
               {FWS.map((f) => (
-                <th scope="col" key={f.key} className={f.key === "devora" ? "perf-devora" : undefined}>
+                <th scope="col" key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
                   {f.name} {f.version}
                 </th>
               ))}
@@ -169,7 +169,7 @@ export default function Performance() {
                   <small>{row.better} is better</small>
                 </th>
                 {FWS.map((f) => (
-                  <td key={f.key} className={f.key === "devora" ? "perf-devora" : undefined}>
+                  <td key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
                     {row.show(f)}
                   </td>
                 ))}
@@ -233,7 +233,6 @@ export default function Performance() {
         </p>
       </div>
 
-      <PagesResults />
       <ScenarioResults />
 
       <EngineResults />
