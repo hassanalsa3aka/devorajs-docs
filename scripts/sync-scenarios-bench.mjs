@@ -4,7 +4,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const [devoraFile, othersFile] = process.argv.slice(2);
+const [devoraFile, othersFile, outName = "scenarios-bench.json"] = process.argv.slice(2);
 if (!devoraFile || !othersFile) throw new Error("usage: node scripts/sync-scenarios-bench.mjs <devora.json> <others.json>");
 const a = JSON.parse(fs.readFileSync(devoraFile, "utf-8"));
 const b = JSON.parse(fs.readFileSync(othersFile, "utf-8"));
@@ -28,5 +28,5 @@ const rows = order.filter((k) => all[k]).map((key) => {
   };
 });
 const out = { date: a.date, machine: a.machine, ttfbRequests: a.config.ttfbRequests, connections: a.config.connections, rows };
-fs.writeFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), "..", "apps/docs/data/scenarios-bench.json"), JSON.stringify(out, null, 2) + "\n");
+fs.writeFileSync(path.join(path.dirname(new URL(import.meta.url).pathname), "..", "apps/docs/data", outName), JSON.stringify(out, null, 2) + "\n");
 console.log(`wrote ${rows.length} rows`);

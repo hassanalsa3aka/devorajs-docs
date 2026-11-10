@@ -5,6 +5,7 @@
 import bench from "./data/pages-bench.json";
 import oracle from "./data/pages-bench-oracle.json";
 import scenarios from "./data/scenarios-bench.json";
+import scenariosOracle from "./data/scenarios-bench-oracle.json";
 
 type Row = (typeof bench.rows)[number];
 type Metric = { id: keyof Row; label: string; unit: string; lower: boolean; digits?: number };
@@ -226,6 +227,58 @@ export function OraclePages() {
         <strong>Two cautions about this table</strong>
         The Sekhem build time here (872 ms against 666 ms for Vite) probably includes the start-up of a TypeScript runner that the benchmark setup used at the time; it is not comparable with the Mac result and
         will be measured again. The browser steps used Playwright&apos;s headless shell on this server and Google Chrome on the Mac; the JavaScript sizes are identical on both.
+      </div>
+    </>
+  );
+}
+
+/** Cold start, time to first byte and 1,000 connections on the Oracle ARM server (Linux): the 1,000-connection test the Mac cannot do well. */
+export function OracleScenarios() {
+  const sc = scenariosOracle;
+  const rows = sc.rows;
+  const m = sc.machine;
+  const minOf = (f: (r: (typeof rows)[number]) => number) => Math.min(...rows.map(f));
+  const maxOf = (f: (r: (typeof rows)[number]) => number) => Math.max(...rows.map(f));
+  const best = { cold: minOf((r) => r.coldStartMs), first: minOf((r) => r.firstPageMs), p50: minOf((r) => r.ttfbP50), s: maxOf((r) => r.staticRps), i: maxOf((r) => r.itemsRps) };
+  const cls = (v: number, b: number) => (v === b ? "eb-best" : undefined);
+  return (
+    <>
+      <h3 id="scenarios-oracle">The same tests on the ARM server, with 1,000 connections</h3>
+      <p className="perf-intro">
+        {m.cpu}, {m.cores} CPUs, {m.os}, Node {m.node.replace(/^v/, "")}, the open-file limit raised to 65,536 so that 1,000 connections can be opened. The same cold start, first byte and 1,000-connection tests as above; the load tool shares the two CPUs with the
+        server, so these numbers must not be compared with the Mac&apos;s.
+      </p>
+      <div className="be-wrap" role="region" aria-label="Cold start, first byte and 1,000 connections on the Oracle ARM server" tabIndex={0}>
+        <table className="be-table">
+          <thead>
+            <tr>
+              <th scope="col">Framework</th>
+              <th scope="col" className="num">Start to first page byte<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">First page request<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">First byte, median<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">1,000 connections, pre-rendered<span className="eb-sub">req/s (failed connections per run)</span></th>
+              <th scope="col" className="num">1,000 connections, server-rendered<span className="eb-sub">req/s (failed connections per run)</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key} className={r.key.startsWith("devora") ? "be-devora" : undefined}>
+                <th scope="row">{r.key === "devora-pages-vite" ? "Devora.js with Vite" : r.key === "devora-pages-sekhem" ? "Devora.js with Sekhem" : r.name}</th>
+                <td className="num"><span className={cls(r.coldStartMs, best.cold)}>{num(r.coldStartMs)}</span></td>
+                <td className="num"><span className={cls(r.firstPageMs, best.first)}>{num(r.firstPageMs)}</span></td>
+                <td className="num"><span className={cls(r.ttfbP50, best.p50)}>{num(r.ttfbP50, 2)}</span></td>
+                <td className="num"><span className={cls(r.staticRps, best.s)}>{num(r.staticRps)}</span><span className="eb-sub">{num(r.staticErrors)}{r.answersAfter ? "" : ", did not answer afterwards"}</span></td>
+                <td className="num"><span className={cls(r.itemsRps, best.i)}>{num(r.itemsRps)}</span><span className="eb-sub">{num(r.itemsErrors)}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="eb-note eb-warn">
+        <strong>What the 1,000-connection numbers mean</strong>
+        The load tool reports failed connections for almost every framework at 1,000 connections, even on Linux: only SvelteKit had none. The requests per second are the requests that were answered. React Router did not answer a normal request after the
+        1,000-connection run and returned an error status to most pre-rendered page requests in one run, so its numbers in these columns are not comparable. Two runs of 10 seconds each; one machine. Streaming first chunk, incremental regeneration hits, uploads and
+        WebSocket have no script yet and are not measured.
       </div>
     </>
   );
