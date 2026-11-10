@@ -9,9 +9,9 @@ export const renderMode = "ssg";
 
 export function meta() {
   return pageMeta("/upgrading", {
-    title: "Upgrading to 0.3.5",
+    title: "Upgrading to 0.4.1",
     description:
-      "Every behavior change from Devora.js 0.3.4 to 0.3.5 (and 0.3.2 to 0.3.4, 0.3.1 to 0.3.2) and what an existing app has to do about it, plus the upgrade steps.",
+      "Every breaking change from Devora.js 0.3.5 to 0.4.0 and what an app has to do about it, the earlier behavior changes back to 0.3.1, and the steps.",
   });
 }
 
@@ -19,6 +19,41 @@ export async function loader() {
   return {};
 }
 
+// From the 0.4.0 section of devora.js/CHANGELOG.md ("Breaking changes" and "Another change to check").
+const CHANGES_040: { change: ReactNode; todo: ReactNode }[] = [
+  {
+    change: <><code>redirect()</code> refuses a target that leaves the app's origin: <code>https://evil.com</code>, <code>//evil.com</code>, <code>/\evil.com</code>, <code>javascript:</code> targets and their percent-encoded forms are a <strong>400</strong> (the error page renders; no <code>Location</code> is sent). A loader that returns a plain <code>{"{ redirect }"}</code> object is covered too.</>,
+    todo: <>Search your routes for <code>redirect(</code> with a full URL. For a site you trust, list its origin: <code>redirect(url, {"{ allowedOrigins: [\"https://checkout.example.com\"] }"})</code>. A path such as <code>redirect("/account")</code> works as before, and a redirect built from user input needs no change.</>,
+  },
+  {
+    change: <>A response that reads or sets the session cookie is sent with <strong><code>Cache-Control: private, no-store</code></strong>, replacing any <code>Cache-Control</code> the handler set. It covers pages, streaming pages, redirects, error pages and API routes. Bearer requests and requests without the session cookie are unchanged.</>,
+    todo: <>If an API route sets <code>Cache-Control: public</code> or <code>s-maxage</code> on responses to logged-in browsers, that header is dropped for them. Put the cacheable version on a route that does not read the session. Otherwise nothing to do.</>,
+  },
+  {
+    change: <>CSRF is checked by default for a write (any method but <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) that arrives with a live session in the session cookie. The token must be in the <code>_csrf</code> form field or the <code>x-devora-csrf</code> header, or the response is a <strong>403</strong>. Bearer requests, requests with no session cookie and reads are not checked by this default. For a signed-in browser the token is tied to the session, so a token from another session is refused.</>,
+    todo: <>(1) Every page form with an <code>action</code> renders <code>{"<CsrfField token={csrfToken} />"}</code>. (2) A browser <code>fetch()</code> that writes to an API route sends the page's <code>csrfToken</code> in the <code>x-devora-csrf</code> header. (3) A webhook or other cross-site caller that sends the session cookie exports <code>export const csrf = false</code> from its route and verifies its caller itself. (4) A script that logs in and then posts a form must load the page again after login: a token read before login is not valid for the new session. (5) An app with <code>csrf: false</code> in <code>app.config.ts</code> has no CSRF cookie: its cookie-authenticated writes get a 403 unless the route opts out. Keep calling <code>ctx{"."}verifyCsrf()</code> yourself on anonymous writes such as a login form.</>,
+  },
+  {
+    change: <><code>@devorajs/cli</code> requires <strong>vite <code>^8.3.7</code></strong> (it accepted <code>^5.4.0 || ^6.0.0</code>), so a new install resolves the current Vite; older releases have known vulnerabilities. <code>@vitejs/plugin-react</code> moves to <code>^6.3.0</code>, which supports Vite 8 only.</>,
+    todo: <>Set <code>"vite": "^8.3.7"</code> and <code>"@vitejs/plugin-react": "^6.3.0"</code> in each app's <code>package.json</code> and reinstall. A lockfile pinning Vite 5, 6 or 7 must move, and a <code>vite.config.ts</code> that uses plugins or build options needs a look at the Vite 8 migration notes.</>,
+  },
+  {
+    change: <><code>devora start</code> sets its own server limits, and a page form is limited: the whole request must arrive within <strong>60 seconds</strong> (Node's default was 5 minutes), the headers within 15 seconds; a form may carry <strong>1000</strong> non-file fields and <strong>20</strong> files.</>,
+    todo: <>An app that accepts big uploads over slow links sets <code>server: {"{ requestTimeoutMs: 300000 }"}</code> in <code>app.config.ts</code>; one that really posts more than 20 files raises <code>maxFormFiles</code>. Behind a load balancer, set <code>server.keepAliveTimeoutMs</code> above its idle timeout.</>,
+  },
+  {
+    change: <>When a cookie name is sent twice, the <strong>first</strong> value is used (it was the last). Browsers send an app's own cookie first, so a cookie set later from a sibling subdomain no longer replaces it. A cookie with a malformed percent-escape is kept as sent instead of failing the request.</>,
+    todo: <>Nothing, unless your app relied on a duplicated cookie name: give the cookies distinct names.</>,
+  },
+  {
+    change: <><code>rateLimit</code> counts an IPv6 client by its <strong>/64 prefix</strong> (the first four groups), so every address in one /64 shares a count. IPv4 clients are unchanged.</>,
+    todo: <>Nothing, unless many real users share one /64 and one limit: raise <code>max</code> on that route.</>,
+  },
+  {
+    change: <><code>create-devora</code> and <code>devora new</code> accept an app name only of lowercase letters, digits, <code>-</code> and <code>_</code> (at most 50 characters), and a domain only as a host name.</>,
+    todo: <>Nothing for existing projects. Pick a lowercase name for new apps.</>,
+  },
+];
 // From the 0.3.5 section of devora.js/CHANGELOG.md ("Behavior changes").
 const CHANGES_035: { change: ReactNode; todo: ReactNode }[] = [
   {
@@ -149,36 +184,66 @@ export default function Upgrading() {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <DocsLayout active="upgrading">
-      <h1>Upgrading to 0.3.5</h1>
+      <h1>Upgrading to 0.4.1</h1>
       <p>
-        0.3.5 makes <code>devora start</code> do less work per request (about a fifth to a third more
-        requests per second on pages and API routes, measured on one machine), gives a missing
-        session store or secret one clear message, and adds guides for live updates (WebSockets) and
-        background jobs. Nothing in a typical app needs a change. If you are on 0.3.3 or older: 0.3.3
-        was prepared but never published, so its changes are in 0.3.4, and the 0.3.4 and 0.3.2
-        changes are listed below too.
+        <strong>Use 0.4.1, not 0.4.0.</strong> The 0.4.0 packages of <code>@devorajs/core</code>, <code>@devorajs/cli</code> and <code>create-devora</code> were
+        published from build output older than the source, so they lack some of the changes described here; 0.4.0 of those three is deprecated.
+        0.4.1 is the same release built correctly. Everything below applies to 0.4.1.
+      </p>
+      <p>
+        0.4.0 is a security hardening release. Three changes can make an existing app's requests fail until you act
+        (<code>redirect()</code> to another origin, CSRF on cookie-authenticated writes, and a <code>Cache-Control</code>
+        you relied on for logged-in responses), and the CLI now requires Vite 8.3.7 or later. Everything else is
+        additive or only tightens a default. The <a href="/blog/devora-0-4-0">release post</a> has the short version,
+        and <a href="/security">Security model</a> says what the defaults do and what they leave to you. If you are on
+        0.3.4 or older, the 0.3.5, 0.3.4 and 0.3.2 changes are listed below too.
       </p>
 
       <h2 id="steps">Steps</h2>
       <ol>
         <li>
           Upgrade <code>@devorajs/core</code> and <code>@devorajs/cli</code> together, in the root{" "}
-          <code>package.json</code> and every app's: <code>"^0.3.5"</code>. API routes run on the
-          CLI's bundled copy of core and pages on the app's installed one, so mixing versions gives
-          one project two behaviors.
+          <code>package.json</code> and every app's: <code>"^0.4.0"</code>, and set <code>vite</code> to{" "}
+          <code>"^8.3.7"</code> (and <code>@vitejs/plugin-react</code> to <code>"^6.3.0"</code>). API routes run on the CLI's bundled copy of core and pages on the app's installed
+          one, so mixing versions gives one project two behaviors.
         </li>
         <li>
-          If you import an adapter directly, use <code>@devorajs/adapter-node</code> 0.2.1,{" "}
-          <code>@devorajs/adapter-vercel</code> 0.2.3 or <code>@devorajs/adapter-netlify</code>{" "}
-          0.2.4 (<code>devora</code> bundles the adapters, so most projects don't depend on them at
-          all). Earlier adapter-node 0.2.0 and the 0.2.2 adapters were published without their
-          build output and are deprecated.
+          If you import an adapter directly, use <code>@devorajs/adapter-node</code>, <code>@devorajs/adapter-vercel</code>{" "}
+          or <code>@devorajs/adapter-netlify</code> <code>0.3.0</code>: they depend on <code>@devorajs/core</code>{" "} {/* version-ok */}
+          <code>^0.4.0</code> (<code>devora</code> bundles the adapters, so most projects don't depend on them at all).
         </li>
         <li>Install, then run <code>npm run typecheck</code>, <code>npm run dev</code> and <code>npm run build</code>.</li>
-        <li>Go through the tables below and change what applies to your app.</li>
+        <li>
+          Go through the table below. The quickest test is to run <code>devora dev</code>, sign in, submit each form and
+          call each write route from the browser once: a missing CSRF token shows up as a 403 right away.
+        </li>
+        <li>
+          Optional, and worth doing: set <code>allowedHosts</code> in <code>app.config.ts</code>, add a{" "}
+          <code>rateLimit</code> to login routes, and read the <a href="/security#new-in-0-4-0">new defaults</a>.
+        </li>
       </ol>
       <p>
-        TypeScript: <code>ctx.params</code> keeps its type (<code>Record&lt;string, string&gt;</code>),
+        A project made by <code>create-devora</code> 0.3.x keeps working. To use pnpm 11 or later, or Yarn 4, with it,
+        add the files described on <a href="/getting-started#package-managers">Getting started</a>.
+      </p>
+
+      <h2 id="changes-040">From 0.3.5 to 0.4.0</h2>
+      <div className="docs-table-wrap">
+        <table>
+          <thead><tr><th>What changed</th><th>What to do</th></tr></thead>
+          <tbody>
+            {CHANGES_040.map((c, i) => (
+              <tr key={i}>
+                <td>{c.change}</td>
+                <td>{c.todo}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        TypeScript (0.3.4 and later): <code>ctx.params</code> keeps its type (<code>Record&lt;string, string&gt;</code>), {/* version-ok */}
         so existing code compiles unchanged. A catch-all's segments are joined with <code>/</code>{" "}
         there, and <code>ctx.catchAll.slug</code> (or <code>req.catchAll.slug</code> in an API
         route) is the <code>string[]</code>.

@@ -705,18 +705,18 @@
  },
  {
   "id": "T3",
-  "finding": "A fresh project does not install with pnpm 11 or later (tried 12.10)",
-  "status": "Open",
-  "version": "",
-  "evidence": "pnpm 11 and later ignore link-workspace-packages in .npmrc, so the project's own @devorajs/backend is fetched from npm (ERR_PNPM_FETCH_404), and then the install fails on esbuild's ignored build script (ERR_PNPM_IGNORED_BUILDS). Works with pnpm 9 and 10, and with pnpm 12 after pnpm-workspace.yaml gets linkWorkspacePackages: true and allowBuilds: esbuild: true. Seen with the published create-devora and with the local 0.4.0 build. Not fixed in the scaffold; getting-started documents the workaround.",
+  "finding": "A fresh project did not install with pnpm 11 or later (tried 12.10)",
+  "status": "Fixed",
+  "version": "0.4.0",
+  "evidence": "pnpm 11 and later ignore link-workspace-packages in .npmrc (ERR_PNPM_FETCH_404 for @devorajs/backend, then ERR_PNPM_IGNORED_BUILDS). The 0.4.0 scaffold writes linkWorkspacePackages: true and allowBuilds: esbuild: true into pnpm-workspace.yaml; a new project passed create, install, dev, build, start, add, a package script and the one-off command on pnpm 9.15, 10.34 and 12.10, Node 20 and 22. Projects made by create-devora 0.3.x still need the two keys added by hand (Getting started).",
   "described": "package manager tests"
  },
  {
   "id": "T4",
-  "finding": "A fresh project does not run under Yarn 4's default Plug'n'Play linker",
-  "status": "Open",
-  "version": "",
-  "evidence": "Install succeeds with peer-dependency warnings, then devora dev and build stop with \"@devorajs/cli tried to access esbuild, but it isn't declared in its dependencies\". With nodeLinker: node-modules in .yarnrc.yml everything works (install, dev, build, start, typecheck, add). Seen with the published 0.3.5 packages and the local 0.4.0 build. Not fixed in the scaffold; getting-started documents the setting.",
+  "finding": "A fresh project did not run under Yarn 4's default Plug'n'Play linker",
+  "status": "Fixed",
+  "version": "0.4.0",
+  "evidence": "Install succeeded, then devora dev and build stopped with \"@devorajs/cli tried to access esbuild\". The 0.4.0 scaffold writes .yarnrc.yml with nodeLinker: node-modules when the package manager is Yarn; a new project passed the same steps on Yarn 4.18 (default settings) and Yarn 1.22, Node 20 and 22. Projects made by 0.3.x need the file added by hand (Getting started).",
   "described": "package manager tests"
  }
 ]

@@ -37,7 +37,7 @@ devora build --engine=own        # production build
 devora start                     # serves the build; the same for both engines
 npx create-devora my-app --engine=own`}</code></pre>
         <p>The flag wins over the file. An unknown engine name is an error: Devora.js never falls back to the other engine silently. The old switches <code>--experimental-dev-server</code> and <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code> mean the same as <code>--engine=own</code>.</p>
-        <p><strong>Requirements.</strong> Node 22.15 or later (Sekhem uses <code>module.registerHooks</code>; older Node gets a message and exits, and the Vite engine is not affected). Until the package <code>@devorajs/sekhem</code> is published, Sekhem runs from a checkout of the Devora.js repository.</p>
+        <p><strong>Requirements.</strong> Node 22.15 or later (Sekhem uses <code>module.registerHooks</code>; older Node gets a message and exits, and the Vite engine is not affected). Sekhem is the separate package <code>@devorajs/sekhem</code>: <code>npm install --save-dev @devorajs/sekhem</code> (or pnpm or yarn). <code>npx create-devora my-app --engine=own</code> adds it to the new project. Without it, <code>--engine=own</code> stops with a message that says what to install.</p>
         <p>A project created for Sekhem has no <code>vite.config.ts</code> and no <code>vite</code> or <code>@vitejs/plugin-react</code> dependency in its apps.</p>
         <h2 id="what-sekhem-is-made-of">What Sekhem is made of</h2>
         <div className="docs-table-wrap">
@@ -110,7 +110,7 @@ npx create-devora my-app --engine=own`}</code></pre>
           <li>Files are served only from the listed roots, after resolving symbolic links, and never dotfiles. Nothing from a request reaches esbuild except a path that passed those checks.</li>
           <li>Framework code does not use <code>eval</code> or <code>new Function</code>.</li>
           <li>The caches check a hash before use and never follow links. Someone who can write the cache folder with a self-consistent entry has the same power as someone who can edit your sources or <code>node_modules</code>.</li>
-          <li>Checked so far: a fuzzer sent about 99,000 request paths and 35,000 damaged cache entries without a problem; a comparison script runs the same attacks against both engines (path escape, host and Origin checks, WebSocket token, request limits, cache attacks). Not done: request-level attacks against the built output, and a review by someone outside the project. There has been no third-party audit.</li>
+          <li>Checked so far: a fuzzer sent about 99,000 request paths and 35,000 damaged cache entries without a problem; a comparison script runs the same attacks against both engines (path escape, host and Origin checks, WebSocket token, request limits, cache attacks). Request-level attacks against the built output run with <code>pnpm run compare:built-security</code> (about 75 checks, for a Vite build and a Sekhem build). Not done: a review by someone outside the project. There has been no third-party audit.</li>
         </ul>
         <h2 id="how-it-was-tested">How it was tested</h2>
         <div className="docs-table-wrap">
@@ -137,8 +137,8 @@ npx create-devora my-app --engine=own`}</code></pre>
           <li><strong>A change that did not apply</strong>: restart the dev server and report it with the file that changed.</li>
         </ul>
         <h2 id="where-sekhem-is-behind">Where Sekhem is behind</h2>
-        <p>Vite has plugins, a large ecosystem and years of use; Sekhem has none of that. Open items: publish <code>@devorajs/sekhem</code>, a plugin API (the design is in the repository's notes: no Vite plugin API, a small Devora one later), PostCSS and Sass, source maps in the build, <code>VITE_</code> variables, Windows and Linux tests, and request-level security tests of the built output.</p>
-        <p>For numbers (build time, memory, dev server, requests) see the <a href="/performance">Performance page</a>.</p>
+        <p>Vite has plugins, a large ecosystem and years of use; Sekhem has none of that. Open items: a plugin API (the design is in the repository's notes: no Vite plugin API, a small Devora one later), PostCSS and Sass, source maps in the build, <code>VITE_</code> variables, and Windows and Linux tests.</p>
+        <p>For numbers (build time, memory, dev server, requests) see the <a href="https://devorajs-docs-docs.vercel.app/performance">Performance page</a>.</p>
       </DocsLayout>
     </PageShell>
   );

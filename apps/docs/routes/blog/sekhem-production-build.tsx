@@ -50,7 +50,7 @@ export default function Post() {
       <Note title="What Sekhem's build does not do">
         <ul>
           <li>No source maps, no <code>VITE_</code> variables in browser code, no PostCSS, Sass or Less, and no Vite plugins; Sekhem does not read <code>vite.config.ts</code> beyond a literal <code>publicDir</code> and warns about what it ignores.</li>
-          <li>It needs Node 22.15 or later, and until <code>@devorajs/sekhem</code> is published it runs from a checkout of the repository.</li>
+          <li>It needs Node 22.15 or later and the package <code>@devorajs/sekhem</code> (<code>npm install --save-dev @devorajs/sekhem</code>).</li>
           <li>Built islands have not been checked in a browser by a script of their own, and Windows and Linux are untested.</li>
         </ul>
       </Note>

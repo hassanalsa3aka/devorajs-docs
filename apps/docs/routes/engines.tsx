@@ -50,9 +50,8 @@ export default function Engines() {
           <code>@vitejs/plugin-react</code> dependency in its apps.
         </p>
         <Callout kind="warning" title="Requirements">
-          Sekhem needs Node 22.15 or later (it uses <code>module.registerHooks</code>) and says so on older Node. It runs from a
-          checkout of the Devora.js repository for now: the package <code>@devorajs/sekhem</code> builds and passes the pack check
-          but has not been published.
+          Sekhem needs Node 22.15 or later (it uses <code>module.registerHooks</code>) and says so on older Node. It is the separate package
+          <code>@devorajs/sekhem</code>: <code>npm install --save-dev @devorajs/sekhem</code> (<code>create-devora</code> adds it to a project that chooses it).
         </Callout>
 
         <h2>What it does</h2>

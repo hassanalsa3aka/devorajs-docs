@@ -83,26 +83,6 @@
       ]
     },
     {
-      "slug": "devora-0-4-0",
-      "title": "Devora.js 0.4.0: a security hardening release, and what to change before you upgrade",
-      "seoTitle": "Devora.js 0.4.0: security hardening",
-      "description": "CSRF checked by default, redirect() kept on your origin, no-store on session responses, vite 6.4.4 or later, allowedHosts, timeouts, form limits.",
-      "tags": [
-        "Release"
-      ],
-      "date": "2026-11-09"
-    },
-    {
-      "slug": "security-review-nextjs-advisories",
-      "title": "A security review of Devora.js after the recent Next.js advisories",
-      "seoTitle": "Security review after Next.js advisories",
-      "description": "Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.",
-      "tags": [
-        "Story"
-      ],
-      "date": "2026-11-09"
-    },
-    {
       "slug": "vite-or-sekhem",
       "title": "Vite or Sekhem: choosing an engine for Devora.js 0.4.0",
       "date": "2026-11-10",
@@ -168,6 +148,26 @@
         "Story"
       ],
       "seoTitle": "Devora.js on the desktop"
+    },
+    {
+      "slug": "devora-0-4-0",
+      "title": "Devora.js 0.4.0: a security hardening release, and what to change before you upgrade",
+      "seoTitle": "Devora.js 0.4.0: security hardening",
+      "date": "2026-11-10",
+      "description": "CSRF checked by default, redirect() kept on your origin, no-store on session responses, Vite 8.3.7 or later, allowedHosts, timeouts, form limits.",
+      "tags": [
+        "Release"
+      ]
+    },
+    {
+      "slug": "security-review-nextjs-advisories",
+      "title": "A security review of Devora.js after the recent Next.js advisories",
+      "seoTitle": "Security review after Next.js advisories",
+      "date": "2026-11-10",
+      "description": "Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.",
+      "tags": [
+        "Story"
+      ]
     }
   ],
   "tags": [

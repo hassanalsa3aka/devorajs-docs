@@ -142,7 +142,7 @@ export default function Post() {
         <li>
           <strong>A framework-owned development endpoint for tools</strong> (GHSA-39w2-rjm5-chcv). Devora.js adds no
           such endpoint. <code>devora dev</code> is a Vite dev server, so Vite&apos;s own advisories apply to it, which
-          is why 0.4.0 requires vite 6.4.4 or later. It listens on localhost unless you pass <code>--host</code>, and
+          is why 0.4.0 requires Vite 8.3.7 or later. It listens on localhost unless you pass <code>--host</code>, and
           with <code>allowedHosts</code> set it answers other hosts with a 400.
         </li>
       </ul>

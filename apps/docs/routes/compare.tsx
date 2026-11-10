@@ -675,7 +675,7 @@ export default function Compare({ data }) {
               <tr><td>Rendering modes</td><td><code>ssr</code>, <code>ssg</code>, <code>csr</code>, <code>isr</code> and <code>streaming</code>, chosen per route, plus islands.</td><td><code>streaming</code> is GET only; <code>isr</code> regeneration on serverless filesystems is not verified.</td></tr>
               <tr><td>Adapters</td><td>Node (<code>devora start</code>, Docker), Vercel and Netlify.</td><td>Container platforms other than a local Docker image are not verified (roadmap N2).</td></tr>
               <tr><td>Desktop target</td><td><code>devora desktop</code> runs an app in a Tauri 2 window, with the server on a random loopback port and a token on every request.</td><td>Experimental. Checked on macOS only; Windows and Linux are not tested. No audio, tray or media-key support.</td></tr>
-              <tr><td>Engine choice</td><td>Vite is the default. Sekhem, our own engine on esbuild, is opt-in (<code>engine: "own"</code>) for dev and build.</td><td>Experimental, Node 22.15 or later, no Vite plugins, not yet published as a package. See <a href="/engines">Engines</a>.</td></tr>
+              <tr><td>Engine choice</td><td>Vite is the default. Sekhem, our own engine on esbuild, is opt-in (<code>engine: "own"</code>) for dev and build.</td><td>Experimental, Node 22.15 or later, no Vite plugins; the package <code>@devorajs/sekhem</code> is installed separately. See <a href="/engines">Engines</a>.</td></tr>
             </tbody>
           </table>
         </div>

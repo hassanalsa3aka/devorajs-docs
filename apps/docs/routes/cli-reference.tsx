@@ -28,7 +28,7 @@ export default function CliReference() {
         Every command below runs as <code>devora &lt;command&gt;</code> — via <code>pnpm exec</code>,{" "}
         <code>npm exec</code>/<code>npx</code>, or <code>yarn</code>, whichever your project uses
         (or a <code>package.json</code> script). This page describes <code>@devorajs/cli</code>{" "}
-        0.3.5; <code>npx devora --version</code> prints yours.
+        0.4.1; <code>npx devora --version</code> prints yours.
       </p>
       <p>
         <code>dev</code>, <code>build</code>, <code>start</code> and <code>deploy</code> load the
@@ -88,7 +88,7 @@ export default function CliReference() {
       <div className="devora-card">
         <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>
 {`         ▄█
-    ▄▄▄▄▄██  ▄     devora.js 0.3.5
+    ▄▄▄▄▄██  ▄     devora.js 0.4.1
   ▄█▀▀▀▀▀██  ▀█▄   dev · 3 apps · ready in 312 ms
   ██     ██   ▄█▀
    ▀███████  █▀
@@ -154,8 +154,8 @@ export default function CliReference() {
         <strong><code>--engine=own</code></strong> (the same as <code>--experimental-dev-server</code>, also{" "}
         <code>DEVORA_EXPERIMENTAL_DEV_SERVER=1</code>) runs a dev server of Devora's own, called Sekhem,
         instead of Vite. Set <code>engine: "own"</code> in <code>devora.config.ts</code> to make it the project default;
-        the flag wins over the file, and an unknown value is an error. It is experimental, runs only from a checkout of
-        the framework's repository (it is not in the published CLI), and is not the default: plain{" "}
+        the flag wins over the file, and an unknown value is an error. It is experimental, is the separate package{" "}
+        <code>@devorajs/sekhem</code> (<code>npm install --save-dev @devorajs/sekhem</code>; <code>create-devora</code> adds it to a project that chooses it), and is not the default: plain{" "}
         <code>devora dev</code> is Vite and is unchanged. It does not read <code>vite.config.ts</code>, so there are no
         Vite plugins, no PostCSS or Sass, and no <code>--host</code> or HTTPS; it does support tsconfig path aliases,
         CSS modules and <code>import.meta.glob</code> with literal patterns, and it needs Node 22.15 or later (it says
@@ -289,10 +289,9 @@ export default function CliReference() {
       </p>
 
       <h2 id="desktop"><code>devora desktop dev|build|serve</code> <Tag color="gray">experimental</Tag></h2>
-      <Callout kind="warning" title="Experimental, off by default, not published yet">
+      <Callout kind="warning" title="Experimental, off by default">
         <p>
-          This command is in the framework repository for the release after {RELEASE_VERSION} and is not on npm.
-          It does nothing unless you pass <code>--experimental</code>, and its shape may change.
+          This command ships in the CLI since 0.4.0. It does nothing unless you pass <code>--experimental</code>, and its shape may change.
         </p>
       </Callout>
       <p>
