@@ -50,7 +50,7 @@ function standing() {
   const label = (m: Metric) => m.tab.toLowerCase().replace("javascript", "JavaScript");
   for (const m of METRICS) {
     const pt = (f: Fw): Point => point(m.value(f), m.spread?.(f));
-    const v = judge(pt(devora), FWS.filter((f) => f.key !== "devora").map((f) => ({ name: f.name, point: pt(f) })), m.better);
+    const v = judge(pt(devora), FWS.filter((f) => !f.key.startsWith("devora")).map((f) => ({ name: f.name, point: pt(f) })), m.better);
     if (v.kind === "first") first.push(label(m));
     else if (v.kind === "tie") tied.push(`${label(m)} (with ${join(v.with)})`);
     else behind.push(`${label(m)} (${v.leader})`);
@@ -78,7 +78,7 @@ function Bars({ metric }: { metric: Metric }) {
       </thead>
       <tbody>
         {rows.map(({ f, v }) => (
-          <tr key={f.key} className={f.key === "devora" ? "bw-devora" : undefined}>
+          <tr key={f.key} className={f.key.startsWith("devora") ? "bw-devora" : undefined}>
             <th scope="row">
               {f.name} <span className="bw-version">{f.version}</span>
             </th>

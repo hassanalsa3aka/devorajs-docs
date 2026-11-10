@@ -17,7 +17,8 @@ export default function Post() {
       <p>
         We measured Devora.js next to other frameworks on two machines and four versions of Node. This post is about what we did and what
         the numbers do and do not say. Every table, the hardware and the raw files are on the{" "}
-        <a href="/performance">performance page</a> and in <code>benchmarks/results/</code> in the repository.
+        <a href="/performance">performance page</a> and in <code>benchmarks/results/</code> in the repository. The numbers below are the first run, on Node 22; the pages, builds and memory were measured again on Node 26.13.0 and are in{" "}
+        <a href="/blog/pages-suite-node-26">Pages, builds and memory on Node 26.13.0</a>.
       </p>
 
       <h2>What we ran</h2>

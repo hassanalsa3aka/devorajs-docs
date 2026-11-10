@@ -198,7 +198,7 @@ const SESSION_GROUPS: MatrixGroup[] = [
       {
         label: "CSRF protection on by default",
         cells: {
-          devora: { s: "built", note: <>For cookie sessions; <code>ctx{"."}verifyCsrf()</code> per action</> },
+          devora: { s: "built", note: <>Since 0.4.0, checked for every cookie-authenticated write (all methods but GET, HEAD and OPTIONS); Bearer requests are exempt; opt out per route with <code>export const csrf = false</code></> },
           next: { s: "partial", note: "Server Actions check Origin; allowed origins are configurable" },
           rr: { s: "unverified" },
           svelte: { s: "partial", note: "Origin check on form posts" },
@@ -278,7 +278,7 @@ const BYO_GROUPS: MatrixGroup[] = [
       {
         label: "Rate limiting",
         cells: {
-          devora: { s: "library", note: <a href="/backend-capabilities#rate-limiting">Documented pattern</a> },
+          devora: { s: "partial", note: <>Since 0.4.0, opt-in per route (<code>export const rateLimit</code>): in memory, counted per client IP (IPv6 per /64), not shared between processes; <a href="/backend-capabilities#rate-limiting">details</a></> },
           express: { s: "library" },
           fastify: { s: "library", note: <>Official plugin (<code>@fastify/rate-limit</code>)</> },
           nest: { s: "library", note: <>Official module (<code>@nestjs/throttler</code>)</> },
@@ -449,6 +449,7 @@ export default function Compare({ data }) {
         .devora-page .compare-list { padding-left: 1.2rem; line-height: 1.7; }
         .compare-list li { margin-bottom: 0.4rem; }
         .devora-page .compare-section h3 { margin-top: 2.25rem; }
+        .devora-page .compare-section svg.home-compare-logo { fill: var(--devora-fg); }
         .compare-choose { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1rem; }
         @media (max-width: 1080px) { .compare-choose { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media (max-width: 560px) { .compare-choose { grid-template-columns: 1fr; } }
@@ -690,7 +691,7 @@ export default function Compare({ data }) {
             events.
           </li>
           <li>
-            No built-in validation or rate limiting. WebSockets and background jobs are not built in
+            No built-in validation. Rate limiting is opt-in per route and in memory, not shared between processes. WebSockets and background jobs are not built in
             either, but both have tested setups: <a href="/live-updates">Live updates (WebSockets)</a> and{" "}
             <a href="/background-jobs">Background jobs</a>. Server-sent events from an API route do not
             work yet.

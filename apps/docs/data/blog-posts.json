@@ -101,6 +101,73 @@
         "Story"
       ],
       "date": "2026-11-09"
+    },
+    {
+      "slug": "vite-or-sekhem",
+      "title": "Vite or Sekhem: choosing an engine for Devora.js 0.4.0",
+      "date": "2026-11-10",
+      "description": "Which engine to use, how to switch per project or per command, and what Sekhem does not do yet.",
+      "tags": [
+        "Guide"
+      ],
+      "seoTitle": "Vite or Sekhem for 0.4.0"
+    },
+    {
+      "slug": "sekhem-production-build",
+      "title": "How the Sekhem production build works",
+      "date": "2026-11-10",
+      "description": "Two esbuild builds per app, the same output layout as the Vite build, how we checked it, and what it leaves out.",
+      "tags": [
+        "Guide"
+      ]
+    },
+    {
+      "slug": "pages-suite-node-26",
+      "title": "Pages, builds and memory on Node 26.13.0",
+      "date": "2026-11-10",
+      "description": "Devora.js 0.4.0 with Vite 8 and with Sekhem against Next.js, Astro, SvelteKit, React Router and Nuxt, and where it is not first.",
+      "tags": [
+        "Story"
+      ]
+    },
+    {
+      "slug": "attacking-the-built-output",
+      "title": "74 attacks on a built Devora.js app: what we found",
+      "date": "2026-11-10",
+      "description": "Request-level checks against what devora start serves, built with Vite and with Sekhem, and the two problems they found.",
+      "tags": [
+        "Story"
+      ],
+      "seoTitle": "74 attacks on a built app"
+    },
+    {
+      "slug": "node-matrix-0-4-0",
+      "title": "Devora.js 0.4.0 on Node 20, 22, 24 and 26",
+      "date": "2026-11-10",
+      "description": "The Node matrix: Vite 6, 7 and 8 and Sekhem on four Node lines, what changed with a newer Node, and what we recommend.",
+      "tags": [
+        "Story"
+      ]
+    },
+    {
+      "slug": "live-updates-without-restart",
+      "title": "What a running dev server applies without restarting",
+      "date": "2026-11-10",
+      "description": "Which edits Sekhem applies to a running dev server, which restart it by themselves, and how that was tested.",
+      "tags": [
+        "Guide"
+      ],
+      "seoTitle": "What a dev server applies live"
+    },
+    {
+      "slug": "desktop-experimental",
+      "title": "Devora.js on the desktop: an experimental window, and what is missing",
+      "date": "2026-11-10",
+      "description": "An experimental Tauri 2 window for the app you already have: how it works, what was checked on a Mac, and what is not there.",
+      "tags": [
+        "Story"
+      ],
+      "seoTitle": "Devora.js on the desktop"
     }
   ],
   "tags": [
