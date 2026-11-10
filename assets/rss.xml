@@ -71,6 +71,24 @@
       <description>An experimental Tauri 2 window for the app you already have: how it works, what was checked on a Mac, and what is not there.</description>
     </item>
     <item>
+      <title>Devora.js 0.4.0: a security hardening release, and what to change before you upgrade</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/devora-0-4-0</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/devora-0-4-0</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Release</category>
+      <description>CSRF checked by default, redirect() kept on your origin, no-store on session responses, Vite 8.3.7 or later, allowedHosts, timeouts, form limits.</description>
+    </item>
+    <item>
+      <title>A security review of Devora.js after the recent Next.js advisories</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/security-review-nextjs-advisories</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/security-review-nextjs-advisories</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
+      <description>Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.</description>
+    </item>
+    <item>
       <title>Sekhem: an experimental engine for Devora.js, without Vite</title>
       <link>https://devorajs-docs-docs.vercel.app/blog/sekhem-experimental-engine</link>
       <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/sekhem-experimental-engine</guid>
@@ -87,24 +105,6 @@
       <dc:creator>hassanalsa3aka</dc:creator>
       <category>Story</category>
       <description>Eleven frameworks, two machines, Node 20 to 26: what we ran, where Devora.js is ahead and behind, and what we got wrong the first time.</description>
-    </item>
-    <item>
-      <title>Devora.js 0.4.0: a security hardening release, and what to change before you upgrade</title>
-      <link>https://devorajs-docs-docs.vercel.app/blog/devora-0-4-0</link>
-      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/devora-0-4-0</guid>
-      <pubDate>Mon, 09 Nov 2026 00:00:00 GMT</pubDate>
-      <dc:creator>hassanalsa3aka</dc:creator>
-      <category>Release</category>
-      <description>CSRF checked by default, redirect() kept on your origin, no-store on session responses, vite 6.4.4 or later, allowedHosts, timeouts, form limits.</description>
-    </item>
-    <item>
-      <title>A security review of Devora.js after the recent Next.js advisories</title>
-      <link>https://devorajs-docs-docs.vercel.app/blog/security-review-nextjs-advisories</link>
-      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/security-review-nextjs-advisories</guid>
-      <pubDate>Mon, 09 Nov 2026 00:00:00 GMT</pubDate>
-      <dc:creator>hassanalsa3aka</dc:creator>
-      <category>Story</category>
-      <description>Eighteen Next.js advisories, Sept to Nov 2026: which bug classes cannot exist in Devora.js, what a review found, what is unverified. No audit.</description>
     </item>
     <item>
       <title>Devora.js 0.3.5: less work per request, and what it did and did not change</title>

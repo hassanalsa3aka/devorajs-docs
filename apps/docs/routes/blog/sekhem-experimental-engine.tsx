@@ -23,8 +23,8 @@ export default function Post() {
       <h2>What Sekhem is</h2>
       <p>
         An engine built on esbuild and our own code: a dev server with React Fast Refresh and hot updates, and a production build with
-        code splitting, CSS, assets, islands and the server bundle. It is one package, <code>@devorajs/sekhem</code>, which builds and
-        passes the pack check but is not published yet, so for now it runs from a checkout of the repository. It needs Node 22.15 or
+        code splitting, CSS, assets, islands and the server bundle. It is one package, <code>@devorajs/sekhem</code>, which you install with{" "}
+        <code>npm install --save-dev @devorajs/sekhem</code> (<code>create-devora</code> adds it for you). It needs Node 22.15 or
         later and refuses older Node with a message.
       </p>
       <Code label="Turning it on">{`// devora.config.ts

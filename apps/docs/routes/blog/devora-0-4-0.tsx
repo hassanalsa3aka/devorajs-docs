@@ -2,9 +2,7 @@ import { BlogPost, Code, Note, postMeta } from "../../blog-post.js";
 
 export const renderMode = "ssg";
 const SLUG = "devora-0-4-0";
-// RELEASE-DAY: this anchor is the CHANGELOG heading "0.4.0 — <date>" with the date you put there
-// (lower-case, spaces and the dash turned into "-"): for "0.4.0 — 2026-11-20" it is "040--2026-11-20".
-const CHANGELOG = "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md#040--DATE-TO-FILL";
+const CHANGELOG = "https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md#040--2026-11-10";
 
 export function meta() {
   return postMeta(SLUG);
@@ -17,12 +15,16 @@ export async function loader() {
 export default function Post() {
   return (
     <BlogPost slug={SLUG}>
+      <Note title="Update, 10 November 2026: use 0.4.1">
+        The 0.4.0 packages of <code>@devorajs/core</code>, <code>@devorajs/cli</code> and <code>create-devora</code> were published from build output older than the source, so they were
+        missing some of what this post describes. 0.4.1 is the same release built from the current source, and 0.4.0 of those three is deprecated. Install 0.4.1.
+      </Note>
       <p>
         0.4.0 is a security hardening release, and it is the first one that can make an existing app&apos;s
         requests fail until you act. <code>@devorajs/core</code> and <code>@devorajs/cli</code> are 0.4.0, the
         three adapters are 0.3.0 (they now depend on <code>@devorajs/core</code> <code>^0.4.0</code>), and{" "}
         <code>create-devora</code> is 0.4.0: new projects pin <code>^0.4.0</code> and{" "}
-        <code>vite</code> <code>^6.4.4</code>. The complete list, with the migration step for each change, is the{" "}
+        <code>vite</code> <code>^8.3.7</code>. The complete list, with the migration step for each change, is the{" "}
         <a href={CHANGELOG}>0.4.0 section of the CHANGELOG</a>. This post is the short version.
       </p>
       <p>
@@ -158,12 +160,11 @@ export const handler = apiRoute((req) => {
         them.
       </p>
 
-      <h3>The requirement: vite 6.4.4 or later</h3>
+      <h3>The requirement: Vite 8.3.7 or later</h3>
       <p>
-        <code>@devorajs/cli</code> now asks for <code>vite</code> <code>^6.4.4</code> (it accepted{" "}
-        <code>^5.4.0 || ^6.0.0</code>), because older releases have known vulnerabilities. Set that range in each
-        app&apos;s <code>package.json</code> and reinstall. <code>devora build</code> and <code>devora dev</code> were
-        run on vite 6.4.5.
+        <code>@devorajs/cli</code> now asks for <code>vite</code> <code>^8.3.7</code> (it accepted{" "}
+        <code>^5.4.0 || ^6.0.0</code>), so a new install resolves the current Vite and not a release with known vulnerabilities. Set that range, and <code>@vitejs/plugin-react</code> <code>^6.3.0</code> (version 6 supports Vite 8 only), in each
+        app&apos;s <code>package.json</code> and reinstall, then check your <code>vite.config.ts</code> against the Vite 8 migration notes if it uses plugins or build options.
       </p>
 
       <h2>New settings</h2>
@@ -270,7 +271,7 @@ export const rateLimit = { max: 10, windowSeconds: 60 }; // 10 POSTs per client 
       </Note>
 
       <h2>Upgrade</h2>
-      <Code label="Upgrade command">{`npm install @devorajs/core@^0.4.0 @devorajs/cli@^0.4.0 vite@^6.4.4`}</Code>
+      <Code label="Upgrade command">{`npm install @devorajs/core@^0.4.1 @devorajs/cli@^0.4.1 vite@^8.3.7 @vitejs/plugin-react@^6.3.0`}</Code>
       <p>
         Upgrade core, cli and any adapter together, in the root and every app&apos;s <code>package.json</code>. Then
         run <code>devora dev</code>, sign in, submit each form and call each write route from the browser once: a

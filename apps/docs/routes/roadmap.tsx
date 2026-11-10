@@ -38,6 +38,19 @@ interface Release {
 // are the only tags). A version with no CHANGELOG entry says so.
 const RELEASES: Release[] = [
   {
+    version: "0.4.0",
+    date: "2026-11-10",
+    tag: "v0.4.0",
+    points: [
+      "A security hardening release: CSRF is checked by default for cookie-authenticated writes, redirect() stays on the app's origin, responses that touch the session cookie are private, no-store, and the CLI requires Vite 8.3.7 or later. Each breaking change has a migration step.",
+      "New settings: allowedHosts, server timeouts and a header size limit, form field and file limits, an opt-in per-route rateLimit; nosniff everywhere, a sandbox policy for .svg files, symlink-safe static files, and a dev server that restarts on config, env and route-file changes.",
+      "New projects install and run on pnpm 11 and later and on Yarn 4's default settings. There has been no third-party audit.",
+      "Packages: @devorajs/core 0.4.0, @devorajs/cli 0.4.0, @devorajs/adapter-node 0.3.0, @devorajs/adapter-vercel 0.3.0, @devorajs/adapter-netlify 0.3.0, create-devora 0.4.0.", // version-ok
+    ],
+    anchor: "040--2026-11-10",
+    post: "/blog/devora-0-4-0",
+  },
+  {
     version: "0.3.5",
     date: "2026-10-16",
     tag: "v0.3.5",
@@ -188,7 +201,7 @@ export default function Roadmap() {
           Devora.js is early and pre-1.0, built by one person. This page says what has shipped,
           version by version, and what is next. Every block below is taken from the{" "}
           <a href={CHANGELOG}>changelog</a> and the git tags (<code>v0.3.2</code>,{" "}
-          <code>v0.3.4</code> and <code>v0.3.5</code> are the only tags).
+          <code>v0.3.4</code>, <code>v0.3.5</code> and <code>v0.4.0</code> are the only tags).
         </p>
         <p>
           The same content lives in{" "}
@@ -285,7 +298,7 @@ export default function Roadmap() {
 
         <h2 id="experimental">Experimental, off by default</h2>
         <p>
-          In the framework repository for the next release, not published, each behind an explicit opt-in:
+          Shipped with 0.4, each behind an explicit opt-in:
         </p>
         <ul>
           <li>
@@ -306,15 +319,15 @@ export default function Roadmap() {
             until a test on the target platform says it does. A shipped app also needs signing and an update channel.
           </li>
           <li>
-            <strong>A dev server of Devora's own</strong> (<code>devora dev --engine=own</code>):
-            experimental, runs only from a checkout of the framework's repository, and is not the default (
-            <code>devora dev</code> is Vite). It renders pages and API routes with the same handlers as the Vite
+            <strong>Sekhem, the engine of our own</strong> (<code>devora dev --engine=own</code> and <code>devora build --engine=own</code>):
+            experimental, the separate package <code>@devorajs/sekhem</code> (install it with npm; <code>create-devora</code> adds it to a
+            project that chooses it), and not the default (<code>devora dev</code> is Vite). It renders pages and API routes with the same handlers as the Vite
             path, with esbuild transforms, React Fast Refresh, CSS and assets, and hot updates over a WebSocket on
             127.0.0.1 with an Origin check and a per-launch token; files are served from listed folders only, with
             symlinks checked and no dotfiles, and it refuses production. It does not read <code>vite.config.ts</code>{" "}
             (no Vite plugins), and has no PostCSS or Sass, no <code>--host</code> and no HTTPS; tsconfig path aliases,
-            CSS modules and <code>import.meta.glob</code> work. It needs Node 22.15 or later. Its build is not written yet. No performance numbers are published. Vite stays the
-            default dev server and the build.
+            CSS modules and <code>import.meta.glob</code> work. It needs Node 22.15 or later. Its production build writes the same layout as the Vite build (checked on the four example apps). Measurements are on the{" "}
+            <a href="/performance">Performance page</a>. Vite stays the default dev server and build.
           </li>
         </ul>
 
@@ -365,6 +378,7 @@ export default function Roadmap() {
             <li>0.3.2: request access, action results, error pages, head API, uploads, cookie and proxy settings, CORS, <code>.env</code> loading, <code>@devorajs/adapter-node</code></li>
             <li>0.3.4: catch-all routes, the static file cache, content types, sitemap URLs, the live-updates pattern</li>
             <li>0.3.5: faster request handling, one clear message for a missing session store, guides for live updates (WebSockets) and background jobs</li>
+            <li>0.4.0: CSRF checked by default for cookie-authenticated writes, redirect() on the app's origin, no-store session responses, allowedHosts, server and form limits, a dev server that restarts itself, new projects that install on pnpm 11+ and Yarn 4</li>
             <li><code>clientOnly()</code>; the <code>devora</code> CLI under npm, Yarn and pnpm</li>
             <li>adapter-node, adapter-vercel, adapter-netlify: build output verified in isolation</li>
             <li>Live Vercel and Netlify deployment (all three apps) with releases before 0.3.2</li>

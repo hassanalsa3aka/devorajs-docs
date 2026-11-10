@@ -24,11 +24,11 @@ Live at **[devorajs-docs-docs.vercel.app](https://devorajs-docs-docs.vercel.app)
 ## What this is
 
 A one-app Devora.js project that uses the **published npm packages** (`@devorajs/core` and
-`@devorajs/cli` `^0.3.5`), not the framework's monorepo — so it's also a real-world check that
+`@devorajs/cli` `^0.4.0`), not the framework's monorepo — so it's also a real-world check that
 what's on npm works. Every page is `ssg` (pre-rendered at build time); search is a
 [Pagefind](https://pagefind.app) index built after `devora build`.
 
-The docs describe the framework as of 0.3.5: getting started, a multi-app tutorial, render modes,
+The docs describe the framework as of 0.4.0: getting started, a multi-app tutorial, render modes,
 pages/forms/errors, the backend and API routes, the CLI, deployment, security, upgrading, and a
 comparison with other frameworks.
 

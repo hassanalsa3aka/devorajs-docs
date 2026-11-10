@@ -40,16 +40,18 @@ export default function Security() {
         </p>
       </Callout>
 
-      <h2 id="next-release">Next release</h2>
-      <Callout kind="info" title="Not published yet">
+      <h2 id="new-in-0-4-0">New in 0.4.0</h2>
+      <Callout kind="info" title="Changed in 0.4.0">
         <p>
-          This section describes the release after {RELEASE_VERSION}. It is merged into the framework
-          repository and is not on npm: {RELEASE_VERSION} does not behave this way. The rest of this page describes {RELEASE_VERSION}.
+          This section is new in 0.4.0; 0.3.5 and earlier do not behave this way. The sections below it
+          were written for 0.3.x: where they differ (CSRF is an explicit per-route call in 0.3.5; since 0.4.0
+          cookie-authenticated writes are also checked by default), this section wins. What to change in an
+          existing app is on <a href="/upgrading">Upgrading to 0.4.0</a>.
         </p>
       </Callout>
       <p>
         Auth and CSRF are decided per route, as everything else in Devora.js is: nothing is
-        checked unless the route or the defaults below say so. In the next release one default
+        checked unless the route or the defaults below say so. In 0.4.0 one default
         changes that for the request an attacker most wants to forge: a write (any method but{" "}
         <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) that arrives with a live session
         in the session cookie is CSRF-checked before the page's <code>action</code> or the API
@@ -69,7 +71,7 @@ export default function Security() {
             <tr><td><code>Cache-Control: private, no-store</code> on responses that read or set the session cookie</td><td>A CDN or proxy storing one user's page or <code>Set-Cookie</code> and serving it to another</td><td>None</td></tr>
             <tr><td>Server timeouts and a header size limit in <code>devora start</code></td><td>Clients holding connections open by trickling headers or never finishing a request</td><td><code>server</code> in <code>app.config.ts</code></td></tr>
             <tr><td>At most 1000 form fields and 20 files</td><td>One request carrying thousands of parts</td><td><code>maxFormFields</code>, <code>maxFormFiles</code></td></tr>
-            <tr><td>vite 6.4.4 or later</td><td>Known vulnerabilities in older vite releases</td><td>Not optional</td></tr>
+            <tr><td>vite 8.3.7 or later</td><td>Known vulnerabilities in older vite releases</td><td>Not optional</td></tr>
             <tr><td><code>ctx{"."}url</code> takes its host from the <code>Host</code> header (or a trusted <code>X-Forwarded-Host</code>) only</td><td>A request target such as <code>http://other.example/x</code> naming a host that <code>allowedHosts</code> never checked</td><td>None</td></tr>
             <tr><td>A malformed cookie is kept as sent; the first of two cookies with one name wins</td><td>One bad cookie from another app on the domain breaking every page; a cookie set later from a sibling subdomain replacing the app's own</td><td>None</td></tr>
             <tr><td><code>devora dev</code> refuses cross-site requests to Vite's <code>/__open-in-editor</code></td><td>A web page you visit making the dev server open files in your editor</td><td>None (development only)</td></tr>
@@ -93,7 +95,7 @@ export default function Security() {
         <li>A cookie-authenticated write without the CSRF token is a 403.</li>
         <li>A <code>Cache-Control: public</code> set by a handler is replaced on responses that read the session cookie.</li>
         <li>Large uploads must finish within 60 seconds by default (<code>server.requestTimeoutMs</code>).</li>
-        <li>Apps on vite 5 must move to vite 6.4.4 or later.</li>
+        <li>Apps on Vite 5, 6 or 7 must move to Vite 8.3.7 or later, with <code>@vitejs/plugin-react</code> 6.3.0 or later.</li>
         <li>An API route without a <code>methods</code> list that is called with an unusual method (<code>PURGE</code>, <code>PROPPATCH</code>) and the session cookie now needs the CSRF token too, and such requests count toward the route's <code>rateLimit</code>.</li>
         <li>For a signed-in browser the CSRF token is now tied to the session, so a token read before login is not valid after it. A script that logs in and then posts a form must load the page again after login to get the new token. Requests without a session and routes with <code>export const csrf = false</code> behave as before.</li>
         <li><code>rateLimit</code> counts an IPv6 client by its /64 prefix (the first four groups of the address), so every address in one /64 shares a count. IPv4 clients are unchanged.</li>
@@ -114,8 +116,7 @@ export default function Security() {
       </p>
       <p>
         The full list is in the framework's{" "}
-        <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md">CHANGELOG</a>{" "}
-        once it is published. None of this has been checked on a live Vercel or Netlify deployment: the
+        <a href="https://github.com/hassanalsa3aka/devora.js/blob/main/CHANGELOG.md">CHANGELOG</a>. None of this has been checked on a live Vercel or Netlify deployment: the
         generated header rules are tested as generated output only.
       </p>
 
@@ -332,6 +333,14 @@ export const handler = apiRoute(async (req, ctx) => {
       </p>
 
       <h2 id="csrf">CSRF</h2>
+      <Callout kind="warning" title="Changed in 0.4.0">
+        <p>
+          The next paragraphs describe 0.3.x, where a route checks CSRF only if it calls{" "}
+          <code>ctx{"."}verifyCsrf()</code>. Since 0.4.0 a cookie-authenticated write (any method but{" "}
+          <code>GET</code>, <code>HEAD</code> and <code>OPTIONS</code>) is also checked before the route runs: see{" "}
+          <a href="#new-in-0-4-0">New in 0.4.0</a>. Anonymous writes (a login form) still need the explicit call.
+        </p>
+      </Callout>
       <p>
         CSRF protection is an explicit call, not framework-injected middleware — a route that
         changes state calls <code>ctx{"."}verifyCsrf(...)</code> itself, the same way it calls{" "}
