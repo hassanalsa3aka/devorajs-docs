@@ -87,6 +87,19 @@
       "itemsRps": 1801.4,
       "itemsErrors": 81551,
       "answersAfter": false
+    },
+    {
+      "key": "nuxt",
+      "name": "Nuxt",
+      "coldStartMs": 292.71099900000013,
+      "firstPageMs": 7.451541000000134,
+      "ttfbP50": 1.1217500000002474,
+      "ttfbP99": 2.565208999999868,
+      "staticRps": 28524.8,
+      "staticErrors": 15269,
+      "itemsRps": 1906,
+      "itemsErrors": 87588,
+      "answersAfter": true
     }
   ]
 }
