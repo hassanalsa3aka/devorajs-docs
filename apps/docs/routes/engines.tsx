@@ -124,7 +124,7 @@ export default function Engines() {
         <h2>Numbers</h2>
         <p>
           Build time, memory and request throughput for both engines, on this Mac and on a small ARM server, are on the{" "}
-          <a href="/performance#node-versions">performance page</a>, with the method and what was not measured.
+          <a href="/performance#build-by-node">performance page</a>, with the method and what was not measured.
         </p>
       </DocsLayout>
     </PageShell>
