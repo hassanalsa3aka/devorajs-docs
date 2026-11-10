@@ -6,7 +6,7 @@ import { judge, point, join, type Point } from "../bench-compare.js";
 import { BACKEND_CSS, BackendResults } from "../backend-results.js";
 import { ENGINE_CSS, EngineResults } from "../engine-results.js";
 import { RESULT_CARDS_CSS, ResultCards } from "../result-cards.js";
-import { OraclePages, ScenarioResults } from "../pages-results.js";
+import { OraclePages, OracleScenarios, ScenarioResults } from "../pages-results.js";
 import { BENCH, BENCH_DATE, BENCHMARK_CSS, BenchmarkWidget, REPRODUCE_URL } from "../benchmark-widget.js";
 
 export const renderMode = "ssg";
@@ -254,6 +254,7 @@ export default function Performance() {
 
       <ScenarioResults />
       <OraclePages />
+      <OracleScenarios />
 
       <EngineResults />
 

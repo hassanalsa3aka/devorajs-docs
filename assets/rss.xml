@@ -5,8 +5,71 @@
     <link>https://devorajs-docs-docs.vercel.app/blog</link>
     <description>Release notes and design write-ups from the Devora.js project.</description>
     <language>en</language>
-    <lastBuildDate>Mon, 09 Nov 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://devorajs-docs-docs.vercel.app/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Vite or Sekhem: choosing an engine for Devora.js 0.4.0</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/vite-or-sekhem</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/vite-or-sekhem</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Guide</category>
+      <description>Which engine to use, how to switch per project or per command, and what Sekhem does not do yet.</description>
+    </item>
+    <item>
+      <title>How the Sekhem production build works</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/sekhem-production-build</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/sekhem-production-build</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Guide</category>
+      <description>Two esbuild builds per app, the same output layout as the Vite build, how we checked it, and what it leaves out.</description>
+    </item>
+    <item>
+      <title>Pages, builds and memory on Node 26.13.0</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/pages-suite-node-26</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/pages-suite-node-26</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
+      <description>Devora.js 0.4.0 with Vite 8 and with Sekhem against Next.js, Astro, SvelteKit, React Router and Nuxt, and where it is not first.</description>
+    </item>
+    <item>
+      <title>74 attacks on a built Devora.js app: what we found</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/attacking-the-built-output</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/attacking-the-built-output</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
+      <description>Request-level checks against what devora start serves, built with Vite and with Sekhem, and the two problems they found.</description>
+    </item>
+    <item>
+      <title>Devora.js 0.4.0 on Node 20, 22, 24 and 26</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/node-matrix-0-4-0</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/node-matrix-0-4-0</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
+      <description>The Node matrix: Vite 6, 7 and 8 and Sekhem on four Node lines, what changed with a newer Node, and what we recommend.</description>
+    </item>
+    <item>
+      <title>What a running dev server applies without restarting</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/live-updates-without-restart</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/live-updates-without-restart</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Guide</category>
+      <description>Which edits Sekhem applies to a running dev server, which restart it by themselves, and how that was tested.</description>
+    </item>
+    <item>
+      <title>Devora.js on the desktop: an experimental window, and what is missing</title>
+      <link>https://devorajs-docs-docs.vercel.app/blog/desktop-experimental</link>
+      <guid isPermaLink="true">https://devorajs-docs-docs.vercel.app/blog/desktop-experimental</guid>
+      <pubDate>Tue, 10 Nov 2026 00:00:00 GMT</pubDate>
+      <dc:creator>hassanalsa3aka</dc:creator>
+      <category>Story</category>
+      <description>An experimental Tauri 2 window for the app you already have: how it works, what was checked on a Mac, and what is not there.</description>
+    </item>
     <item>
       <title>Sekhem: an experimental engine for Devora.js, without Vite</title>
       <link>https://devorajs-docs-docs.vercel.app/blog/sekhem-experimental-engine</link>

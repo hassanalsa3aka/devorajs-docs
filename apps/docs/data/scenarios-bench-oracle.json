@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-10T14:17:08.384Z",
+  "machine": {
+    "cpu": "Neoverse-N1",
+    "cores": 2,
+    "memoryGb": 12,
+    "os": "Linux 7.0.0-1013-oracle (linux arm64)",
+    "node": "v26.13.0"
+  },
+  "ttfbRequests": 300,
+  "connections": 1000,
+  "rows": [
+    {
+      "key": "devora-pages-vite",
+      "name": "Devora.js with Vite",
+      "coldStartMs": 344.6003579999999,
+      "firstPageMs": 9.936468999999988,
+      "ttfbP50": 1.1813679999995657,
+      "ttfbP99": 4.065268000000287,
+      "staticRps": 10461.4,
+      "staticErrors": 288,
+      "itemsRps": 2315,
+      "itemsErrors": 136,
+      "answersAfter": true
+    },
+    {
+      "key": "devora-pages-sekhem",
+      "name": "Devora.js with Sekhem",
+      "coldStartMs": 339.3656159999664,
+      "firstPageMs": 10.406113000004552,
+      "ttfbP50": 1.018928000004962,
+      "ttfbP99": 3.4765039999911096,
+      "staticRps": 10431.6,
+      "staticErrors": 386,
+      "itemsRps": 2142.2,
+      "itemsErrors": 21,
+      "answersAfter": true
+    },
+    {
+      "key": "next",
+      "name": "Next.js",
+      "coldStartMs": 791.0746420000214,
+      "firstPageMs": 69.41932800004724,
+      "ttfbP50": 4.853953999991063,
+      "ttfbP99": 19.386335999995936,
+      "staticRps": 1502.8,
+      "staticErrors": 210,
+      "itemsRps": 185.6,
+      "itemsErrors": 159,
+      "answersAfter": true
+    },
+    {
+      "key": "astro",
+      "name": "Astro",
+      "coldStartMs": 491.4929459999548,
+      "firstPageMs": 25.18173799989745,
+      "ttfbP50": 1.7922929999185726,
+      "ttfbP99": 6.3355639999499545,
+      "staticRps": 4735.5,
+      "staticErrors": 343,
+      "itemsRps": 948.1,
+      "itemsErrors": 528,
+      "answersAfter": true
+    },
+    {
+      "key": "sveltekit",
+      "name": "SvelteKit",
+      "coldStartMs": 330.77981700003147,
+      "firstPageMs": 12.088405000045896,
+      "ttfbP50": 1.7573330000741407,
+      "ttfbP99": 3.7737070000730455,
+      "staticRps": 4424.7,
+      "staticErrors": 0,
+      "itemsRps": 1175.5,
+      "itemsErrors": 0,
+      "answersAfter": true
+    },
+    {
+      "key": "react-router",
+      "name": "React Router",
+      "coldStartMs": 533.5952560000587,
+      "firstPageMs": 27.97335799993016,
+      "ttfbP50": 2.5527380000567064,
+      "ttfbP99": 9.63258799992036,
+      "staticRps": 8239.46,
+      "staticErrors": 16,
+      "itemsRps": 583,
+      "itemsErrors": 515,
+      "answersAfter": false
+    },
+    {
+      "key": "nuxt",
+      "name": "Nuxt",
+      "coldStartMs": 446.05871899984777,
+      "firstPageMs": 21.08982999995351,
+      "ttfbP50": 2.538817999884486,
+      "ttfbP99": 10.426753000123426,
+      "staticRps": 6087.6,
+      "staticErrors": 195,
+      "itemsRps": 573.9,
+      "itemsErrors": 0,
+      "answersAfter": true
+    }
+  ]
+}
