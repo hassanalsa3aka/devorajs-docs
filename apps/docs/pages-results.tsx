@@ -26,7 +26,7 @@ function value(r: Row, m: Metric): number | null {
 }
 
 /** First, level or behind for the better of the two Devora.js rows against the best other framework. */
-function verdict(m: Metric): { kind: "first" | "level" | "behind"; devora: Row; other: Row; text: string } {
+export function verdict(m: Metric): { kind: "first" | "level" | "behind"; devora: Row; other: Row; text: string } {
   const withValue = bench.rows.filter((r) => value(r, m) !== null);
   const better = (a: number, b: number) => (m.lower ? a < b : a > b);
   const devora = withValue.filter(isDevora).reduce((a, b) => (better(value(b, m)!, value(a, m)!) ? b : a));
@@ -176,6 +176,61 @@ export function ScenarioResults() {
         A Linux machine with a larger queue is the right place for this test; it is not done yet.
         The start to first page byte includes <code>npm start</code> for every framework. The Sekhem server answered the first request in the same time as the Vite one; the two engines only differ in how the app was built.
       </div>
+    </>
+  );
+}
+
+/** A short version of the pages suite for /compare: four columns, the rows that matter for a choice, and where Devora.js is not first. */
+export function CompareSpeed() {
+  const cols: Metric[] = [METRICS[1]!, METRICS[3]!, METRICS[5]!, METRICS[6]!];
+  const best = Object.fromEntries(
+    cols.map((x) => {
+      const vals = bench.rows.map((r) => value(r, x)).filter((v): v is number => v !== null);
+      return [x.id, x.lower ? Math.min(...vals) : Math.max(...vals)];
+    }),
+  );
+  const behind = METRICS.map((x) => ({ x, v: verdict(x) })).filter(({ v }) => v.kind !== "first");
+  return (
+    <>
+      <p>
+        The same three pages written for each framework, built and run with each one&apos;s own commands on Node {bench.machine.node.replace(/^v/, "")}, one Mac, medians of {bench.machine.runs} runs. Devora.js is shown with its default
+        engine (Vite 8) and with Sekhem, the experimental engine of our own.
+      </p>
+      <div className="be-wrap" role="region" aria-label="Speed of each framework on the same pages" tabIndex={0}>
+        <table className="be-table">
+          <thead>
+            <tr>
+              <th scope="col">Framework</th>
+              {cols.map((x) => (
+                <th key={x.id as string} scope="col" className="num">
+                  {x.label}
+                  <span className="eb-sub">{x.unit}{x.lower ? ", lower is better" : ""}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {bench.rows.map((r) => (
+              <tr key={r.key} className={isDevora(r) ? "be-devora" : undefined}>
+                <th scope="row">{r.name}</th>
+                {cols.map((x) => {
+                  const v = value(r, x);
+                  return (
+                    <td key={x.id as string} className="num">
+                      {v === null ? "-" : <span className={v === best[x.id as string] ? "eb-best" : undefined}>{num(v, x.digits)}</span>}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Where Devora.js is not first: {behind.map(({ x, v }, i) => (
+          <span key={x.id as string}>{i > 0 ? "; " : ""}{x.label.toLowerCase()} ({v.kind === "level" ? "level with" : "behind"} {v.other.name}, {num(value(v.other, x)!, x.digits)} {x.unit} against {num(value(v.devora, x)!, x.digits)})</span>
+        ))}. Every row, the other pages, cold start and time to first byte are on <a href="/performance#pages-suite">Performance</a>.
+      </p>
     </>
   );
 }

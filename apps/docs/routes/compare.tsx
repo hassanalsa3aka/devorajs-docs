@@ -16,6 +16,9 @@ import {
 import { RENDER_MODES_CSS, RenderModesBlock } from "../render-modes-block.js";
 import { BarChart, COMPARE_MATRIX_CSS, Matrix, type Framework, type MatrixGroup } from "../compare-matrix.js";
 import { JsonLd, pageMeta, OG_IMAGE, SITE_URL } from "../seo.js";
+import { CompareSpeed } from "../pages-results.js";
+import { BACKEND_CSS } from "../backend-results.js";
+import { ENGINE_CSS } from "../engine-results.js";
 import { getCoreVersion } from "../version.js";
 import downloads from "../data/npm-downloads.json";
 
@@ -355,6 +358,9 @@ export default function Compare({ data }) {
   return (
     <PageShell nav={DOCS_NAV} footer={<SiteFooter />}>
       <style dangerouslySetInnerHTML={{ __html: `
+        ${BACKEND_CSS}
+        ${ENGINE_CSS}
+
         .devora-page { max-width: 1180px; }
         ${COMPARE_MATRIX_CSS}
         ${RENDER_MODES_CSS}
@@ -602,6 +608,11 @@ export default function Compare({ data }) {
         </p>
       </section>
 
+      <section className="compare-section" aria-labelledby="speed">
+        <h2 id="speed">Speed, measured</h2>
+        <CompareSpeed />
+      </section>
+
       <section className="compare-section" aria-labelledby="scale">
         <h2 id="scale">Scale, honestly</h2>
         <p>
@@ -703,7 +714,7 @@ export default function Compare({ data }) {
         </ul>
         <p>
           Build time, requests/second, memory and JavaScript sent, measured against Next.js, Astro,
-          SvelteKit and React Router on the same pages: see <a href="/performance">Performance</a>.
+          SvelteKit, React Router and Nuxt on the same pages: see <a href="/performance">Performance</a>.
         </p>
       </section>
 
