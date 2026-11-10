@@ -3,6 +3,7 @@
 // devora.js repository's benchmarks/results/. "First" is shown only where the table shows it: a lead of more than 3 % over the next
 // framework; inside 3 % it is called level.
 import bench from "./data/pages-bench.json";
+import oracle from "./data/pages-bench-oracle.json";
 import scenarios from "./data/scenarios-bench.json";
 
 type Row = (typeof bench.rows)[number];
@@ -26,8 +27,8 @@ function value(r: Row, m: Metric): number | null {
 }
 
 /** First, level or behind for the better of the two Devora.js rows against the best other framework. */
-export function verdict(m: Metric): { kind: "first" | "level" | "behind"; devora: Row; other: Row; text: string } {
-  const withValue = bench.rows.filter((r) => value(r, m) !== null);
+export function verdict(m: Metric, b: typeof bench = bench): { kind: "first" | "level" | "behind"; devora: Row; other: Row; text: string } {
+  const withValue = b.rows.filter((r) => value(r, m) !== null);
   const better = (a: number, b: number) => (m.lower ? a < b : a > b);
   const devora = withValue.filter(isDevora).reduce((a, b) => (better(value(b, m)!, value(a, m)!) ? b : a));
   const others = withValue.filter((r) => !isDevora(r));
@@ -162,6 +163,70 @@ export function CompareSpeed() {
           <span key={x.id as string}>{i > 0 ? "; " : ""}{x.label.toLowerCase()} ({v.kind === "level" ? "level with" : "behind"} {v.other.name}, {num(value(v.other, x)!, x.digits)} {x.unit} against {num(value(v.devora, x)!, x.digits)})</span>
         ))}. Every row, the other pages, cold start and time to first byte are on <a href="/performance#pages-suite">Performance</a>.
       </p>
+    </>
+  );
+}
+
+/** The pages suite on the Oracle ARM server (Linux, 2 CPUs): the same table and the same first, level or behind rule. */
+export function OraclePages() {
+  const b = oracle as unknown as typeof bench;
+  const m = b.machine;
+  const best = Object.fromEntries(
+    METRICS.map((x) => {
+      const vals = b.rows.map((r) => value(r, x)).filter((v): v is number => v !== null);
+      return [x.id, x.lower ? Math.min(...vals) : Math.max(...vals)];
+    }),
+  );
+  const verdicts = METRICS.map((x) => ({ x, v: verdict(x, b) }));
+  return (
+    <>
+      <h3 id="pages-oracle">The same pages on a small ARM server</h3>
+      <p className="perf-intro">
+        {m.cpu}, {m.cores} CPUs, {m.memoryGb} GB, {m.os}, Node {m.node.replace(/^v/, "")}, {m.tool}, medians of {b.machine.runs} runs. The load tool runs on the same two CPUs as the server, so every request number is lower than on the Mac and the two
+        machines must not be compared with each other. Nuxt was not run here.
+      </p>
+      <div className="be-wrap" role="region" aria-label="Pages suite on the Oracle ARM server" tabIndex={0}>
+        <table className="be-table">
+          <thead>
+            <tr>
+              <th scope="col">Framework</th>
+              {METRICS.map((x) => (
+                <th key={x.id as string} scope="col" className="num">
+                  {x.label}
+                  <span className="eb-sub">{x.unit}{x.lower ? ", lower is better" : ""}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {b.rows.map((r) => (
+              <tr key={r.key} className={isDevora(r) ? "be-devora" : undefined}>
+                <th scope="row">{r.name}<span className="eb-sub">{isDevora(r) ? `Devora.js ${r.version}` : r.version}</span></th>
+                {METRICS.map((x) => {
+                  const v = value(r, x);
+                  return (
+                    <td key={x.id as string} className="num">
+                      {v === null ? "-" : <span className={v === best[x.id as string] ? "eb-best" : undefined}>{num(v, x.digits)}</span>}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul className="perf-intro">
+        {verdicts.map(({ x, v }) => (
+          <li key={x.id as string}>
+            <strong>{x.label}: {v.kind === "first" ? "first" : v.kind === "level" ? "level" : "not first"}.</strong> {v.text}
+          </li>
+        ))}
+      </ul>
+      <div className="eb-note eb-warn">
+        <strong>Two cautions about this table</strong>
+        The Sekhem build time here (872 ms against 666 ms for Vite) probably includes the start-up of a TypeScript runner that the benchmark setup used at the time; it is not comparable with the Mac result and
+        will be measured again. The browser steps used Playwright&apos;s headless shell on this server and Google Chrome on the Mac; the JavaScript sizes are identical on both.
+      </div>
     </>
   );
 }
