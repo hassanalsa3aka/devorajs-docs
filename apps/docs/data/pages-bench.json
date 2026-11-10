@@ -1,6 +1,6 @@
 {
   "date": "2026-11-10T10:29:01.739Z",
-  "note": "Devora.js rows re-run after the Sekhem build used its compiled dist; other rows from the first run. Chrome (not Playwright headless shell) for browser steps.",
+  "note": "Devora.js rows re-run after the Sekhem build used its compiled dist; other rows from the first run. Chrome (not Playwright headless shell) for browser steps. Nuxt row from its own run (same machine, same day).",
   "machine": {
     "cpu": "Apple M5",
     "cores": 10,
@@ -101,6 +101,21 @@
       "afterLoadMb": 315.203125,
       "jsGzipKb": 111.2,
       "hydrationMs": 47.80000001192093
+    },
+    {
+      "key": "nuxt",
+      "name": "Nuxt",
+      "version": "4.6.4",
+      "staticRps": 32106.91,
+      "pageRps": 2168.81,
+      "formRps": 33340.37,
+      "buildMs": 3503.471375000001,
+      "warmBuildMs": 3414.7139580000003,
+      "startMs": 258.8749590000007,
+      "idleMb": 158.484375,
+      "afterLoadMb": 340.828125,
+      "jsGzipKb": 76.9,
+      "hydrationMs": 37.70000001788139
     }
   ]
 }

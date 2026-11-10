@@ -320,7 +320,7 @@ function RunSection({ bench, idp, heading, lead, history: isHistory }: { bench: 
           <li>Mac: one-minute load average was {mac.machine.loadAvgAtStart?.toFixed(2)} when the Node {bench.requestsNode} run started, from earlier work.</li>
           <li>Oracle: an Ollama service was running and idle; the load generator shares the two CPUs with the server; the frameworks ran in two passes (Next.js kept its port after being stopped, so the harness now ends a server that has not let go after three seconds).</li>
           <li>Localhost has no network latency. The pages are small on purpose. Idle memory includes the <code>npm start</code> wrapper for every framework.</li>
-          <li>Not measured: Nuxt (no app of this API was written), Bun, Node 20 for the request scenarios, the SSR page, static file, streaming, ISR hit, CRUD and WebSocket scenarios, install times.</li>
+          <li>Not measured for this API suite: Nuxt (it is in the pages suite above), Bun, Node 20 for the request scenarios, streaming, ISR hit, CRUD and WebSocket scenarios, install times. Pages, static files, cold start and first byte are in the pages suite.</li>
         </ul>
       </details>
     </>

@@ -8,7 +8,7 @@ const [devoraFile, othersFile] = process.argv.slice(2);
 if (!devoraFile || !othersFile) throw new Error("usage: node scripts/sync-scenarios-bench.mjs <devora.json> <others.json>");
 const a = JSON.parse(fs.readFileSync(devoraFile, "utf-8"));
 const b = JSON.parse(fs.readFileSync(othersFile, "utf-8"));
-const order = ["devora-pages-vite", "devora-pages-sekhem", "next", "astro", "sveltekit", "react-router"];
+const order = ["devora-pages-vite", "devora-pages-sekhem", "next", "astro", "sveltekit", "react-router", "nuxt"];
 const all = { ...a.frameworks, ...b.frameworks };
 const sum = (n) => n.reduce((x, y) => x + y, 0);
 const rows = order.filter((k) => all[k]).map((key) => {

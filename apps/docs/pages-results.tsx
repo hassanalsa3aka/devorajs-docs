@@ -108,7 +108,7 @@ export function PagesResults() {
       <div className="eb-note eb-warn">
         <strong>How to read this</strong>
         Start time includes <code>npm start</code>, the same for every row. JavaScript is what the browser downloads for the server-rendered page, gzip, measured in a real browser (Google Chrome, not Playwright&apos;s headless shell).
-        Devora.js ships React for the island; that is part of why the JavaScript row is not first. Next.js, Astro, SvelteKit and React Router are the versions shown in the table; all five apps do the same thing, written the way each framework documents.
+        Devora.js ships React for the island; that is part of why the JavaScript row is not first. Next.js, Astro, SvelteKit, React Router and Nuxt are the versions shown in the table; all the apps do the same thing, written the way each framework documents.
         A form POST answers with a redirect, which the load tool counts as non-2xx; the status each framework returns is checked separately.
         {bench.note ? ` ${bench.note}` : ""}
       </div>
