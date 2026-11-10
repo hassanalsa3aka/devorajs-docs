@@ -38,16 +38,16 @@ interface Release {
 // are the only tags). A version with no CHANGELOG entry says so.
 const RELEASES: Release[] = [
   {
-    version: "0.4.0",
+    version: "0.4.1",
     date: "2026-11-10",
-    tag: "v0.4.0",
+    tag: "v0.4.1",
     points: [
       "A security hardening release: CSRF is checked by default for cookie-authenticated writes, redirect() stays on the app's origin, responses that touch the session cookie are private, no-store, and the CLI requires Vite 8.3.7 or later. Each breaking change has a migration step.",
       "New settings: allowedHosts, server timeouts and a header size limit, form field and file limits, an opt-in per-route rateLimit; nosniff everywhere, a sandbox policy for .svg files, symlink-safe static files, and a dev server that restarts on config, env and route-file changes.",
       "New projects install and run on pnpm 11 and later and on Yarn 4's default settings. There has been no third-party audit.",
-      "Packages: @devorajs/core 0.4.0, @devorajs/cli 0.4.0, @devorajs/adapter-node 0.3.0, @devorajs/adapter-vercel 0.3.0, @devorajs/adapter-netlify 0.3.0, create-devora 0.4.0.", // version-ok
+      "Packages: @devorajs/core 0.4.1, @devorajs/cli 0.4.1, @devorajs/adapter-node 0.3.0, @devorajs/adapter-vercel 0.3.0, @devorajs/adapter-netlify 0.3.0, create-devora 0.4.1, and the new @devorajs/sekhem 0.1.0. 0.4.0 of core, cli and create-devora was published from stale build output and is deprecated: use 0.4.1.", // version-ok
     ],
-    anchor: "040--2026-11-10",
+    anchor: "041--2026-11-10",
     post: "/blog/devora-0-4-0",
   },
   {
@@ -201,7 +201,7 @@ export default function Roadmap() {
           Devora.js is early and pre-1.0, built by one person. This page says what has shipped,
           version by version, and what is next. Every block below is taken from the{" "}
           <a href={CHANGELOG}>changelog</a> and the git tags (<code>v0.3.2</code>,{" "}
-          <code>v0.3.4</code>, <code>v0.3.5</code> and <code>v0.4.0</code> are the only tags).
+          <code>v0.3.4</code>, <code>v0.3.5</code> and <code>v0.4.1</code> are the only tags).
         </p>
         <p>
           The same content lives in{" "}
