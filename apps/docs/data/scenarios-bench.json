@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-10T12:04:47.426Z",
+  "machine": {
+    "cpu": "Apple M5",
+    "cores": 10,
+    "memoryGb": 16,
+    "os": "Darwin 27.2.0 (darwin arm64)",
+    "node": "v26.13.0"
+  },
+  "ttfbRequests": 300,
+  "connections": 1000,
+  "rows": [
+    {
+      "key": "devora-pages-vite",
+      "name": "Devora.js with Vite",
+      "coldStartMs": 248.20129100000008,
+      "firstPageMs": 4.124332999999751,
+      "ttfbP50": 0.5685840000001008,
+      "ttfbP99": 1.0248329999999441,
+      "staticRps": 58723.2,
+      "staticErrors": 1072,
+      "itemsRps": 6452.91,
+      "itemsErrors": 79884,
+      "answersAfter": true
+    },
+    {
+      "key": "devora-pages-sekhem",
+      "name": "Devora.js with Sekhem",
+      "coldStartMs": 252.01712500001304,
+      "firstPageMs": 4.260165999992751,
+      "ttfbP50": 0.5460000000020955,
+      "ttfbP99": 0.8340829999942798,
+      "staticRps": 57414.4,
+      "staticErrors": 1314,
+      "itemsRps": 6545.2,
+      "itemsErrors": 82325,
+      "answersAfter": true
+    },
+    {
+      "key": "next",
+      "name": "Next.js",
+      "coldStartMs": 460.80541700000003,
+      "firstPageMs": 31.623291999999765,
+      "ttfbP50": 1.898750000000291,
+      "ttfbP99": 4.033249999999498,
+      "staticRps": 7122.37,
+      "staticErrors": 83459,
+      "itemsRps": 699.64,
+      "itemsErrors": 66028,
+      "answersAfter": true
+    },
+    {
+      "key": "astro",
+      "name": "Astro",
+      "coldStartMs": 316.1709999998566,
+      "firstPageMs": 11.459749999921769,
+      "ttfbP50": 0.8443330000154674,
+      "ttfbP99": 1.3790830001235008,
+      "staticRps": 16622.41,
+      "staticErrors": 33545,
+      "itemsRps": 4607.7,
+      "itemsErrors": 79496,
+      "answersAfter": true
+    },
+    {
+      "key": "sveltekit",
+      "name": "SvelteKit",
+      "coldStartMs": 241.2862919997424,
+      "firstPageMs": 4.949458999792114,
+      "ttfbP50": 0.8755419999361038,
+      "ttfbP99": 1.068375000031665,
+      "staticRps": 17760.41,
+      "staticErrors": 33667,
+      "itemsRps": 3841,
+      "itemsErrors": 85249,
+      "answersAfter": true
+    },
+    {
+      "key": "react-router",
+      "name": "React Router",
+      "coldStartMs": 318.09979200037196,
+      "firstPageMs": 7.248041999991983,
+      "ttfbP50": 1.1185409999452531,
+      "ttfbP99": 1.7985829999670386,
+      "staticRps": 35970.4,
+      "staticErrors": 10818,
+      "itemsRps": 1801.4,
+      "itemsErrors": 81551,
+      "answersAfter": false
+    }
+  ]
+}
