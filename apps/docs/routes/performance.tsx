@@ -5,6 +5,7 @@ import { JsonLd, pageMeta, SITE_URL } from "../seo.js";
 import { judge, point, join, type Point } from "../bench-compare.js";
 import { BACKEND_CSS, BackendResults } from "../backend-results.js";
 import { ENGINE_CSS, EngineResults } from "../engine-results.js";
+import { RESULT_CARDS_CSS, ResultCards } from "../result-cards.js";
 import { ScenarioResults } from "../pages-results.js";
 import { BENCH, BENCH_DATE, BENCHMARK_CSS, BenchmarkWidget, REPRODUCE_URL } from "../benchmark-widget.js";
 
@@ -71,6 +72,7 @@ export default function Performance() {
         ${BENCHMARK_CSS}
         ${BACKEND_CSS}
         ${ENGINE_CSS}
+        ${RESULT_CARDS_CSS}
         .perf-intro { max-width: 46rem; }
         .perf-wide { max-width: 62rem; }
         .perf-table-wrap { overflow-x: auto; }
@@ -147,37 +149,54 @@ export default function Performance() {
       <p className="perf-intro">{first.length === 0 ? "Nothing in this run." : first.map((a) => a.row.label).join("; ") + "."}</p>
 
       <h2 id="results">All results</h2>
-      <p className="perf-intro">Medians of the runs. Spreads (min–max of every run) are in the raw data.</p>
+      <p className="perf-intro">
+        One card for each measurement, best result first, each bar scaled to the best value. Medians of the runs; the spreads (min–max of every run) are in the raw data.
+        Where the order is decided by less than the run-to-run spread, the card says "level" instead of naming a leader.
+      </p>
+      <ResultCards
+        rows={ROWS}
+        frameworks={FWS}
+        value={(row, f) => row.value(f)}
+        show={(row, f) => row.show(f)}
+        standing={(row) => {
+          const { v, best } = verdict(row);
+          if (v.kind === "first") return { kind: "first", text: "Devora.js is ahead" };
+          if (v.kind === "tie") return { kind: "tie", text: `Devora.js is level with ${join(v.with)}` };
+          return { kind: "behind", text: `${best.name.replace(" (Vite 8)", "")} is ahead of Devora.js` };
+        }}
+        plainTable={
       <div className="perf-table-wrap" role="region" aria-label="All benchmark results" tabIndex={0}>
-        <table className="perf-table">
-          <thead>
-            <tr>
-              <th scope="col">Metric</th>
-              {FWS.map((f) => (
-                <th scope="col" key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
-                  {f.name} {f.version}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {ROWS.map((row) => (
-              <tr key={row.label}>
-                <th scope="row">
-                  {row.label}
-                  <br />
-                  <small>{row.better} is better</small>
-                </th>
+          <table className="perf-table">
+            <thead>
+              <tr>
+                <th scope="col">Metric</th>
                 {FWS.map((f) => (
-                  <td key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
-                    {row.show(f)}
-                  </td>
+                  <th scope="col" key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
+                    {f.name} {f.version}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {ROWS.map((row) => (
+                <tr key={row.label}>
+                  <th scope="row">
+                    {row.label}
+                    <br />
+                    <small>{row.better} is better</small>
+                  </th>
+                  {FWS.map((f) => (
+                    <td key={f.key} className={f.key.startsWith("devora") ? "perf-devora" : undefined}>
+                      {row.show(f)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        }
+      />
 
       <h2 id="api-routes">API routes</h2>
       <p className="perf-intro">
