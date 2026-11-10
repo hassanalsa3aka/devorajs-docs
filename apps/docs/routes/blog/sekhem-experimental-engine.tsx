@@ -51,7 +51,7 @@ npx create-devora my-app --engine=own`}</Code>
         app's first interactive page took about 170 ms warm with Sekhem against about 370 ms with Vite 6, and a change to a component
         showed after 32 ms with both Sekhem and Vite with its file watcher tuned (about 160 ms with Vite's default settings). The
         output of Sekhem's build is about half the size of Vite's (9.7 MB against 18.9 MB for the four apps); we have not yet looked into
-        why. The tables, hardware and method are on the <a href="/performance#node-versions">performance page</a>.
+        why. The tables, hardware and method are on the <a href="/performance#build-by-node">performance page</a>.
       </p>
       <p>
         Two things we first read as losses were not. The idle CPU of the dev server looked higher than Vite's until we noticed the

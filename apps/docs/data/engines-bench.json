@@ -1,0 +1,1200 @@
+{
+  "generatedFrom": "engines-2026-11-09-node26",
+  "requestsNode": "26.13.0",
+  "requests": {
+    "mac": {
+      "machine": {
+        "cpu": "Apple M5",
+        "cores": 10,
+        "memoryGb": 16,
+        "os": "Darwin 27.2.0 (darwin arm64)",
+        "node": "v26.13.0",
+        "config": {
+          "buildRuns": 3,
+          "startRuns": 5,
+          "loadRuns": 5,
+          "loadSeconds": 10,
+          "warmupSeconds": 5,
+          "connections": 50,
+          "order": "interleaved (rounds; the start of the list rotates by one each round)",
+          "tool": "autocannon 8.0.0"
+        },
+        "loadAvgAtStart": 5.14599609375
+      },
+      "rows": [
+        {
+          "key": "devora-vite",
+          "name": "Devora.js (Vite engine, this commit)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 41214.55,
+                "min": 40522.19,
+                "max": 41424
+              },
+              "p99": 2
+            },
+            "me": {
+              "rps": {
+                "median": 46855.28,
+                "min": 45586.91,
+                "max": 48106.19
+              },
+              "p99": 2
+            },
+            "postValid": {
+              "rps": {
+                "median": 45677.1,
+                "min": 40530.91,
+                "max": 46471.28
+              },
+              "p99": 2
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 44999.28,
+                "min": 44510.55,
+                "max": 46238.55
+              },
+              "p99": 2
+            },
+            "slow": {
+              "rps": {
+                "median": 17896.73,
+                "min": 16536.37,
+                "max": 18998
+              },
+              "p99": 4
+            }
+          },
+          "buildMs": 353.1253750000001,
+          "startMs": 252.7974579999991,
+          "idleMb": 151.421875
+        },
+        {
+          "key": "devora-sekhem",
+          "name": "Devora.js (Sekhem engine, this commit)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 40746.19,
+                "min": 38009.46,
+                "max": 41406.55
+              },
+              "p99": 2
+            },
+            "me": {
+              "rps": {
+                "median": 47541.82,
+                "min": 45351.28,
+                "max": 47678.55
+              },
+              "p99": 2
+            },
+            "postValid": {
+              "rps": {
+                "median": 45787.64,
+                "min": 41072,
+                "max": 46218.19
+              },
+              "p99": 2
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 45645.1,
+                "min": 41793.46,
+                "max": 46008.73
+              },
+              "p99": 2
+            },
+            "slow": {
+              "rps": {
+                "median": 17023.64,
+                "min": 16539.64,
+                "max": 18872
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 484.94124999999985,
+          "startMs": 251.05141699999876,
+          "idleMb": 151.578125
+        },
+        {
+          "key": "express",
+          "name": "Express 5",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 37089.46,
+                "min": 34317.82,
+                "max": 37136
+              },
+              "p99": 2
+            },
+            "me": {
+              "rps": {
+                "median": 54779.64,
+                "min": 54410.19,
+                "max": 55326.55
+              },
+              "p99": 1
+            },
+            "postValid": {
+              "rps": {
+                "median": 45002.19,
+                "min": 43075.64,
+                "max": 45688.73
+              },
+              "p99": 2
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 45112.73,
+                "min": 42357.82,
+                "max": 46192
+              },
+              "p99": 2
+            },
+            "slow": {
+              "rps": {
+                "median": 15681.6,
+                "min": 15294.8,
+                "max": 19352
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 189.67554200000086,
+          "startMs": 250.89433300000383,
+          "idleMb": 148.859375
+        },
+        {
+          "key": "fastify",
+          "name": "Fastify 5",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 56082.91,
+                "min": 50916.37,
+                "max": 57956.37
+              },
+              "p99": 1
+            },
+            "me": {
+              "rps": {
+                "median": 76174.55,
+                "min": 69458.4,
+                "max": 82388.37
+              },
+              "p99": 1
+            },
+            "postValid": {
+              "rps": {
+                "median": 69088,
+                "min": 66577.46,
+                "max": 70152.73
+              },
+              "p99": 1
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 69570.91,
+                "min": 64468.37,
+                "max": 69896.73
+              },
+              "p99": 1
+            },
+            "slow": {
+              "rps": {
+                "median": 16700,
+                "min": 16378.8,
+                "max": 18667.2
+              },
+              "p99": 4
+            }
+          },
+          "buildMs": 199.14833300000464,
+          "startMs": 276.174208000004,
+          "idleMb": 156.421875
+        },
+        {
+          "key": "hono",
+          "name": "Hono",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 57136,
+                "min": 55620.37,
+                "max": 57674.19
+              },
+              "p99": 1
+            },
+            "me": {
+              "rps": {
+                "median": 81102.55,
+                "min": 77192.73,
+                "max": 81556.37
+              },
+              "p99": 1
+            },
+            "postValid": {
+              "rps": {
+                "median": 66942.55,
+                "min": 66720,
+                "max": 67271.28
+              },
+              "p99": 1
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 66914.91,
+                "min": 66827.64,
+                "max": 66965.82
+              },
+              "p99": 1
+            },
+            "slow": {
+              "rps": {
+                "median": 16546,
+                "min": 16213.2,
+                "max": 17325.2
+              },
+              "p99": 4
+            }
+          },
+          "buildMs": 198.58750000000146,
+          "startMs": 221.47670800000196,
+          "idleMb": null
+        },
+        {
+          "key": "nest-express",
+          "name": "NestJS (Express platform)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 33608.73,
+                "min": 32247.28,
+                "max": 34226.91
+              },
+              "p99": 2
+            },
+            "me": {
+              "rps": {
+                "median": 47093.82,
+                "min": 46762.19,
+                "max": 47614.55
+              },
+              "p99": 2
+            },
+            "postValid": {
+              "rps": {
+                "median": 38826.19,
+                "min": 36551.28,
+                "max": 39224.73
+              },
+              "p99": 2
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 33956.37,
+                "min": 33734.55,
+                "max": 34395.64
+              },
+              "p99": 2
+            },
+            "slow": {
+              "rps": {
+                "median": 14954.4,
+                "min": 14875.28,
+                "max": 15632.73
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 747.4907089999906,
+          "startMs": 193.63499999999476,
+          "idleMb": null
+        },
+        {
+          "key": "nest-fastify",
+          "name": "NestJS (Fastify platform)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 52178.91,
+                "min": 51792,
+                "max": 52676.37
+              },
+              "p99": 1
+            },
+            "me": {
+              "rps": {
+                "median": 74964.37,
+                "min": 73988.37,
+                "max": 75930.19
+              },
+              "p99": 1
+            },
+            "postValid": {
+              "rps": {
+                "median": 61138.91,
+                "min": 54715.64,
+                "max": 61947.64
+              },
+              "p99": 1
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 49915.64,
+                "min": 48219.64,
+                "max": 51096.73
+              },
+              "p99": 1
+            },
+            "slow": {
+              "rps": {
+                "median": 15500.4,
+                "min": 15472.4,
+                "max": 17144.41
+              },
+              "p99": 4
+            }
+          },
+          "buildMs": 1037.4134579999954,
+          "startMs": 436.5190419999999,
+          "idleMb": 180.296875
+        },
+        {
+          "key": "next",
+          "name": "Next.js",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 7962,
+                "min": 7026.73,
+                "max": 7984.19
+              },
+              "p99": 12
+            },
+            "me": {
+              "rps": {
+                "median": 8517.46,
+                "min": 8416.91,
+                "max": 8567.64
+              },
+              "p99": 11
+            },
+            "postValid": {
+              "rps": {
+                "median": 7463.2,
+                "min": 7019.1,
+                "max": 7482
+              },
+              "p99": 13
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 7413.64,
+                "min": 7352.55,
+                "max": 7474.37
+              },
+              "p99": 13
+            },
+            "slow": {
+              "rps": {
+                "median": 8350.91,
+                "min": 8180,
+                "max": 8378.6
+              },
+              "p99": 11
+            }
+          },
+          "buildMs": 2760.9857499999925,
+          "startMs": 427.253040999989,
+          "idleMb": 193.5
+        },
+        {
+          "key": "sveltekit",
+          "name": "SvelteKit",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 25100.37,
+                "min": 22042.55,
+                "max": 27798.55
+              },
+              "p99": 4
+            },
+            "me": {
+              "rps": {
+                "median": 30932.8,
+                "min": 29244.37,
+                "max": 34829.1
+              },
+              "p99": 4
+            },
+            "postValid": {
+              "rps": {
+                "median": 25194.91,
+                "min": 23272,
+                "max": 27241.46
+              },
+              "p99": 4
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 25103.28,
+                "min": 24054.55,
+                "max": 27190.55
+              },
+              "p99": 4
+            },
+            "slow": {
+              "rps": {
+                "median": 15142.4,
+                "min": 15071.2,
+                "max": 15719.64
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 1745.803916999983,
+          "startMs": 225.11870800002362,
+          "idleMb": 150.5
+        },
+        {
+          "key": "react-router",
+          "name": "React Router",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 11501.6,
+                "min": 11313.82,
+                "max": 11637.46
+              },
+              "p99": 6
+            },
+            "me": {
+              "rps": {
+                "median": 12334.19,
+                "min": 11284.8,
+                "max": 12561.82
+              },
+              "p99": 5
+            },
+            "postValid": {
+              "rps": {
+                "median": 14610.55,
+                "min": 14380.73,
+                "max": 14743.64
+              },
+              "p99": 6
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 14568.37,
+                "min": 13283.28,
+                "max": 14716
+              },
+              "p99": 6
+            },
+            "slow": {
+              "rps": {
+                "median": 11493.46,
+                "min": 11199.64,
+                "max": 11593.6
+              },
+              "p99": 6
+            }
+          },
+          "buildMs": 733.421417000005,
+          "startMs": 323.26479099999415,
+          "idleMb": 166.34375
+        },
+        {
+          "key": "astro",
+          "name": "Astro",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 13172,
+                "min": 13000.8,
+                "max": 13290.55
+              },
+              "p99": 7
+            },
+            "me": {
+              "rps": {
+                "median": 14462.19,
+                "min": 14118.91,
+                "max": 14593.1
+              },
+              "p99": 6
+            },
+            "postValid": {
+              "rps": {
+                "median": 12097.6,
+                "min": 11488.8,
+                "max": 12444.73
+              },
+              "p99": 7
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 12093.46,
+                "min": 12025.1,
+                "max": 12457.82
+              },
+              "p99": 7
+            },
+            "slow": {
+              "rps": {
+                "median": 13316.73,
+                "min": 12543.64,
+                "max": 13972.73
+              },
+              "p99": 7
+            }
+          },
+          "buildMs": 991.6983330000076,
+          "startMs": 309.0784580000036,
+          "idleMb": 176.859375
+        }
+      ]
+    },
+    "oracle": {
+      "machine": {
+        "cpu": "Neoverse-N1",
+        "cores": 2,
+        "memoryGb": 12,
+        "os": "Linux 7.0.0-1013-oracle (linux arm64)",
+        "node": "v26.13.0",
+        "config": {
+          "buildRuns": 3,
+          "startRuns": 5,
+          "loadRuns": 5,
+          "loadSeconds": 10,
+          "warmupSeconds": 5,
+          "connections": 50,
+          "order": "interleaved (rounds; the start of the list rotates by one each round)",
+          "tool": "autocannon 8.0.0"
+        },
+        "loadAvgAtStart": 0.69
+      },
+      "rows": [
+        {
+          "key": "devora-vite",
+          "name": "Devora.js (Vite engine, this commit)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 8056,
+                "min": 7882.6,
+                "max": 8232
+              },
+              "p99": 15
+            },
+            "me": {
+              "rps": {
+                "median": 7929.64,
+                "min": 6948.8,
+                "max": 7984
+              },
+              "p99": 12
+            },
+            "postValid": {
+              "rps": {
+                "median": 7224.19,
+                "min": 7117.28,
+                "max": 7348.19
+              },
+              "p99": 13
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 7276.55,
+                "min": 6777.6,
+                "max": 7395.46
+              },
+              "p99": 13
+            },
+            "slow": {
+              "rps": {
+                "median": 11486.19,
+                "min": 10900,
+                "max": 11611.2
+              },
+              "p99": 10
+            }
+          },
+          "buildMs": 532.411525,
+          "startMs": 317.5139159999999,
+          "idleMb": 138.078125
+        },
+        {
+          "key": "devora-sekhem",
+          "name": "Devora.js (Sekhem engine, this commit)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 8147.4,
+                "min": 7951,
+                "max": 8247.28
+              },
+              "p99": 15
+            },
+            "me": {
+              "rps": {
+                "median": 7955.64,
+                "min": 7752.4,
+                "max": 8161.1
+              },
+              "p99": 12
+            },
+            "postValid": {
+              "rps": {
+                "median": 7297.64,
+                "min": 7066.73,
+                "max": 7482
+              },
+              "p99": 13
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 7199.6,
+                "min": 7104.91,
+                "max": 7336.4
+              },
+              "p99": 13
+            },
+            "slow": {
+              "rps": {
+                "median": 11360,
+                "min": 11074.4,
+                "max": 11523.2
+              },
+              "p99": 10
+            }
+          },
+          "buildMs": 926.4164729999993,
+          "startMs": 381.17601699999796,
+          "idleMb": 137.8359375
+        },
+        {
+          "key": "express",
+          "name": "Express 5",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 6828.55,
+                "min": 6665.2,
+                "max": 7038.73
+              },
+              "p99": 15
+            },
+            "me": {
+              "rps": {
+                "median": 8567.64,
+                "min": 8281.28,
+                "max": 8777.82
+              },
+              "p99": 11
+            },
+            "postValid": {
+              "rps": {
+                "median": 6027.46,
+                "min": 5814,
+                "max": 6120.55
+              },
+              "p99": 16
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 5935.46,
+                "min": 5837.28,
+                "max": 6060.91
+              },
+              "p99": 16
+            },
+            "slow": {
+              "rps": {
+                "median": 10297.82,
+                "min": 9892,
+                "max": 10710.91
+              },
+              "p99": 6
+            }
+          },
+          "buildMs": 220.00404200000048,
+          "startMs": 337.9597389999981,
+          "idleMb": 137.5390625
+        },
+        {
+          "key": "fastify",
+          "name": "Fastify 5",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 12316,
+                "min": 11974.19,
+                "max": 13145.82
+              },
+              "p99": 10
+            },
+            "me": {
+              "rps": {
+                "median": 17861.1,
+                "min": 16792,
+                "max": 18392.37
+              },
+              "p99": 5
+            },
+            "postValid": {
+              "rps": {
+                "median": 11228.73,
+                "min": 10746.55,
+                "max": 11645.46
+              },
+              "p99": 8
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 11217.82,
+                "min": 10689.82,
+                "max": 11441.82
+              },
+              "p99": 8
+            },
+            "slow": {
+              "rps": {
+                "median": 12238.19,
+                "min": 11941.46,
+                "max": 12503.64
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 225.9798840000003,
+          "startMs": 386.9320529999968,
+          "idleMb": 143.41015625
+        },
+        {
+          "key": "hono",
+          "name": "Hono",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 12342.4,
+                "min": 11908.8,
+                "max": 12510.4
+              },
+              "p99": 10
+            },
+            "me": {
+              "rps": {
+                "median": 16388.73,
+                "min": 15399.64,
+                "max": 17318.55
+              },
+              "p99": 5
+            },
+            "postValid": {
+              "rps": {
+                "median": 10577.82,
+                "min": 10368.37,
+                "max": 10916.73
+              },
+              "p99": 9
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 10809.1,
+                "min": 10558.91,
+                "max": 10957.6
+              },
+              "p99": 8
+            },
+            "slow": {
+              "rps": {
+                "median": 12137.82,
+                "min": 12008.37,
+                "max": 12286.19
+              },
+              "p99": 5
+            }
+          },
+          "buildMs": 215.49160600000323,
+          "startMs": 308.82620499999757,
+          "idleMb": 136.01171875
+        },
+        {
+          "key": "nest-express",
+          "name": "NestJS (Express platform)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 5558.37,
+                "min": 5240.4,
+                "max": 5617.28
+              },
+              "p99": 17
+            },
+            "me": {
+              "rps": {
+                "median": 6337.64,
+                "min": 6146.73,
+                "max": 6374.37
+              },
+              "p99": 14
+            },
+            "postValid": {
+              "rps": {
+                "median": 4716.91,
+                "min": 4564.91,
+                "max": 4755.61
+              },
+              "p99": 19
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 4061.1,
+                "min": 4012.64,
+                "max": 4086.1
+              },
+              "p99": 23
+            },
+            "slow": {
+              "rps": {
+                "median": 7859.82,
+                "min": 6669.6,
+                "max": 8108
+              },
+              "p99": 8
+            }
+          },
+          "buildMs": 1779.5346379999974,
+          "startMs": 741.5655420000112,
+          "idleMb": 168.34375
+        },
+        {
+          "key": "nest-fastify",
+          "name": "NestJS (Fastify platform)",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 10182.91,
+                "min": 9619.21,
+                "max": 10456
+              },
+              "p99": 12
+            },
+            "me": {
+              "rps": {
+                "median": 13054.19,
+                "min": 12745.1,
+                "max": 13492.73
+              },
+              "p99": 7
+            },
+            "postValid": {
+              "rps": {
+                "median": 8422.19,
+                "min": 8333.46,
+                "max": 8472.37
+              },
+              "p99": 11
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 6380.91,
+                "min": 6375.1,
+                "max": 6490.73
+              },
+              "p99": 15
+            },
+            "slow": {
+              "rps": {
+                "median": 11985.1,
+                "min": 10844.73,
+                "max": 12243.28
+              },
+              "p99": 6
+            }
+          },
+          "buildMs": 2622.5758119999955,
+          "startMs": 756.841843000002,
+          "idleMb": 166.57421875
+        },
+        {
+          "key": "next",
+          "name": "Next.js",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 1282.6,
+                "min": 1271.8,
+                "max": 1300.91
+              },
+              "p99": 75
+            },
+            "me": {
+              "rps": {
+                "median": 1461.4,
+                "min": 1447.2,
+                "max": 1479.3
+              },
+              "p99": 58
+            },
+            "postValid": {
+              "rps": {
+                "median": 1232.7,
+                "min": 1229.7,
+                "max": 1263.64
+              },
+              "p99": 71
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 1312.5,
+                "min": 1304.73,
+                "max": 1328.8
+              },
+              "p99": 66
+            },
+            "slow": {
+              "rps": {
+                "median": 1506.7,
+                "min": 1500.6,
+                "max": 1523.6
+              },
+              "p99": 66
+            }
+          },
+          "buildMs": 8033.5120060000045,
+          "startMs": 707.8101109999989,
+          "idleMb": 170.7578125
+        },
+        {
+          "key": "sveltekit",
+          "name": "SvelteKit",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 4092,
+                "min": 4012,
+                "max": 4130.7
+              },
+              "p99": 20
+            },
+            "me": {
+              "rps": {
+                "median": 4588.19,
+                "min": 4516.4,
+                "max": 4667.1
+              },
+              "p99": 12
+            },
+            "postValid": {
+              "rps": {
+                "median": 3601.73,
+                "min": 3577.19,
+                "max": 3612.2
+              },
+              "p99": 20
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 3598.28,
+                "min": 3550.64,
+                "max": 3655.55
+              },
+              "p99": 19
+            },
+            "slow": {
+              "rps": {
+                "median": 5871.46,
+                "min": 5695.82,
+                "max": 5919.1
+              },
+              "p99": 12
+            }
+          },
+          "buildMs": 3632.1225709999853,
+          "startMs": 319.9047460000147,
+          "idleMb": 137.22265625
+        },
+        {
+          "key": "react-router",
+          "name": "React Router",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 1913.3,
+                "min": 1904.6,
+                "max": 1948.73
+              },
+              "p99": 49
+            },
+            "me": {
+              "rps": {
+                "median": 2216.2,
+                "min": 2197.81,
+                "max": 2232.6
+              },
+              "p99": 31
+            },
+            "postValid": {
+              "rps": {
+                "median": 2215,
+                "min": 2154.6,
+                "max": 2224.28
+              },
+              "p99": 34
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 2251.19,
+                "min": 2229.91,
+                "max": 2283.73
+              },
+              "p99": 29
+            },
+            "slow": {
+              "rps": {
+                "median": 2404.2,
+                "min": 2360,
+                "max": 2473
+              },
+              "p99": 30
+            }
+          },
+          "buildMs": 1549.185282999999,
+          "startMs": 494.8227640000114,
+          "idleMb": 153.60546875
+        },
+        {
+          "key": "astro",
+          "name": "Astro",
+          "scenarios": {
+            "items": {
+              "rps": {
+                "median": 2278,
+                "min": 2187.5,
+                "max": 2300.6
+              },
+              "p99": 43
+            },
+            "me": {
+              "rps": {
+                "median": 2520.4,
+                "min": 2507.81,
+                "max": 2549.19
+              },
+              "p99": 37
+            },
+            "postValid": {
+              "rps": {
+                "median": 1996.37,
+                "min": 1975.1,
+                "max": 2046
+              },
+              "p99": 48
+            },
+            "postInvalid": {
+              "rps": {
+                "median": 2055.91,
+                "min": 1982.4,
+                "max": 2072.73
+              },
+              "p99": 43
+            },
+            "slow": {
+              "rps": {
+                "median": 3145.91,
+                "min": 3124,
+                "max": 3236.2
+              },
+              "p99": 34
+            }
+          },
+          "buildMs": 2006.9109659999958,
+          "startMs": 462.9755320000113,
+          "idleMb": 162.6328125
+        }
+      ]
+    }
+  },
+  "build": {
+    "mac": {
+      "26.13.0": {
+        "runs": 5,
+        "variants": {
+          "vite8": {
+            "ms": 731,
+            "min": 723,
+            "max": 1040,
+            "rssMb": 395,
+            "outputKb": 18981
+          },
+          "sekhem": {
+            "ms": 570,
+            "min": 555,
+            "max": 596,
+            "rssMb": 232,
+            "outputKb": 9655
+          }
+        }
+      }
+    },
+    "oracle": {
+      "26.13.0": {
+        "runs": 5,
+        "variants": {
+          "vite8": {
+            "ms": 1677,
+            "min": 1595,
+            "max": 2010,
+            "rssMb": 468,
+            "outputKb": 18979
+          },
+          "sekhem": {
+            "ms": 1169,
+            "min": 1154,
+            "max": 1193,
+            "rssMb": 201,
+            "outputKb": 9651
+          }
+        }
+      }
+    }
+  },
+  "dev": {
+    "26.13.0": {
+      "own": {
+        "warmInteractiveMs": 163.35975000000326,
+        "warmHtmlMs": 82.90116599999965,
+        "readyMs": 289.0941249999996,
+        "hmrMs": 33,
+        "serverEditMs": 6.282625000021653,
+        "rssMb": 125.4375
+      },
+      "vite": {
+        "warmInteractiveMs": 214.11958300002152,
+        "warmHtmlMs": 146.48870799998986,
+        "readyMs": 498.7042500000098,
+        "hmrMs": 133,
+        "serverEditMs": 6.81245799997123,
+        "rssMb": 271.359375
+      },
+      "vite-tuned": {
+        "warmInteractiveMs": 200.24420899996767,
+        "warmHtmlMs": 142.56674999999814,
+        "readyMs": 489.1038750000298,
+        "hmrMs": 33,
+        "serverEditMs": 7.961499999975786,
+        "rssMb": 305.59375
+      }
+    }
+  }
+}
