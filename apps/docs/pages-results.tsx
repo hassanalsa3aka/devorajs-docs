@@ -3,6 +3,7 @@
 // devora.js repository's benchmarks/results/. "First" is shown only where the table shows it: a lead of more than 3 % over the next
 // framework; inside 3 % it is called level.
 import bench from "./data/pages-bench.json";
+import scenarios from "./data/scenarios-bench.json";
 
 type Row = (typeof bench.rows)[number];
 type Metric = { id: keyof Row; label: string; unit: string; lower: boolean; digits?: number };
@@ -110,6 +111,70 @@ export function PagesResults() {
         Devora.js ships React for the island; that is part of why the JavaScript row is not first. Next.js, Astro, SvelteKit and React Router are the versions shown in the table; all five apps do the same thing, written the way each framework documents.
         A form POST answers with a redirect, which the load tool counts as non-2xx; the status each framework returns is checked separately.
         {bench.note ? ` ${bench.note}` : ""}
+      </div>
+    </>
+  );
+}
+
+const ms = (n: number, d = 0) => `${num(n, d)} ms`;
+
+/** Cold start, time to first byte and 1,000 connections on the same pages apps, Node 26.13.0, Mac. */
+export function ScenarioResults() {
+  const rows = scenarios.rows;
+  const minOf = (f: (r: (typeof rows)[number]) => number) => Math.min(...rows.map(f));
+  const maxOf = (f: (r: (typeof rows)[number]) => number) => Math.max(...rows.map(f));
+  const best = {
+    cold: minOf((r) => r.coldStartMs),
+    first: minOf((r) => r.firstPageMs),
+    p50: minOf((r) => r.ttfbP50),
+    p99: minOf((r) => r.ttfbP99),
+    s: maxOf((r) => r.staticRps),
+    i: maxOf((r) => r.itemsRps),
+  };
+  const cls = (v: number, b: number) => (v === b ? "eb-best" : undefined);
+  const m = scenarios.machine;
+  return (
+    <>
+      <h3 id="scenarios">Cold start, first byte and 1,000 connections</h3>
+      <p className="perf-intro">
+        The same apps as above, started the same way ({m.cpu}, {m.cores} cores, {m.os}, Node {m.node.replace(/^v/, "")}). Cold: a fresh server per run, 5 runs, from <code>npm start</code> to the first byte of the first
+        server-rendered page, and how long that first request takes. First byte: {scenarios.ttfbRequests} requests one at a time after a warm-up. 1,000 connections: 2 runs of 10 s with {scenarios.connections.toLocaleString("en-US")} connections.
+      </p>
+      <div className="be-wrap" role="region" aria-label="Cold start, time to first byte and 1,000 connections" tabIndex={0}>
+        <table className="be-table">
+          <thead>
+            <tr>
+              <th scope="col">Framework</th>
+              <th scope="col" className="num">Start to first page byte<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">First page request<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">First byte, median<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">First byte, p99<span className="eb-sub">ms, lower is better</span></th>
+              <th scope="col" className="num">1,000 connections, pre-rendered<span className="eb-sub">req/s</span></th>
+              <th scope="col" className="num">1,000 connections, server-rendered<span className="eb-sub">req/s</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.key} className={r.key.startsWith("devora") ? "be-devora" : undefined}>
+                <th scope="row">{r.key === "devora-pages-vite" ? "Devora.js with Vite" : r.key === "devora-pages-sekhem" ? "Devora.js with Sekhem" : r.name}</th>
+                <td className="num"><span className={cls(r.coldStartMs, best.cold)}>{num(r.coldStartMs)}</span></td>
+                <td className="num"><span className={cls(r.firstPageMs, best.first)}>{num(r.firstPageMs)}</span></td>
+                <td className="num"><span className={cls(r.ttfbP50, best.p50)}>{num(r.ttfbP50, 2)}</span></td>
+                <td className="num"><span className={cls(r.ttfbP99, best.p99)}>{num(r.ttfbP99, 2)}</span></td>
+                <td className="num"><span className={cls(r.staticRps, best.s)}>{num(r.staticRps)}</span></td>
+                <td className="num"><span className={cls(r.itemsRps, best.i)}>{num(r.itemsRps)}</span></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="eb-note eb-warn">
+        <strong>Read the 1,000-connection columns with care</strong>
+        On this Mac the system queue for new connections holds 128 (<code>kern.ipc.somaxconn</code>), so opening 1,000 connections at once makes the load tool report tens of thousands of failed connections for every framework, on the
+        server-rendered page (66,000 to 85,000 per run). The requests per second above are the requests that were answered; the 99th percentile latencies of this run are not shown because of the failures. The pre-rendered page failed to connect far less often
+        with Devora.js ({num(rows[0]!.staticErrors)} and {num(rows[1]!.staticErrors)} on average) than with the others ({num(Math.min(...rows.slice(2).map((r) => r.staticErrors)))} or more), and every server except React Router answered a normal request afterwards. React Router answered most of the pre-rendered page requests at 1,000 connections with an error status, so its number in that column is not comparable.
+        A Linux machine with a larger queue is the right place for this test; it is not done yet.
+        The start to first page byte includes <code>npm start</code> for every framework. The Sekhem server answered the first request in the same time as the Vite one; the two engines only differ in how the app was built.
       </div>
     </>
   );
